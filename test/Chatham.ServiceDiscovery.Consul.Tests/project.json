@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-*",
-
+  "testRunner": "mstest",
   "dependencies": {
     "Chatham.ServiceDiscovery.Consul": "1.0.0-*",
     "dotnet-test-mstest": "1.1.1-preview",

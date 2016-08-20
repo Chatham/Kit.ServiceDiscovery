@@ -57,7 +57,6 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             Assert.AreEqual(services.Count, actual.Count);
         }
 
-        [ExpectedException(typeof (Exception))]
         [TestMethod]
         public void EndPoints_consulThrowsException_throwsException()
         {
@@ -71,15 +70,8 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.Client.Catalog.Returns(x => { throw expectedException; });
             var subscriber = fixture.CreateSut();
 
-            try
-            {
-                subscriber.EndPoints();
-            }
-            catch (Exception actualException)
-            {
-                Assert.AreEqual(expectedException, actualException);
-                throw;
-            }
+            Action action = () => subscriber.EndPoints();
+            Assert.ThrowsException<Exception>(action);
         }
 
         [TestMethod]
