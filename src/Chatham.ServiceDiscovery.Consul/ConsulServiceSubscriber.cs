@@ -6,7 +6,7 @@ using Chatham.ServiceDiscovery.Abstractions;
 
 namespace Chatham.ServiceDiscovery.Consul
 {
-    public class ConsulSubscriber : ISubscriber
+    public class ConsulServiceSubscriber : IServiceSubscriber
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
@@ -14,7 +14,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly List<string> _tags;
         private readonly string _dataCenter;
 
-        public ConsulSubscriber(ILogger log, IConsulClient client, string serviceName, List<string> tags = null, string dataCenter = null)
+        public ConsulServiceSubscriber(ILogger log, IConsulClient client, string serviceName, List<string> tags = null, string dataCenter = null)
         {
             _log = log;
             _client = client;

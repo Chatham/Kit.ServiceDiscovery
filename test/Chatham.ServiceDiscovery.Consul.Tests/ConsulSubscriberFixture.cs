@@ -32,9 +32,9 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             Client.Catalog.Returns(CatalogEndpoint);
         }
 
-        public ConsulSubscriber CreateSut()
+        public ConsulServiceSubscriber CreateSut()
         {
-            return new ConsulSubscriber(Log, Client, ServiceName, Tags, DataCenter);
+            return new ConsulServiceSubscriber(Log, Client, ServiceName, Tags, DataCenter);
         }
     }
 }
