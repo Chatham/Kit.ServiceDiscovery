@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Chatham.ServiceDiscovery.Consul;
 
-namespace ServiceDiscoverySample
+namespace ConsulServiceDiscoverySample
 {
     public class Startup
     {

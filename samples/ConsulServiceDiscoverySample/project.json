@@ -16,11 +16,5 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true
-  },
-
-  "publishOptions": {
-    "include": [
-      "wwwroot"
-    ]
   }
 }
