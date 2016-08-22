@@ -2,7 +2,7 @@
 
 namespace Chatham.ServiceDiscovery.Abstractions
 {
-    public class SubscriberOptions
+    public class ServiceSubscriberOptions
     {
         public string DataCenter { get; set; }
         public List<string> Tags { get; set; }

@@ -2,6 +2,6 @@
 {
     public interface IServiceSubscriberFactory
     {
-        IServiceSubscriber CreateSubscriber(string serviceName, SubscriberOptions option = null);
+        IServiceSubscriber CreateSubscriber(string serviceName);
     }
 }

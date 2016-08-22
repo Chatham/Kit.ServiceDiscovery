@@ -15,7 +15,12 @@ namespace Chatham.ServiceDiscovery.Consul
             _client = client;
         }
 
-        public IServiceSubscriber CreateSubscriber(string serviceName, SubscriberOptions options)
+        public IServiceSubscriber CreateSubscriber(string serviceName)
+        {
+            return new ConsulServiceSubscriber(_log, _client, serviceName);
+        }
+
+        public IServiceSubscriber CreateSubscriberWithOptions(string serviceName, ServiceSubscriberOptions options)
         {
             return new ConsulServiceSubscriber(_log, _client, serviceName, options?.Tags, options?.DataCenter);
         }
