@@ -85,7 +85,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private static ServiceEntry[] FilterByTag(ServiceEntry[] entries, List<string> tags)
         {
             return entries
-                .Where(x => x.Service.Tags.Any(tags.Contains))
+                .Where(x => tags.All(x.Service.Tags.Contains))
                 .ToArray();
         }
     }
