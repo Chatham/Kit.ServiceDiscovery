@@ -12,7 +12,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
     public class ConsulSubscriberTests
     {
         [TestMethod]
-        public void EndPoints_withoutData_returnsEmptyList()
+        public  void EndPoints_withoutData_returnsEmptyList()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -22,7 +22,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
             var subscriber = fixture.CreateSut();
 
-            var actual = subscriber.EndPoints();
+            var actual = subscriber.EndPoints().Result;
             Assert.IsNotNull(actual);
             Assert.AreEqual(0, actual.Count);
         }
@@ -58,7 +58,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
-            var actual = subscriber.EndPoints();
+            var actual = subscriber.EndPoints().Result;
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(services.Count, actual.Count);
@@ -77,7 +77,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.Client.Health.Returns(x => { throw expectedException; });
             var subscriber = fixture.CreateSut();
 
-            Action action = () => subscriber.EndPoints();
+            Action action = async () => await subscriber.EndPoints();
             Assert.ThrowsException<Exception>(action);
         }
 
@@ -115,8 +115,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.Tags.Add(Guid.NewGuid().ToString());
 
             var subscriber = fixture.CreateSut();
-
-            subscriber.EndPoints();
+            var _ = subscriber.EndPoints().Result;
 
             fixture.HealthEndpoint.Received()
                 .Service(Arg.Any<string>(), Arg.Is<string>(x => x.Split(',').Count() == fixture.Tags.Count),
@@ -153,7 +152,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
-            var actual = subscriber.EndPoints();
+            var actual = subscriber.EndPoints().Result;
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
@@ -190,7 +189,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
-            var actual = subscriber.EndPoints();
+            var actual = subscriber.EndPoints().Result;
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
