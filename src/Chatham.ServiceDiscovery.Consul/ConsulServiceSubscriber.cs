@@ -43,17 +43,32 @@ namespace Chatham.ServiceDiscovery.Consul
 
         private void UpdateCache()
         {
-            var expandedTags = string.Join(",", _tags);
+            // Consul doesn't support more than one tag in its service query method.
+            // https://github.com/hashicorp/consul/issues/294
+            // Hashi suggest prepared queries, but they don't support blocking.
+            // https://www.consul.io/docs/agent/http/query.html#execute
+            // If we want blocking for efficiency, we must filter tags manually.
+            var tag = "";
+            if (_tags.Count > 0)
+            {
+                tag = _tags[0];
+            }
+
             var queryOptions = new QueryOptions
             {
                 WaitIndex = _waitIndex
             };
+            var servicesTask = _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions);
+            var servicesTaskResult = servicesTask.Result;
+            var services = servicesTaskResult.Response;
 
-            var servicesTask = _client.Health.Service(_serviceName, expandedTags, _passingOnly, queryOptions);
-            var services = servicesTask.Result;
+            if (_tags.Count > 0)
+            {
+                services = FilterByTag(services, _tags);
+            }
 
             var serviceUris = new List<Uri>();
-            foreach (var service in services.Response)
+            foreach (var service in services)
             {
                 var host = !string.IsNullOrWhiteSpace(service.Service.Address)
                     ? service.Service.Address
@@ -62,8 +77,14 @@ namespace Chatham.ServiceDiscovery.Consul
                 serviceUris.Add(builder.Uri);
             }
 
-            _waitIndex = services.LastIndex;
+            _waitIndex = servicesTaskResult.LastIndex;
             _cache.Set(_id, serviceUris);
+        }
+
+        private static ServiceEntry[] FilterByTag(ServiceEntry[] entries, List<string> tags)
+        {
+            //TODO: Filter
+            return entries;
         }
     }
 }
