@@ -2,7 +2,6 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Microsoft.Extensions.Options": "1.0.0",
     "System.Collections": "4.0.10"
   },
 

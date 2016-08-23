@@ -25,7 +25,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private ulong _waitIndex;
 
         private Task _subscriptionTask;
-        private readonly object _subscriptionLock = new object();
+        private readonly SemaphoreSlim _subscriptionSemaphore = new SemaphoreSlim(1, 1);
 
         public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache,
             string serviceName, List<string> tags = null, bool? passingOnly = null)
@@ -45,47 +45,56 @@ namespace Chatham.ServiceDiscovery.Consul
 
         public List<Uri> EndPoints()
         {
-
-            if (_subscriptionTask == null)
-            {
-                lock (_subscriptionLock)
-                {
-                    if (_subscriptionTask == null)
-                    {
-                        var endpoints = Task.Run(async () => await FetchEndpoints(_cancellationTokenSource.Token)).Result;
-                        var serviceUris = CreateEndpointUris(endpoints.Response);
-
-                        _cache.Set(_id, serviceUris);
-                        _waitIndex = endpoints.LastIndex;
-
-                        StartSubscription();
-                    }
-                }
-            }
+            var subscriptionTask = StartSubscription();
+            subscriptionTask.Wait();
 
             return _cache.Get<List<Uri>>(_id);
         }
 
-        private void StartSubscription()
+        public async Task<List<Uri>> EndPointsAsync()
         {
-            _subscriptionTask = Task.Run(async () =>
-            {
-                while (true)
-                {
-                    try
-                    {
-                        var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
-                        var serviceUris = CreateEndpointUris(endpoints.Response);
+            await StartSubscription();
 
-                        _cache.Set(_id, serviceUris);
-                        _waitIndex = endpoints.LastIndex;
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        _cache.Remove(_id);
-                    }
+            return _cache.Get<List<Uri>>(_id);
+        }
+
+        private async Task StartSubscription()
+        {
+            if (_subscriptionTask == null)
+            {
+                await _subscriptionSemaphore.WaitAsync();
+                if (_subscriptionTask == null)
+                {
+                    var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
+                    var serviceUris = CreateEndpointUris(endpoints.Response);
+
+                    _cache.Set(_id, serviceUris);
+                    _waitIndex = endpoints.LastIndex;
+
+                    _subscriptionTask = SubscriptionLoop();
+                    _subscriptionSemaphore.Release();
                 }
-            }, _cancellationTokenSource.Token);
+            }
+        }
+
+        private async Task SubscriptionLoop()
+        {
+            while (true)
+            {
+                try
+                {
+                    var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
+                    _log.LogDebug($"Received updated endpoints for {_serviceName}");
+                    var serviceUris = CreateEndpointUris(endpoints.Response);
+
+                    _cache.Set(_id, serviceUris);
+                    _waitIndex = endpoints.LastIndex;
+                }
+                catch (TaskCanceledException)
+                {
+                    _cache.Remove(_id);
+                }
+            }
         }
 
         private async Task<QueryResult<ServiceEntry[]>> FetchEndpoints(CancellationToken ct)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Consul;
 using NSubstitute;
 using System.Threading.Tasks;
@@ -15,24 +16,24 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         public string ServiceName { get; set; }
         public List<string> Tags { get; set; }
         public bool? OnlyPassing { get; set; }
-
-        public QueryResult<CatalogService[]> ClientQueryResult { get; set; }
-        public ICatalogEndpoint CatalogEndpoint { get; set; }
+        
+        public QueryResult<ServiceEntry[]> ClientQueryResult { get; set; }
+        public IHealthEndpoint HealthEndpoint { get; set; }
 
         public ConsulSubscriberFixture()
         {
             Log = Substitute.For<ILogger>();
             Client = Substitute.For<IConsulClient>();
             Cache = Substitute.For<IMemoryCache>();
-            CatalogEndpoint = Substitute.For<ICatalogEndpoint>();
+            HealthEndpoint = Substitute.For<IHealthEndpoint>();
         }
 
-        public void SetCatalogEndpoint()
+        public void SetHealthEndpoint()
         {
-            CatalogEndpoint.Service(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<QueryOptions>())
+            HealthEndpoint.Service(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<QueryOptions>(), Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(ClientQueryResult));
 
-            Client.Catalog.Returns(CatalogEndpoint);
+            Client.Health.Returns(HealthEndpoint);
         }
 
         public ConsulServiceSubscriber CreateSut()

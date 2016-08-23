@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Consul;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
@@ -15,10 +16,10 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
-            fixture.ClientQueryResult = new QueryResult<CatalogService[]>();
-            fixture.ClientQueryResult.Response = new CatalogService[0];
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>();
+            fixture.ClientQueryResult.Response = new ServiceEntry[0];
 
-            fixture.SetCatalogEndpoint();
+            fixture.SetHealthEndpoint();
             var subscriber = fixture.CreateSut();
 
             var actual = subscriber.EndPoints();
@@ -32,23 +33,29 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
-            var services = new List<CatalogService>();
+            var services = new List<ServiceEntry>();
             for (var i = 0; i < 5; i++)
             {
-                services.Add(new CatalogService()
+                services.Add(new ServiceEntry
                 {
-                    Address = Guid.NewGuid().ToString(),
-                    ServiceAddress = Guid.NewGuid().ToString(),
-                    ServicePort = 123
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123
+                    }
                 });
             }
 
-            fixture.ClientQueryResult = new QueryResult<CatalogService[]>
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
                 Response = services.ToArray()
             };
 
-            fixture.SetCatalogEndpoint();
+            fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
             var actual = subscriber.EndPoints();
@@ -65,9 +72,9 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
-            fixture.ClientQueryResult = new QueryResult<CatalogService[]>();
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>();
 
-            fixture.Client.Catalog.Returns(x => { throw expectedException; });
+            fixture.Client.Health.Returns(x => { throw expectedException; });
             var subscriber = fixture.CreateSut();
 
             Action action = () => subscriber.EndPoints();
@@ -80,22 +87,28 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
-            var services = new List<CatalogService>()
+            var services = new List<ServiceEntry>
             {
-                new CatalogService()
+                new ServiceEntry
                 {
-                    Address = Guid.NewGuid().ToString(),
-                    ServiceAddress = Guid.NewGuid().ToString(),
-                    ServicePort = 123
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123
+                    }
                 }
             };
 
-            fixture.ClientQueryResult = new QueryResult<CatalogService[]>
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
                 Response = services.ToArray()
             };
 
-            fixture.SetCatalogEndpoint();
+            fixture.SetHealthEndpoint();
             fixture.Tags = new List<string>();
             fixture.Tags.Add(Guid.NewGuid().ToString());
             fixture.Tags.Add(Guid.NewGuid().ToString());
@@ -105,9 +118,9 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
 
             subscriber.EndPoints();
 
-            fixture.CatalogEndpoint.Received()
+            fixture.HealthEndpoint.Received()
                 .Service(Arg.Any<string>(), Arg.Is<string>(x => x.Split(',').Count() == fixture.Tags.Count),
-                    Arg.Any<QueryOptions>());
+                    Arg.Any<bool>(), Arg.Any<QueryOptions>(), Arg.Any<CancellationToken>());
         }
 
         [TestMethod]
@@ -116,29 +129,35 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
-            var services = new List<CatalogService>()
+            var services = new List<ServiceEntry>
             {
-                new CatalogService()
+                new ServiceEntry
                 {
-                    Address = Guid.NewGuid().ToString(),
-                    ServiceAddress = null,
-                    ServicePort = 123
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123
+                    }
                 }
             };
 
-            fixture.ClientQueryResult = new QueryResult<CatalogService[]>
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
                 Response = services.ToArray()
             };
 
-            fixture.SetCatalogEndpoint();
+            fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
             var actual = subscriber.EndPoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
-            Assert.IsTrue(actual[0].Host == services[0].Address);
+            Assert.IsTrue(actual[0].Host == services[0].Node.Address);
         }
 
         [TestMethod]
@@ -147,29 +166,35 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
-            var services = new List<CatalogService>()
+            var services = new List<ServiceEntry>
             {
-                new CatalogService()
+                new ServiceEntry
                 {
-                    Address = Guid.NewGuid().ToString(),
-                    ServiceAddress = Guid.NewGuid().ToString(),
-                    ServicePort = 123
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123
+                    }
                 }
             };
 
-            fixture.ClientQueryResult = new QueryResult<CatalogService[]>
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
                 Response = services.ToArray()
             };
 
-            fixture.SetCatalogEndpoint();
+            fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
             var actual = subscriber.EndPoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
-            Assert.IsTrue(actual[0].Host == services[0].ServiceAddress);
+            Assert.IsTrue(actual[0].Host == services[0].Service.Address);
         }
     }
 }
