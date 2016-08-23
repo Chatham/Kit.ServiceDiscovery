@@ -10,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Chatham.ServiceDiscovery.Consul
 {
-    public class ConsulServiceSubscriber : IServiceSubscriber
+    public class ConsulServiceSubscriber : IServiceSubscriber, IDisposable
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
@@ -24,7 +24,10 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly CancellationTokenSource _cancellationTokenSource;
         private ulong _waitIndex;
 
-        public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache, 
+        private Task _subscriptionTask;
+        private readonly object _subscriptionLock = new object();
+
+        public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache,
             string serviceName, List<string> tags = null, bool? passingOnly = null)
         {
             _log = log;
@@ -38,25 +41,51 @@ namespace Chatham.ServiceDiscovery.Consul
             _id = Guid.NewGuid().ToString();
             _cancellationTokenSource = new CancellationTokenSource();
             _waitIndex = 0;
-
-            StartLoop();
         }
 
         public List<Uri> EndPoints()
         {
+
+            if (_subscriptionTask == null)
+            {
+                lock (_subscriptionLock)
+                {
+                    if (_subscriptionTask == null)
+                    {
+                        var endpoints = Task.Run(async () => await FetchEndpoints(_cancellationTokenSource.Token)).Result;
+                        var serviceUris = CreateEndpointUris(endpoints.Response);
+
+                        _cache.Set(_id, serviceUris);
+                        _waitIndex = endpoints.LastIndex;
+
+                        StartSubscription();
+                    }
+                }
+            }
+
             return _cache.Get<List<Uri>>(_id);
         }
 
-        private async void StartLoop()
+        private void StartSubscription()
         {
-            while (!_cancellationTokenSource.IsCancellationRequested)
+            _subscriptionTask = Task.Run(async () =>
             {
-                var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
-         
-                var serviceUris = CreateEndpointUris(endpoints.Response);
-                _cache.Set(_id, serviceUris);
-                _waitIndex = endpoints.LastIndex;
-            }
+                while (true)
+                {
+                    try
+                    {
+                        var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
+                        var serviceUris = CreateEndpointUris(endpoints.Response);
+
+                        _cache.Set(_id, serviceUris);
+                        _waitIndex = endpoints.LastIndex;
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        _cache.Remove(_id);
+                    }
+                }
+            }, _cancellationTokenSource.Token);
         }
 
         private async Task<QueryResult<ServiceEntry[]>> FetchEndpoints(CancellationToken ct)
@@ -77,7 +106,7 @@ namespace Chatham.ServiceDiscovery.Consul
                 WaitIndex = _waitIndex
             };
             var servicesTask = await _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions, ct);
-    
+
             if (_tags.Count > 1)
             {
                 servicesTask.Response = FilterByTag(servicesTask.Response, _tags);
@@ -105,6 +134,14 @@ namespace Chatham.ServiceDiscovery.Consul
             return entries
                 .Where(x => tags.All(x.Service.Tags.Contains))
                 .ToArray();
+        }
+
+        public void Dispose()
+        {
+            if (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                _cancellationTokenSource.Cancel();
+            }
         }
     }
 }
