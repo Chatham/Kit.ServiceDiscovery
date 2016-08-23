@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Consul;
 using Chatham.ServiceDiscovery.Abstractions;
@@ -19,6 +21,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly List<string> _tags;
 
         private readonly string _id;
+        private readonly CancellationTokenSource _cancellationTokenSource;
         private ulong _waitIndex;
 
         public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache, 
@@ -33,16 +36,30 @@ namespace Chatham.ServiceDiscovery.Consul
             _tags = tags ?? new List<string>();
 
             _id = Guid.NewGuid().ToString();
+            _cancellationTokenSource = new CancellationTokenSource();
             _waitIndex = 0;
+
+            StartLoop();
         }
 
         public List<Uri> EndPoints()
         {
-            _cache.Set(_id, FetchEndpoints());
             return _cache.Get<List<Uri>>(_id);
         }
 
-        private List<Uri> FetchEndpoints()
+        private async void StartLoop()
+        {
+            while (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
+         
+                var serviceUris = CreateEndpointUris(endpoints.Response);
+                _cache.Set(_id, serviceUris);
+                _waitIndex = endpoints.LastIndex;
+            }
+        }
+
+        private async Task<QueryResult<ServiceEntry[]>> FetchEndpoints(CancellationToken ct)
         {
             // Consul doesn't support more than one tag in its service query method.
             // https://github.com/hashicorp/consul/issues/294
@@ -59,15 +76,18 @@ namespace Chatham.ServiceDiscovery.Consul
             {
                 WaitIndex = _waitIndex
             };
-            var servicesTask = _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions);
-            var servicesTaskResult = servicesTask.Result;
-            var services = servicesTaskResult.Response;
-
-            if (_tags.Count > 0)
+            var servicesTask = await _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions, ct);
+    
+            if (_tags.Count > 1)
             {
-                services = FilterByTag(services, _tags);
+                servicesTask.Response = FilterByTag(servicesTask.Response, _tags);
             }
 
+            return servicesTask;
+        }
+
+        private static List<Uri> CreateEndpointUris(ServiceEntry[] services)
+        {
             var serviceUris = new List<Uri>();
             foreach (var service in services)
             {
@@ -77,8 +97,6 @@ namespace Chatham.ServiceDiscovery.Consul
                 var builder = new UriBuilder("http", host, service.Service.Port);
                 serviceUris.Add(builder.Uri);
             }
-
-            _waitIndex = servicesTaskResult.LastIndex;
             return serviceUris;
         }
 

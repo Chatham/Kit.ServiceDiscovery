@@ -26,8 +26,8 @@ namespace ConsulServiceDiscoverySample
 
             app.Run(async context =>
             {
-                var factory = serviceSubscriberFactory.CreateSubscriber("consul");
-                await context.Response.WriteAsync(string.Join(",", factory.EndPoints()));
+                var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("consul");
+                await context.Response.WriteAsync(string.Join(",", serviceSubscriber.EndPoints()));
             });
         }
     }
