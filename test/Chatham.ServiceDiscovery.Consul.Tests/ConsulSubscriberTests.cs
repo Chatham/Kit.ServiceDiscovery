@@ -75,38 +75,6 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public void EndPoints_withDatacenter_passesDatacenterToConsul()
-        {
-            var fixture = new ConsulSubscriberFixture();
-            fixture.ServiceName = Guid.NewGuid().ToString();
-
-            var services = new List<CatalogService>()
-            {
-                new CatalogService()
-                {
-                    Address = Guid.NewGuid().ToString(),
-                    ServiceAddress = Guid.NewGuid().ToString(),
-                    ServicePort = 123
-                }
-            };
-
-            fixture.ClientQueryResult = new QueryResult<CatalogService[]>
-            {
-                Response = services.ToArray()
-            };
-
-            fixture.SetCatalogEndpoint();
-            fixture.DataCenter = Guid.NewGuid().ToString();
-
-            var subscriber = fixture.CreateSut();
-            subscriber.EndPoints();
-
-            fixture.CatalogEndpoint.Received()
-                .Service(Arg.Any<string>(), Arg.Any<string>(),
-                    Arg.Is<QueryOptions>(x => x.Datacenter == fixture.DataCenter));
-        }
-
-        [TestMethod]
         public void EndPoints_withTags_passesTagsToConsul()
         {
             var fixture = new ConsulSubscriberFixture();

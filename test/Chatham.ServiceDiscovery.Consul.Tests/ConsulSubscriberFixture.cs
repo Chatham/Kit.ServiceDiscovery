@@ -2,6 +2,7 @@
 using Consul;
 using NSubstitute;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace Chatham.ServiceDiscovery.Consul.Tests
@@ -10,9 +11,10 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
     {
         public ILogger Log { get; set; }
         public IConsulClient Client { get; set; }
+        public IMemoryCache Cache { get; set; }
         public string ServiceName { get; set; }
         public List<string> Tags { get; set; }
-        public string DataCenter { get; set; }
+        public bool? OnlyPassing { get; set; }
 
         public QueryResult<CatalogService[]> ClientQueryResult { get; set; }
         public ICatalogEndpoint CatalogEndpoint { get; set; }
@@ -21,6 +23,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         {
             Log = Substitute.For<ILogger>();
             Client = Substitute.For<IConsulClient>();
+            Cache = Substitute.For<IMemoryCache>();
             CatalogEndpoint = Substitute.For<ICatalogEndpoint>();
         }
 
@@ -34,7 +37,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
 
         public ConsulServiceSubscriber CreateSut()
         {
-            return new ConsulServiceSubscriber(Log, Client, ServiceName, Tags, DataCenter);
+            return new ConsulServiceSubscriber(Log, Client, Cache, ServiceName, Tags, OnlyPassing);
         }
     }
 }
