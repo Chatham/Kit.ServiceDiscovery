@@ -25,7 +25,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private ulong _waitIndex;
 
         private Task _subscriptionTask;
-        private readonly SemaphoreSlim _subscriptionSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1);
 
         public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache,
             string serviceName, List<string> tags = null, bool? passingOnly = null)
@@ -54,18 +54,25 @@ namespace Chatham.ServiceDiscovery.Consul
         {
             if (_subscriptionTask == null)
             {
-                await _subscriptionSemaphore.WaitAsync();
-                if (_subscriptionTask == null)
+                await _mutex.WaitAsync();
+                try
                 {
-                    var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
-                    var serviceUris = CreateEndpointUris(endpoints.Response);
+                    if (_subscriptionTask == null)
+                    {
+                        var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
+                        var serviceUris = CreateEndpointUris(endpoints.Response);
 
-                    _cache.Set(_id, serviceUris);
-                    _waitIndex = endpoints.LastIndex;
+                        _cache.Set(_id, serviceUris);
+                        _waitIndex = endpoints.LastIndex;
 
-                    _subscriptionTask = SubscriptionLoop();
-                    _subscriptionSemaphore.Release();
+                        _subscriptionTask = SubscriptionLoop();
+                    }
                 }
+                finally
+                {
+                    _mutex.Release();
+                }
+                
             }
         }
 
