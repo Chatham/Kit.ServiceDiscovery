@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Consul;
 using Chatham.ServiceDiscovery.Abstractions;
@@ -37,15 +38,15 @@ namespace Chatham.ServiceDiscovery.Consul
 
         public List<Uri> EndPoints()
         {
-            UpdateCache();
+            _cache.Set(_id, FetchEndpoints());
             return _cache.Get<List<Uri>>(_id);
         }
 
-        private void UpdateCache()
+        private List<Uri> FetchEndpoints()
         {
             // Consul doesn't support more than one tag in its service query method.
             // https://github.com/hashicorp/consul/issues/294
-            // Hashi suggest prepared queries, but they don't support blocking.
+            // Hashicorp suggest prepared queries, but they don't support blocking.
             // https://www.consul.io/docs/agent/http/query.html#execute
             // If we want blocking for efficiency, we must filter tags manually.
             var tag = "";
@@ -78,13 +79,14 @@ namespace Chatham.ServiceDiscovery.Consul
             }
 
             _waitIndex = servicesTaskResult.LastIndex;
-            _cache.Set(_id, serviceUris);
+            return serviceUris;
         }
 
         private static ServiceEntry[] FilterByTag(ServiceEntry[] entries, List<string> tags)
         {
-            //TODO: Filter
-            return entries;
+            return entries
+                .Where(x => x.Service.Tags.Any(tags.Contains))
+                .ToArray();
         }
     }
 }
