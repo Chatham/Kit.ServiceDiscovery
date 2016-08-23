@@ -43,14 +43,6 @@ namespace Chatham.ServiceDiscovery.Consul
             _waitIndex = 0;
         }
 
-        public List<Uri> EndPoints()
-        {
-            var subscriptionTask = StartSubscription();
-            subscriptionTask.Wait();
-
-            return _cache.Get<List<Uri>>(_id);
-        }
-
         public async Task<List<Uri>> EndPointsAsync()
         {
             await StartSubscription();

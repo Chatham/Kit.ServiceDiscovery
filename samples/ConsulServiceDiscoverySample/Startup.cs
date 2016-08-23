@@ -21,13 +21,14 @@ namespace ConsulServiceDiscoverySample
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                 app.UseDeveloperExceptionPage();
             }
 
             var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("FooService");
             app.Run(async context =>
             {
-                await context.Response.WriteAsync(string.Join(",", serviceSubscriber.EndPoints()));
+                var endpoints = await serviceSubscriber.EndPoints();
+                await context.Response.WriteAsync(string.Join(",", endpoints));
             });
         }
     }
