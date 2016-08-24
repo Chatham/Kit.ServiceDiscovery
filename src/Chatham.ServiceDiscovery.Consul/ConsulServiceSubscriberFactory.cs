@@ -11,13 +11,12 @@ namespace Chatham.ServiceDiscovery.Consul
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
-        private readonly IMemoryCache _cache;
+        private readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
 
         public ConsulServiceSubscriberFactory(ILoggerFactory log, IConsulClient client)
         {
             _log = log.CreateLogger(typeof(ConsulServiceSubscriberFactory).Namespace);
             _client = client;
-            _cache = new MemoryCache(new MemoryCacheOptions());
         }
 
         public IServiceSubscriber CreateSubscriber(string serviceName)
