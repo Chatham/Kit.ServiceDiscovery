@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Consul;
 using Chatham.ServiceDiscovery.Abstractions;
+using Chatham.ServiceDiscovery.Consul.Utilities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chatham.ServiceDiscovery.Consul
@@ -16,6 +17,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly IConsulClient _client;
         private readonly IMemoryCache _cache;
         private readonly CancellationToken _cancellationToken;
+        private readonly Throttle _throttle = new Throttle(5, TimeSpan.FromSeconds(5));
 
         private readonly string _serviceName;
         private readonly bool _passingOnly;
@@ -79,7 +81,8 @@ namespace Chatham.ServiceDiscovery.Consul
             {
                 try
                 {
-                    var endpoints = await FetchEndpoints();
+                    var endpointsTask = await _throttle.Queue(FetchEndpoints, _cancellationToken);
+                    var endpoints = endpointsTask.Result;
                     _log.LogDebug($"Received updated endpoints for {_serviceName}");
                     var serviceUris = CreateEndpointUris(endpoints.Response);
 

@@ -70,7 +70,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task EndPoints_consulThrowsException_throwsException()
+        public void EndPoints_consulThrowsException_throwsException()
         {
             var expectedException = new Exception();
 
