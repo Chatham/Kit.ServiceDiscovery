@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Consul;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
@@ -12,7 +13,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
     public class ConsulSubscriberTests
     {
         [TestMethod]
-        public  void EndPoints_withoutData_returnsEmptyList()
+        public async Task EndPoints_withoutData_returnsEmptyList()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -22,13 +23,15 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
             var subscriber = fixture.CreateSut();
 
-            var actual = subscriber.EndPoints().Result;
+            var actual = await subscriber.EndPoints();
             Assert.IsNotNull(actual);
             Assert.AreEqual(0, actual.Count);
+
+            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
-        public void EndPoints_withLotsOfData_returnsList()
+        public async Task EndPoints_withLotsOfData_returnsList()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -58,14 +61,16 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
-            var actual = subscriber.EndPoints().Result;
+            var actual = await subscriber.EndPoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(services.Count, actual.Count);
+
+            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
-        public void EndPoints_consulThrowsException_throwsException()
+        public async Task EndPoints_consulThrowsException_throwsException()
         {
             var expectedException = new Exception();
 
@@ -79,10 +84,12 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
 
             Action action = async () => await subscriber.EndPoints();
             Assert.ThrowsException<Exception>(action);
+
+            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
-        public void EndPoints_withTags_passesTagsToConsul()
+        public async Task EndPoints_withTags_passesTagsToConsul()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -115,15 +122,17 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.Tags.Add(Guid.NewGuid().ToString());
 
             var subscriber = fixture.CreateSut();
-            var _ = subscriber.EndPoints().Result;
+            var _ = await subscriber.EndPoints();
 
-            fixture.HealthEndpoint.Received()
+            await fixture.HealthEndpoint.Received()
                 .Service(Arg.Any<string>(), Arg.Is<string>(x => x.Split(',').Count() == fixture.Tags.Count),
                     Arg.Any<bool>(), Arg.Any<QueryOptions>(), Arg.Any<CancellationToken>());
+
+            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
-        public void EndPoints_withoutServiceAddressInReturnedData_buildsUriWithAddressInstead()
+        public async Task EndPoints_withoutServiceAddressInReturnedData_buildsUriWithAddressInstead()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -152,15 +161,17 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
-            var actual = subscriber.EndPoints().Result;
+            var actual = await subscriber.EndPoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
             Assert.IsTrue(actual[0].Host == services[0].Node.Address);
+
+            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
-        public void EndPoints_withBothServiceAddressAndAddressInReturnedData_buildsUriWithServiceAddress()
+        public async Task EndPoints_withBothServiceAddressAndAddressInReturnedData_buildsUriWithServiceAddress()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -189,11 +200,13 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.SetHealthEndpoint();
 
             var subscriber = fixture.CreateSut();
-            var actual = subscriber.EndPoints().Result;
+            var actual = await subscriber.EndPoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
             Assert.IsTrue(actual[0].Host == services[0].Service.Address);
+
+            fixture.CancellationTokenSource.Cancel();
         }
     }
 }
