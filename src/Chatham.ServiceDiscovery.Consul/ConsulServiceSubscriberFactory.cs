@@ -1,4 +1,6 @@
-﻿using Chatham.ServiceDiscovery.Abstractions;
+﻿using System;
+using System.Threading;
+using Chatham.ServiceDiscovery.Abstractions;
 using Consul;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -18,9 +20,19 @@ namespace Chatham.ServiceDiscovery.Consul
             _cache = new MemoryCache(new MemoryCacheOptions());
         }
 
-        public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options = null)
+        public IServiceSubscriber CreateSubscriber(string serviceName)
         {
-            return new ConsulServiceSubscriber(_log, _client, _cache, serviceName, options?.Tags, options?.OnlyPassing);
+            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default);
+        }
+
+        public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options)
+        {
+            return CreateSubscriber(serviceName, options, CancellationToken.None);
+        }
+
+        public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
+        {
+            return new ConsulServiceSubscriber(_log, _client, _cache, ct, serviceName, options.Tags, options.OnlyPassing);
         }
     }
 }

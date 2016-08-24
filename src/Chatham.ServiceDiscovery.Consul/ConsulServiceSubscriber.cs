@@ -10,36 +10,36 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Chatham.ServiceDiscovery.Consul
 {
-    public class ConsulServiceSubscriber : IServiceSubscriber, IDisposable
+    public class ConsulServiceSubscriber : IServiceSubscriber
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
         private readonly IMemoryCache _cache;
+        private readonly CancellationToken _cancellationToken;
 
         private readonly string _serviceName;
         private readonly bool _passingOnly;
         private readonly List<string> _tags;
 
         private readonly string _id;
-        private readonly CancellationTokenSource _cancellationTokenSource;
         private ulong _waitIndex;
 
         private Task _subscriptionTask;
         private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
 
-        public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache,
-            string serviceName, List<string> tags = null, bool? passingOnly = null)
+        public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache, CancellationToken cancellationToken,
+            string serviceName, List<string> tags, bool passingOnly)
         {
             _log = log;
             _client = client;
             _cache = cache;
+            _cancellationToken = cancellationToken;
 
             _serviceName = serviceName;
-            _passingOnly = passingOnly ?? false;
+            _passingOnly = passingOnly;
             _tags = tags ?? new List<string>();
 
             _id = Guid.NewGuid().ToString();
-            _cancellationTokenSource = new CancellationTokenSource();
             _waitIndex = 0;
         }
 
@@ -54,12 +54,12 @@ namespace Chatham.ServiceDiscovery.Consul
         {
             if (_subscriptionTask == null)
             {
-                await _mutex.WaitAsync();
+                await _mutex.WaitAsync(_cancellationToken);
                 try
                 {
                     if (_subscriptionTask == null)
                     {
-                        var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
+                        var endpoints = await FetchEndpoints();
                         var serviceUris = CreateEndpointUris(endpoints.Response);
 
                         _cache.Set(_id, serviceUris);
@@ -78,11 +78,11 @@ namespace Chatham.ServiceDiscovery.Consul
 
         private async Task SubscriptionLoop()
         {
-            while (true)
+            while (!_cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    var endpoints = await FetchEndpoints(_cancellationTokenSource.Token);
+                    var endpoints = await FetchEndpoints();
                     _log.LogDebug($"Received updated endpoints for {_serviceName}");
                     var serviceUris = CreateEndpointUris(endpoints.Response);
 
@@ -96,7 +96,7 @@ namespace Chatham.ServiceDiscovery.Consul
             }
         }
 
-        private async Task<QueryResult<ServiceEntry[]>> FetchEndpoints(CancellationToken ct)
+        private async Task<QueryResult<ServiceEntry[]>> FetchEndpoints()
         {
             // Consul doesn't support more than one tag in its service query method.
             // https://github.com/hashicorp/consul/issues/294
@@ -113,7 +113,7 @@ namespace Chatham.ServiceDiscovery.Consul
             {
                 WaitIndex = _waitIndex
             };
-            var servicesTask = await _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions, ct);
+            var servicesTask = await _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions, _cancellationToken);
 
             if (_tags.Count > 1)
             {
@@ -142,14 +142,6 @@ namespace Chatham.ServiceDiscovery.Consul
             return entries
                 .Where(x => tags.All(x.Service.Tags.Contains))
                 .ToArray();
-        }
-
-        public void Dispose()
-        {
-            if (!_cancellationTokenSource.IsCancellationRequested)
-            {
-                _cancellationTokenSource.Cancel();
-            }
         }
     }
 }

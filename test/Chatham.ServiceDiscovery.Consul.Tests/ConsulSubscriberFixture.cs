@@ -13,9 +13,10 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         public ILogger Log { get; set; }
         public IConsulClient Client { get; set; }
         public IMemoryCache Cache { get; set; }
+        public CancellationToken CancellationToken { get; set; }
         public string ServiceName { get; set; }
         public List<string> Tags { get; set; }
-        public bool? OnlyPassing { get; set; }
+        public bool OnlyPassing { get; set; }
         
         public QueryResult<ServiceEntry[]> ClientQueryResult { get; set; }
         public IHealthEndpoint HealthEndpoint { get; set; }
@@ -38,7 +39,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
 
         public ConsulServiceSubscriber CreateSut()
         {
-            return new ConsulServiceSubscriber(Log, Client, Cache, ServiceName, Tags, OnlyPassing);
+            return new ConsulServiceSubscriber(Log, Client, Cache, CancellationToken, ServiceName, Tags, OnlyPassing);
         }
     }
 }
