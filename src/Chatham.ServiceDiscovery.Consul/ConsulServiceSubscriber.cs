@@ -100,7 +100,7 @@ namespace Chatham.ServiceDiscovery.Consul
             // Hashicorp suggest prepared queries, but they don't support blocking.
             // https://www.consul.io/docs/agent/http/query.html#execute
             // If we want blocking for efficiency, we must filter tags manually.
-            var tag = "";
+            var tag = string.Empty;
             if (_tags.Count > 0)
             {
                 tag = _tags[0];
