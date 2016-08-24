@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,6 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly IConsulClient _client;
         private readonly IMemoryCache _cache;
         private readonly CancellationToken _cancellationToken;
-        private readonly Throttle _throttle = new Throttle(5, TimeSpan.FromSeconds(5));
 
         private readonly string _serviceName;
         private readonly bool _passingOnly;
@@ -28,6 +28,7 @@ namespace Chatham.ServiceDiscovery.Consul
 
         private Task _subscriptionTask;
         private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
+        private readonly Throttle _throttle = new Throttle(5, TimeSpan.FromSeconds(10));
 
         public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache, CancellationToken cancellationToken,
             string serviceName, List<string> tags, bool passingOnly)
@@ -67,6 +68,10 @@ namespace Chatham.ServiceDiscovery.Consul
                         _subscriptionTask = SubscriptionLoop();
                     }
                 }
+                catch(Exception ex)
+                {
+                    _log.LogError($"Error fetching endpoints for {_serviceName}: {ex}");
+                }
                 finally
                 {
                     _mutex.Release();
@@ -81,8 +86,7 @@ namespace Chatham.ServiceDiscovery.Consul
             {
                 try
                 {
-                    var endpointsTask = await _throttle.Queue(FetchEndpoints, _cancellationToken);
-                    var endpoints = endpointsTask.Result;
+                    var endpoints = await await _throttle.Queue(FetchEndpoints, _cancellationToken);
                     _log.LogDebug($"Received updated endpoints for {_serviceName}");
                     var serviceUris = CreateEndpointUris(endpoints.Response);
 
@@ -92,6 +96,10 @@ namespace Chatham.ServiceDiscovery.Consul
                 catch (TaskCanceledException)
                 {
                     _cache.Remove(_id);
+                }
+                catch (Exception ex)
+                {
+                    _log.LogError($"Error fetching endpoints for {_serviceName}: {ex}");
                 }
             }
         }
