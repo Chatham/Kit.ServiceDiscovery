@@ -21,7 +21,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly bool _passingOnly;
         private readonly List<string> _tags;
 
-        private readonly string _id;
+        private readonly string _id = Guid.NewGuid().ToString();
         private ulong _waitIndex;
 
         private Task _subscriptionTask;
@@ -38,9 +38,6 @@ namespace Chatham.ServiceDiscovery.Consul
             _serviceName = serviceName;
             _passingOnly = passingOnly;
             _tags = tags ?? new List<string>();
-
-            _id = Guid.NewGuid().ToString();
-            _waitIndex = 0;
         }
 
         public async Task<List<Uri>> EndPoints()
