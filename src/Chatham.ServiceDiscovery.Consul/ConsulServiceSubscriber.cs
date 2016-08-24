@@ -25,7 +25,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private ulong _waitIndex;
 
         private Task _subscriptionTask;
-        private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
 
         public ConsulServiceSubscriber(ILogger log, IConsulClient client, IMemoryCache cache,
             string serviceName, List<string> tags = null, bool? passingOnly = null)
