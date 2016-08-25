@@ -322,6 +322,29 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
 
             Assert.AreEqual(expectedWatchIndex, adapter.WaitIndex);
         }
+
+        [TestMethod]
+        public async Task FetchEndPoints_withWatchSetToFalse_doesNotUpdateWaitIndex()
+        {
+            var fixture = new ConsulAgentAdapterFixture();
+            fixture.ServiceName = Guid.NewGuid().ToString();
+
+            fixture.Watch = false;
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
+            {
+                LastIndex = (ulong)500,
+                Response = new ServiceEntry[0]
+            };
+            fixture.SetHealthEndpoint();
+
+            var adapter = fixture.CreateSut();
+            var expectedWatchIndex = (ulong) 100;
+            adapter.WaitIndex = expectedWatchIndex;
+
+            var actual = await adapter.FetchEndpoints();
+
+            Assert.AreEqual(expectedWatchIndex, adapter.WaitIndex);
+        }
     }
 }
 
