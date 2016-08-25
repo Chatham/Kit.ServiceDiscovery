@@ -22,7 +22,7 @@ namespace Chatham.ServiceDiscovery.Consul.Internal
         {
             _client = client;
             _serviceName = serviceName;
-            _tags = tags;
+            _tags = tags ?? new List<string>();
             _passingOnly = passingOnly;
             _cancellationToken = cancellationToken;
         }
