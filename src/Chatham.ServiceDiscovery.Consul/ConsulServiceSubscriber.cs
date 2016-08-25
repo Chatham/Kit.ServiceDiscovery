@@ -24,10 +24,10 @@ namespace Chatham.ServiceDiscovery.Consul
 
         private Task _subscriptionTask;
         private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
-        private readonly Throttle _throttle = new Throttle(5, TimeSpan.FromSeconds(10));
+        private readonly IThrottle _throttle;
 
         public ConsulServiceSubscriber(ILogger log, IMemoryCache cache, CancellationTokenSource cancellationTokenSource, 
-            CancellationToken callerCancellationToken, string serviceName, IConsulClientAdapter consulAdapter)
+            CancellationToken callerCancellationToken, string serviceName, IConsulClientAdapter consulAdapter, IThrottle consulRequestThrottle)
         {
             _log = log;
             _cache = cache;
@@ -36,6 +36,7 @@ namespace Chatham.ServiceDiscovery.Consul
 
             _serviceName = serviceName;
             _consulAdapter = consulAdapter;
+            _throttle = consulRequestThrottle;
         }
 
         public async Task<List<Uri>> EndPoints()

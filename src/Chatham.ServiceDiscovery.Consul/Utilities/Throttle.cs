@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Chatham.ServiceDiscovery.Consul.Utilities
 {
-    public class Throttle
+    public class Throttle : IThrottle
     {
         private readonly TimeSpan _maxPeriod;
         private readonly SemaphoreSlim _throttleActions, _throttlePeriods;

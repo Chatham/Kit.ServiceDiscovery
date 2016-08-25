@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Chatham.ServiceDiscovery.Abstractions;
 using Chatham.ServiceDiscovery.Consul.Core;
+using Chatham.ServiceDiscovery.Consul.Utilities;
 using Consul;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -25,7 +27,7 @@ namespace Chatham.ServiceDiscovery.Consul
             var cts = new CancellationTokenSource();
             var endpointRetriever = new ConsulClientAdapter(_client, serviceName, options.Tags, options.OnlyPassing,
                 cts.Token, true);
-            return new ConsulServiceSubscriber(_log, _cache, cts, ct, serviceName, endpointRetriever);
+            return new ConsulServiceSubscriber(_log, _cache, cts, ct, serviceName, endpointRetriever, new Throttle(5, TimeSpan.FromSeconds(10)));
         }
     }
 }
