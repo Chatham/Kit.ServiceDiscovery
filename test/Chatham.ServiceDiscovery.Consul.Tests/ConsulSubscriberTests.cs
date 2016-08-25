@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Consul;
@@ -26,8 +25,6 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             var actual = await subscriber.EndPoints();
             Assert.IsNotNull(actual);
             Assert.AreEqual(0, actual.Count);
-
-            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
@@ -65,31 +62,10 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(services.Count, actual.Count);
-
-            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
-        public void EndPoints_consulThrowsException_throwsException()
-        {
-            var expectedException = new Exception();
-
-            var fixture = new ConsulSubscriberFixture();
-            fixture.ServiceName = Guid.NewGuid().ToString();
-
-            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>();
-
-            fixture.Client.Health.Returns(x => { throw expectedException; });
-            var subscriber = fixture.CreateSut();
-
-            Action action = async () => await subscriber.EndPoints();
-            Assert.ThrowsException<Exception>(action);
-
-            fixture.CancellationTokenSource.Cancel();
-        }
-
-        [TestMethod]
-        public async Task EndPoints_withTags_passesTagsToConsul()
+        public async Task EndPoints_withMultipleTags_passesSingleTagToConsul()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -122,17 +98,21 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             fixture.Tags.Add(Guid.NewGuid().ToString());
 
             var subscriber = fixture.CreateSut();
-            var _ = await subscriber.EndPoints();
+            await subscriber.EndPoints();
 
             await fixture.HealthEndpoint.Received()
-                .Service(Arg.Any<string>(), Arg.Is<string>(x => x.Split(',').Count() == fixture.Tags.Count),
+                .Service(Arg.Any<string>(), fixture.Tags[0],
                     Arg.Any<bool>(), Arg.Any<QueryOptions>(), Arg.Any<CancellationToken>());
-
-            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
-        public async Task EndPoints_withoutServiceAddressInReturnedData_buildsUriWithAddressInstead()
+        public void Endpoints_withMultipleTags_onlyReturnsServicesWithAllMatchingTags()
+        {
+            //Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public async Task EndPoints_withoutServiceAddressInReturnedData_buildsUriWithNodeAddressInstead()
         {
             var fixture = new ConsulSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -147,7 +127,6 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
                     },
                     Service = new AgentService
                     {
-                        Address = Guid.NewGuid().ToString(),
                         Port = 123
                     }
                 }
@@ -166,8 +145,6 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
             Assert.IsTrue(actual[0].Host == services[0].Node.Address);
-
-            fixture.CancellationTokenSource.Cancel();
         }
 
         [TestMethod]
@@ -205,8 +182,6 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
             Assert.IsTrue(actual[0].Host == services[0].Service.Address);
-
-            fixture.CancellationTokenSource.Cancel();
         }
     }
 }

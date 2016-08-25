@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Consul;
 using NSubstitute;
 using System.Threading.Tasks;
+using Chatham.ServiceDiscovery.Consul.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
@@ -15,8 +17,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         public IMemoryCache Cache { get; set; }
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
         public string ServiceName { get; set; }
-        public List<string> Tags { get; set; }
-        public bool OnlyPassing { get; set; }
+        public IConsulEndpointRetriever EndpointRetriever { get; set; }
         
         public QueryResult<ServiceEntry[]> ClientQueryResult { get; set; }
         public IHealthEndpoint HealthEndpoint { get; set; }
@@ -27,6 +28,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
             Client = Substitute.For<IConsulClient>();
             Cache = new MemoryCache(new MemoryCacheOptions());
             HealthEndpoint = Substitute.For<IHealthEndpoint>();
+            EndpointRetriever = Substitute.For<IConsulEndpointRetriever>();
         }
 
         public void SetHealthEndpoint()
@@ -39,7 +41,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
 
         public ConsulServiceSubscriber CreateSut()
         {
-            return new ConsulServiceSubscriber(Log, Client, Cache, CancellationTokenSource.Token, ServiceName, Tags, OnlyPassing);
+            return new ConsulServiceSubscriber(Log, Cache, CancellationTokenSource, CancellationTokenSource.Token, ServiceName, EndpointRetriever);
         }
     }
 }

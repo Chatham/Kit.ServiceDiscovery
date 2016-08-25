@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Chatham.ServiceDiscovery.Abstractions;
+using Chatham.ServiceDiscovery.Consul.Internal;
 using Consul;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -11,12 +12,13 @@ namespace Chatham.ServiceDiscovery.Consul
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
-        private readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
+        private readonly IMemoryCache _cache;
 
-        public ConsulServiceSubscriberFactory(ILoggerFactory log, IConsulClient client)
+        public ConsulServiceSubscriberFactory(ILoggerFactory log, IConsulClient consulClient, IMemoryCache cache)
         {
             _log = log.CreateLogger(typeof(ConsulServiceSubscriberFactory).Namespace);
-            _client = client;
+            _client = consulClient;
+            _cache = cache;
         }
 
         public IServiceSubscriber CreateSubscriber(string serviceName)
@@ -36,7 +38,10 @@ namespace Chatham.ServiceDiscovery.Consul
 
         public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
         {
-            return new ConsulServiceSubscriber(_log, _client, _cache, ct, serviceName, options.Tags, options.OnlyPassing);
+            var cts = new CancellationTokenSource();
+            var endpointRetriever = new ConsulEndpointRetriever(_client, serviceName, options.Tags, options.OnlyPassing,
+                cts.Token);
+            return new ConsulServiceSubscriber(_log, _cache, cts, ct, serviceName, endpointRetriever);
         }
     }
 }
