@@ -1,0 +1,12 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Consul": "0.6.4.7",
+    "Chatham.ServiceDiscovery.Abstractions": "1.0.0-*"
+  },
+
+  "frameworks": {
+    "net461": {}
+  }
+}

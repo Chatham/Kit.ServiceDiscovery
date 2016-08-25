@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Chatham.ServiceDiscovery.Abstractions;
-using Chatham.ServiceDiscovery.Consul.Internal;
+using Chatham.ServiceDiscovery.Consul.Core;
 using Chatham.ServiceDiscovery.Consul.Utilities;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -18,7 +18,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly CancellationTokenSource _cancellationTokenSource;
 
         private readonly string _serviceName;
-        private readonly IConsulEndpointRetriever _endpointRetriever;
+        private readonly IConsulClientAdapter _consulAdapter;
 
         private readonly string _id = Guid.NewGuid().ToString();
 
@@ -27,7 +27,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly Throttle _throttle = new Throttle(5, TimeSpan.FromSeconds(10));
 
         public ConsulServiceSubscriber(ILogger log, IMemoryCache cache, CancellationTokenSource cancellationTokenSource, 
-            CancellationToken callerCancellationToken, string serviceName, IConsulEndpointRetriever endpointRetriever)
+            CancellationToken callerCancellationToken, string serviceName, IConsulClientAdapter consulAdapter)
         {
             _log = log;
             _cache = cache;
@@ -35,7 +35,7 @@ namespace Chatham.ServiceDiscovery.Consul
             _callerCancellationToken = callerCancellationToken;
 
             _serviceName = serviceName;
-            _endpointRetriever = endpointRetriever;
+            _consulAdapter = consulAdapter;
         }
 
         public async Task<List<Uri>> EndPoints()
@@ -54,7 +54,7 @@ namespace Chatham.ServiceDiscovery.Consul
                 {
                     if (_subscriptionTask == null)
                     {
-                        var serviceUris = await _endpointRetriever.FetchEndpoints();
+                        var serviceUris = await _consulAdapter.FetchEndpoints();
                         _cache.Set(_id, serviceUris);
                         _subscriptionTask = SubscriptionLoop();
                     }
@@ -73,11 +73,11 @@ namespace Chatham.ServiceDiscovery.Consul
 
         private async Task SubscriptionLoop()
         {
-            while (!_cancellationTokenSource.IsCancellationRequested && !_callerCancellationToken.IsCancellationRequested)
+            while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 try
                 {
-                    var serviceUris = await await _throttle.Queue(_endpointRetriever.FetchEndpoints, _callerCancellationToken);
+                    var serviceUris = await await _throttle.Queue(_consulAdapter.FetchEndpoints, _callerCancellationToken);
                     _cache.Set(_id, serviceUris);
                     _log.LogDebug($"Received updated endpoints for {_serviceName}");
                 }

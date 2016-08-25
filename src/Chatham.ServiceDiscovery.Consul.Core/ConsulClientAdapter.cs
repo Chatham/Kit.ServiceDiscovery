@@ -5,26 +5,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using Consul;
 
-namespace Chatham.ServiceDiscovery.Consul.Internal
+namespace Chatham.ServiceDiscovery.Consul.Core
 {
-    public class ConsulEndpointRetriever : IConsulEndpointRetriever
+    public class ConsulClientAdapter : IConsulClientAdapter
     {
         private readonly IConsulClient _client;
         private readonly string _serviceName;
         private readonly List<string> _tags;
         private readonly bool _passingOnly;
+        private readonly bool _watch;
 
         private ulong _waitIndex;
         private readonly CancellationToken _cancellationToken;
 
-        public ConsulEndpointRetriever(IConsulClient client, string serviceName, List<string> tags, 
-            bool passingOnly, CancellationToken cancellationToken)
+        public ConsulClientAdapter(IConsulClient client, string serviceName, List<string> tags, 
+            bool passingOnly, CancellationToken cancellationToken, bool watch)
         {
             _client = client;
+
             _serviceName = serviceName;
             _tags = tags ?? new List<string>();
             _passingOnly = passingOnly;
+
             _cancellationToken = cancellationToken;
+            _watch = watch;
         }
 
         public async Task<List<Uri>> FetchEndpoints()
@@ -42,7 +46,7 @@ namespace Chatham.ServiceDiscovery.Consul.Internal
 
             var queryOptions = new QueryOptions
             {
-                WaitIndex = _waitIndex
+                WaitIndex = _watch ? _waitIndex : 0
             };
             var servicesTask = await _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions, _cancellationToken);
 
