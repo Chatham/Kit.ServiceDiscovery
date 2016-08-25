@@ -15,10 +15,10 @@ namespace Chatham.ServiceDiscovery.Consul.Core
         private readonly bool _passingOnly;
         private readonly bool _watch;
 
-        private ulong _waitIndex;
+        public ulong WaitIndex { get; set; }
         private readonly CancellationToken _cancellationToken;
 
-        public ConsulClientAdapter(IConsulClient client, string serviceName, List<string> tags, 
+        public ConsulClientAdapter(IConsulClient client, string serviceName, List<string> tags,
             bool passingOnly, CancellationToken cancellationToken, bool watch)
         {
             _client = client;
@@ -46,7 +46,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core
 
             var queryOptions = new QueryOptions
             {
-                WaitIndex = _watch ? _waitIndex : 0
+                WaitIndex = WaitIndex
             };
             var servicesTask = await _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions, _cancellationToken);
 
@@ -55,7 +55,10 @@ namespace Chatham.ServiceDiscovery.Consul.Core
                 servicesTask.Response = FilterByTag(servicesTask.Response, _tags);
             }
 
-            _waitIndex = servicesTask.LastIndex;
+            if (_watch)
+            {
+                WaitIndex = servicesTask.LastIndex;
+            }
 
             return CreateEndpointUris(servicesTask.Response);
         }

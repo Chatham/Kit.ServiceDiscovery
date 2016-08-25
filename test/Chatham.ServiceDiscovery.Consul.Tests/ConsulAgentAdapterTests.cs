@@ -72,21 +72,21 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
+            {
+                new ServiceEntry
                 {
-                    new ServiceEntry
+                    Node = new Node
                     {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Address = Guid.NewGuid().ToString(),
-                            Port = 123,
-                            Tags = new string[0]
-                        }
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123,
+                        Tags = new string[0]
                     }
-                };
+                }
+            };
 
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
@@ -119,75 +119,75 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
 
             var superSetOfTags = new List<string>(fixture.Tags);
             superSetOfTags.Add(Guid.NewGuid().ToString());
-            
+
             var services = new List<ServiceEntry>
+            {
+                new ServiceEntry
                 {
-                    new ServiceEntry
+                    Node = new Node
                     {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Address = Guid.NewGuid().ToString(),
-                            Port = 123,
-                            Tags = new string[0]
-                        }
+                        Address = Guid.NewGuid().ToString()
                     },
-                    new ServiceEntry
+                    Service = new AgentService
                     {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Address = Guid.NewGuid().ToString(),
-                            Port = 123,
-                            Tags = new [] { fixture.Tags[0] }
-                        }
-                    },
-                    new ServiceEntry
-                    {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Address = Guid.NewGuid().ToString(),
-                            Port = 123,
-                            Tags = new [] { fixture.Tags[1] }
-                        }
-                    },
-                    new ServiceEntry
-                    {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Address = Guid.NewGuid().ToString(),
-                            Port = 123,
-                            Tags = fixture.Tags.ToArray() // MATCH
-                        }
-                    },
-                    new ServiceEntry
-                    {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Address = Guid.NewGuid().ToString(),
-                            Port = 123,
-                            Tags = superSetOfTags.ToArray() // MATCH
-                        }
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123,
+                        Tags = new string[0]
                     }
-                };
+                },
+                new ServiceEntry
+                {
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123,
+                        Tags = new[] {fixture.Tags[0]}
+                    }
+                },
+                new ServiceEntry
+                {
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123,
+                        Tags = new[] {fixture.Tags[1]}
+                    }
+                },
+                new ServiceEntry
+                {
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123,
+                        Tags = fixture.Tags.ToArray() // MATCH
+                    }
+                },
+                new ServiceEntry
+                {
+                    Node = new Node
+                    {
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123,
+                        Tags = superSetOfTags.ToArray() // MATCH
+                    }
+                }
+            };
 
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
@@ -227,31 +227,25 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         }
 
         [TestMethod]
-        public void Endpoints_withMultipleTags_onlyReturnsServicesWithAllMatchingTags()
-        {
-            //Assert.Inconclusive();
-        }
-
-        [TestMethod]
         public async Task FetchEndPoints_withoutServiceAddressInReturnedData_buildsUriWithNodeAddressInstead()
         {
             var fixture = new ConsulAgentAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
+            {
+                new ServiceEntry
                 {
-                    new ServiceEntry
+                    Node = new Node
                     {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Port = 123
-                        }
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Port = 123
                     }
-                };
+                }
+            };
 
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
@@ -275,20 +269,20 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
+            {
+                new ServiceEntry
                 {
-                    new ServiceEntry
+                    Node = new Node
                     {
-                        Node = new Node
-                        {
-                            Address = Guid.NewGuid().ToString()
-                        },
-                        Service = new AgentService
-                        {
-                            Address = Guid.NewGuid().ToString(),
-                            Port = 123
-                        }
+                        Address = Guid.NewGuid().ToString()
+                    },
+                    Service = new AgentService
+                    {
+                        Address = Guid.NewGuid().ToString(),
+                        Port = 123
                     }
-                };
+                }
+            };
 
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
             {
@@ -304,5 +298,30 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
             Assert.AreEqual(1, actual.Count);
             Assert.IsTrue(actual[0].Host == services[0].Service.Address);
         }
+
+        [TestMethod]
+        public async Task FetchEndPoints_withWatchSetToTrue_updatesWaitIndex()
+        {
+            var fixture = new ConsulAgentAdapterFixture();
+            fixture.ServiceName = Guid.NewGuid().ToString();
+
+            fixture.Watch = true;
+            var expectedWatchIndex = (ulong) 500;
+
+            fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
+            {
+                LastIndex = expectedWatchIndex,
+                Response = new ServiceEntry[0]
+            };
+            fixture.SetHealthEndpoint();
+
+            var adapter = fixture.CreateSut();
+            adapter.WaitIndex = 100;
+
+            var actual = await adapter.FetchEndpoints();
+
+            Assert.AreEqual(expectedWatchIndex, adapter.WaitIndex);
+        }
     }
 }
+
