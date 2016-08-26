@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
   "testRunner": "mstest",
   "dependencies": {
-    "Chatham.ServiceDiscovery.Consul": "1.0.0-*",
+    "Chatham.ServiceDiscovery.Consul.Core": "1.0.0-*",
     "dotnet-test-mstest": "1.1.1-preview",
     "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
     "Microsoft.Extensions.Caching.Memory": "1.0.0",
