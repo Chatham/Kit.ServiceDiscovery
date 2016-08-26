@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Chatham.ServiceDiscovery.Consul.Core
+namespace Chatham.ServiceDiscovery.Consul.Client
 {
     [ExcludeFromCodeCoverage]
     public class ConsulClientConfiguration

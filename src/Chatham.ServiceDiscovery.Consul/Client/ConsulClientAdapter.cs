@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Consul;
 
-namespace Chatham.ServiceDiscovery.Consul.Core
+namespace Chatham.ServiceDiscovery.Consul.Client
 {
     public class ConsulClientAdapter : IConsulClientAdapter
     {

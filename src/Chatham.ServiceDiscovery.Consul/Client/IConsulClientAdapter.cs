@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Chatham.ServiceDiscovery.Consul.Core
+namespace Chatham.ServiceDiscovery.Consul.Client
 {
     public interface IConsulClientAdapter
     {

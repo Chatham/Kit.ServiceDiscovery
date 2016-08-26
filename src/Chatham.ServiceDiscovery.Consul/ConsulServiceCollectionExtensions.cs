@@ -1,11 +1,10 @@
 ﻿using System;
 using Chatham.ServiceDiscovery.Abstractions;
-using Chatham.ServiceDiscovery.Consul.Core;
 using Consul;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using ConsulClientConfiguration = Chatham.ServiceDiscovery.Consul.Core.ConsulClientConfiguration;
+using ConsulClientConfiguration = Chatham.ServiceDiscovery.Consul.Client.ConsulClientConfiguration;
 
 namespace Chatham.ServiceDiscovery.Consul
 {

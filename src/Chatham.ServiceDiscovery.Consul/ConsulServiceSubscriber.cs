@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Chatham.ServiceDiscovery.Abstractions;
-using Chatham.ServiceDiscovery.Consul.Core;
+using Chatham.ServiceDiscovery.Consul.Client;
 using Chatham.ServiceDiscovery.Consul.Utilities;
 using Microsoft.Extensions.Caching.Memory;
 

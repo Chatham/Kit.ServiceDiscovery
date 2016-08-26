@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using Consul;
 using System.Threading;
 using System.Threading.Tasks;
+using Chatham.ServiceDiscovery.Consul.Client;
+using Consul;
 using NSubstitute;
 
-namespace Chatham.ServiceDiscovery.Consul.Core.Tests
+namespace Chatham.ServiceDiscovery.Consul.Tests.Client
 {
-    public class ConsulAgentAdapterFixture
+    public class ConsulClientAdapterFixture
     {
         public string ServiceName { get; set; }
         public List<string> Tags { get; set; }
@@ -20,7 +21,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         public QueryResult<ServiceEntry[]> ClientQueryResult { get; set; }
         public IHealthEndpoint HealthEndpoint { get; set; }
 
-        public ConsulAgentAdapterFixture()
+        public ConsulClientAdapterFixture()
         {
             Client = Substitute.For<IConsulClient>();
             HealthEndpoint = Substitute.For<IHealthEndpoint>();

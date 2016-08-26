@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Consul;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using Chatham.ServiceDiscovery.Consul;
 
-namespace Chatham.ServiceDiscovery.Consul.Core.Tests
+namespace Chatham.ServiceDiscovery.Consul.Tests.Client
 {
     [TestClass]
-    public class ConsulAgentAdapterTests
+    public class ConsulClientAdapterTests
     {
         [TestMethod]
         public async Task FetchEndPoints_withoutData_returnsEmptyList()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>();
             fixture.ClientQueryResult.Response = new ServiceEntry[0];
@@ -31,7 +31,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withLotsOfData_returnsList()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>();
@@ -68,7 +68,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withMultipleTags_callsConsulWithFirstTagOnly()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
@@ -109,7 +109,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withMultipleTagsAndMultipleMatches_returnsOnlyMatchesWithAllTags()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
 
@@ -206,7 +206,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withMultipleTagsAndNoMatches_returnsEmptyList()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
@@ -229,7 +229,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withoutServiceAddressInReturnedData_buildsUriWithNodeAddressInstead()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
@@ -265,7 +265,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withBothServiceAddressAndAddressInReturnedData_buildsUriWithServiceAddress()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
@@ -302,7 +302,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withWatchSetToTrue_updatesWaitIndex()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             fixture.Watch = true;
@@ -326,7 +326,7 @@ namespace Chatham.ServiceDiscovery.Consul.Core.Tests
         [TestMethod]
         public async Task FetchEndPoints_withWatchSetToFalse_doesNotUpdateWaitIndex()
         {
-            var fixture = new ConsulAgentAdapterFixture();
+            var fixture = new ConsulClientAdapterFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             fixture.Watch = false;

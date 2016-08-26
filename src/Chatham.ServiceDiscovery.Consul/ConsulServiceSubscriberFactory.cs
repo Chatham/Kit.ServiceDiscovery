@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Chatham.ServiceDiscovery.Abstractions;
-using Chatham.ServiceDiscovery.Consul.Core;
+using Chatham.ServiceDiscovery.Consul.Client;
 using Chatham.ServiceDiscovery.Consul.Utilities;
 using Consul;
 using Microsoft.Extensions.Caching.Memory;
