@@ -8,6 +8,6 @@ namespace Chatham.ServiceDiscovery.Abstractions
 
         public string DataCenter { get; set; }
         public List<string> Tags { get; set; }
-        public bool OnlyPassing { get; set; }
+        public bool PassingOnly { get; set; }
     }
 }

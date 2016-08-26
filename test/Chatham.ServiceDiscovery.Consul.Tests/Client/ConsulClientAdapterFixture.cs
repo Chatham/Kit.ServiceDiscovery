@@ -11,7 +11,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
     {
         public string ServiceName { get; set; }
         public List<string> Tags { get; set; }
-        public bool OnlyPassing { get; set; }
+        public bool PassingOnly { get; set; }
         public bool Watch { get; set; }
 
         public IConsulClient Client { get; set; }
@@ -38,7 +38,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
 
         public ConsulClientAdapter CreateSut()
         {
-            return new ConsulClientAdapter(Client, ServiceName, Tags, OnlyPassing, CancellationTokenSource.Token, Watch);
+            return new ConsulClientAdapter(Client, ServiceName, Tags, PassingOnly, CancellationTokenSource.Token, Watch);
         }
     }
 }

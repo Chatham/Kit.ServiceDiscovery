@@ -40,7 +40,7 @@ namespace Chatham.ServiceDiscovery.Consul
         public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
         {
             var cts = new CancellationTokenSource();
-            var endpointRetriever = new ConsulClientAdapter(_client, serviceName, options.Tags, options.OnlyPassing,
+            var endpointRetriever = new ConsulClientAdapter(_client, serviceName, options.Tags, options.PassingOnly,
                 cts.Token, true);
             return new ConsulServiceSubscriber(_log, _cache, cts, ct, serviceName, endpointRetriever, new Throttle(5, TimeSpan.FromSeconds(10)));
         }
