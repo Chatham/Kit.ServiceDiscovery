@@ -38,8 +38,8 @@ namespace Chatham.ServiceDiscovery.Tests
 
             var actual = await target.Endpoints();
 
-            cache.Set(Arg.Any<object>(), Arg.Any<List<Uri>>()).Received(1);
-            cache.Get<List<Uri>>(Arg.Any<string>()).Received(1);
+            cache.Received(1).Set(Arg.Any<object>(), Arg.Any<List<Uri>>());
+            cache.Received(1).Get<List<Uri>>(Arg.Any<string>());
         }
 
         public void Endpoints_StartsSubscriptionLoop() { }
