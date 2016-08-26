@@ -34,7 +34,7 @@ namespace ConsulServiceDiscoverySample
 
                 var endpoints = await serviceSubscriber.Endpoints();
                 var services = string.Join(",", endpoints);
-                log.LogInformation($"Received updates subscribers [{services}]");
+                log.LogInformation($"Received updated subscribers [{services}]");
             };
 
             app.Run(async context =>
