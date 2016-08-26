@@ -12,7 +12,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
     public class ConsulServiceSubscriberTests
     {
         [TestMethod]
-        public async Task FetchEndPoints_withoutData_returnsEmptyList()
+        public async Task Endpoints_withoutData_returnsEmptyList()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -28,7 +28,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withLotsOfData_returnsList()
+        public async Task Endpoints_withLotsOfData_returnsList()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -65,7 +65,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withMultipleTags_callsConsulWithFirstTagOnly()
+        public async Task Endpoints_withMultipleTags_callsConsulWithFirstTagOnly()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -106,7 +106,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withMultipleTagsAndMultipleMatches_returnsOnlyMatchesWithAllTags()
+        public async Task Endpoints_withMultipleTagsAndMultipleMatches_returnsOnlyMatchesWithAllTags()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -203,7 +203,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withMultipleTagsAndNoMatches_returnsEmptyList()
+        public async Task Endpoints_withMultipleTagsAndNoMatches_returnsEmptyList()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -226,7 +226,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withoutServiceAddressInReturnedData_buildsUriWithNodeAddressInstead()
+        public async Task Endpoints_withoutServiceAddressInReturnedData_buildsUriWithNodeAddressInstead()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -262,7 +262,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withBothServiceAddressAndAddressInReturnedData_buildsUriWithServiceAddress()
+        public async Task Endpoints_withBothServiceAddressAndAddressInReturnedData_buildsUriWithServiceAddress()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -299,7 +299,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withWatchSetToTrue_updatesWaitIndex()
+        public async Task Endpoints_withWatchSetToTrue_updatesWaitIndex()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
@@ -323,7 +323,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests
         }
 
         [TestMethod]
-        public async Task FetchEndPoints_withWatchSetToFalse_doesNotUpdateWaitIndex()
+        public async Task Endpoints_withWatchSetToFalse_doesNotUpdateWaitIndex()
         {
             var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
