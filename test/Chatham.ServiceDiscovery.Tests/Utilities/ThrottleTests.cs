@@ -1,13 +1,12 @@
-﻿
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Chatham.ServiceDiscovery.Consul.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using Chatham.ServiceDiscovery.Utilities;
 
-namespace Chatham.ServiceDiscovery.Consul.Tests.Utilities
+namespace Chatham.ServiceDiscovery.Tests.Utilities
 {
     [TestClass]
     public class ThrottleTests

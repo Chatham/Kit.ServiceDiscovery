@@ -1,109 +1,90 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Authentication.ExtendedProtection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Chatham.ServiceDiscovery.Abstractions;
-using Chatham.ServiceDiscovery.Consul.Client;
-using Chatham.ServiceDiscovery.Consul.Utilities;
-using Microsoft.Extensions.Caching.Memory;
+using Consul;
 
 namespace Chatham.ServiceDiscovery.Consul
 {
-    public class ConsulServiceSubscriber : IServiceSubscriber, IDisposable
+    public class ConsulServiceSubscriber : IServiceSubscriber
     {
-        private readonly ILogger _log;
-        private readonly IMemoryCache _cache;
-        private readonly CancellationToken _callerCancellationToken;
-        private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly IConsulClient _client;
+        private readonly List<string> _tags;
+        private readonly bool _passingOnly;
+        private readonly bool _watch;
 
-        private readonly string _serviceName;
-        private readonly IConsulClientAdapter _consulAdapter;
+        internal ulong WaitIndex;
+        private readonly CancellationToken _cancellationToken;
 
-        private readonly string _id = Guid.NewGuid().ToString();
+        public string ServiceName { get; }
 
-        private Task _subscriptionTask;
-        private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
-        private readonly IThrottle _throttle;
-
-        public ConsulServiceSubscriber(ILogger log, IMemoryCache cache, CancellationTokenSource cancellationTokenSource, 
-            CancellationToken callerCancellationToken, string serviceName, IConsulClientAdapter consulAdapter, IThrottle consulRequestThrottle)
+        public ConsulServiceSubscriber(IConsulClient client, string serviceName, List<string> tags,
+            bool passingOnly, CancellationToken cancellationToken, bool watch)
         {
-            _log = log;
-            _cache = cache;
-            _cancellationTokenSource = cancellationTokenSource;
-            _callerCancellationToken = callerCancellationToken;
+            _client = client;
 
-            _serviceName = serviceName;
-            _consulAdapter = consulAdapter;
-            _throttle = consulRequestThrottle;
+            ServiceName = serviceName;
+            _tags = tags ?? new List<string>();
+            _passingOnly = passingOnly;
+
+            _cancellationToken = cancellationToken;
+            _watch = watch;
         }
 
         public async Task<List<Uri>> Endpoints()
         {
-            await StartSubscription();
+            // Consul doesn't support more than one tag in its service query method.
+            // https://github.com/hashicorp/consul/issues/294
+            // Hashicorp suggest prepared queries, but they don't support blocking.
+            // https://www.consul.io/docs/agent/http/query.html#execute
+            // If we want blocking for efficiency, we must filter tags manually.
+            var tag = string.Empty;
+            if (_tags.Count > 0)
+            {
+                tag = _tags[0];
+            }
 
-            return _cache.Get<List<Uri>>(_id);
+            var queryOptions = new QueryOptions
+            {
+                WaitIndex = WaitIndex
+            };
+            var servicesTask = await _client.Health.Service(ServiceName, tag, _passingOnly, queryOptions, _cancellationToken);
+
+            if (_tags.Count > 1)
+            {
+                servicesTask.Response = FilterByTag(servicesTask.Response, _tags);
+            }
+
+            if (_watch)
+            {
+                WaitIndex = servicesTask.LastIndex;
+            }
+
+            return CreateEndpointUris(servicesTask.Response);
         }
 
-        private async Task StartSubscription()
+        private static List<Uri> CreateEndpointUris(ServiceEntry[] services)
         {
-            if (_subscriptionTask == null)
+            var serviceUris = new List<Uri>();
+            foreach (var service in services)
             {
-                await _mutex.WaitAsync(_callerCancellationToken);
-                try
-                {
-                    if (_subscriptionTask == null)
-                    {
-                        var serviceUris = await _consulAdapter.FetchEndpoints();
-                        _cache.Set(_id, serviceUris);
-                        _subscriptionTask = SubscriptionLoop();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _log.LogError($"Error fetching endpoints for {_serviceName}: {ex}");
-                }
-                finally
-                {
-                    _mutex.Release();
-                }
-
+                var host = !string.IsNullOrWhiteSpace(service.Service.Address)
+                    ? service.Service.Address
+                    : service.Node.Address;
+                var builder = new UriBuilder("http", host, service.Service.Port);
+                serviceUris.Add(builder.Uri);
             }
+            return serviceUris;
         }
 
-        private async Task SubscriptionLoop()
+        private static ServiceEntry[] FilterByTag(ServiceEntry[] entries, List<string> tags)
         {
-            while (!_cancellationTokenSource.IsCancellationRequested)
-            {
-                try
-                {
-                    var serviceUris = await await _throttle.Queue(_consulAdapter.FetchEndpoints, _callerCancellationToken);
-                    _cache.Set(_id, serviceUris);
-                    _log.LogDebug($"Received updated endpoints for {_serviceName}");
-                }
-                catch (TaskCanceledException)
-                {
-                    _cache.Remove(_id);
-                }
-                catch (Exception ex)
-                {
-                    _log.LogError($"Error fetching endpoints for {_serviceName}: {ex}");
-                }
-            }
-
-            if (_callerCancellationToken.IsCancellationRequested)
-            {
-                _cancellationTokenSource.Cancel();
-            }
-        }
-
-        public void Dispose()
-        {
-            if (_cancellationTokenSource.IsCancellationRequested)
-            {
-                _cancellationTokenSource.Cancel();
-            }
+            return entries
+                .Where(x => tags.All(x.Service.Tags.Contains))
+                .ToArray();
         }
     }
 }

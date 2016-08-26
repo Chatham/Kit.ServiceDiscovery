@@ -4,7 +4,6 @@ using Consul;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using ConsulClientConfiguration = Chatham.ServiceDiscovery.Consul.Client.ConsulClientConfiguration;
 
 namespace Chatham.ServiceDiscovery.Consul
 {

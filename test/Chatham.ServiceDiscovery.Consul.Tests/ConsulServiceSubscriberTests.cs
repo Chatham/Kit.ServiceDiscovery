@@ -5,17 +5,16 @@ using System.Threading.Tasks;
 using Consul;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
-using Chatham.ServiceDiscovery.Consul;
 
-namespace Chatham.ServiceDiscovery.Consul.Tests.Client
+namespace Chatham.ServiceDiscovery.Consul.Tests
 {
     [TestClass]
-    public class ConsulClientAdapterTests
+    public class ConsulServiceSubscriberTests
     {
         [TestMethod]
         public async Task FetchEndPoints_withoutData_returnsEmptyList()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>();
             fixture.ClientQueryResult.Response = new ServiceEntry[0];
@@ -23,7 +22,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             fixture.SetHealthEndpoint();
             var adapter = fixture.CreateSut();
 
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
             Assert.IsNotNull(actual);
             Assert.AreEqual(0, actual.Count);
         }
@@ -31,7 +30,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withLotsOfData_returnsList()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>();
@@ -59,7 +58,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             fixture.SetHealthEndpoint();
 
             var adapter = fixture.CreateSut();
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(services.Count, actual.Count);
@@ -68,7 +67,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withMultipleTags_callsConsulWithFirstTagOnly()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
@@ -99,7 +98,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             fixture.Tags.Add(Guid.NewGuid().ToString());
 
             var adapter = fixture.CreateSut();
-            await adapter.FetchEndpoints();
+            await adapter.Endpoints();
 
             await fixture.HealthEndpoint.Received()
                 .Service(Arg.Any<string>(), fixture.Tags[0],
@@ -109,7 +108,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withMultipleTagsAndMultipleMatches_returnsOnlyMatchesWithAllTags()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
 
@@ -197,7 +196,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             fixture.SetHealthEndpoint();
 
             var adapter = fixture.CreateSut();
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(2, actual.Count);
@@ -206,7 +205,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withMultipleTagsAndNoMatches_returnsEmptyList()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             fixture.ClientQueryResult = new QueryResult<ServiceEntry[]>
@@ -220,7 +219,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             fixture.Tags.Add(Guid.NewGuid().ToString());
 
             var adapter = fixture.CreateSut();
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(0, actual.Count);
@@ -229,7 +228,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withoutServiceAddressInReturnedData_buildsUriWithNodeAddressInstead()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
@@ -255,7 +254,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             fixture.SetHealthEndpoint();
 
             var adapter = fixture.CreateSut();
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
@@ -265,7 +264,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withBothServiceAddressAndAddressInReturnedData_buildsUriWithServiceAddress()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             var services = new List<ServiceEntry>
@@ -292,7 +291,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             fixture.SetHealthEndpoint();
 
             var adapter = fixture.CreateSut();
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(1, actual.Count);
@@ -302,7 +301,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withWatchSetToTrue_updatesWaitIndex()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             fixture.Watch = true;
@@ -318,7 +317,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             var adapter = fixture.CreateSut();
             adapter.WaitIndex = 100;
 
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
 
             Assert.AreEqual(expectedWatchIndex, adapter.WaitIndex);
         }
@@ -326,7 +325,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
         [TestMethod]
         public async Task FetchEndPoints_withWatchSetToFalse_doesNotUpdateWaitIndex()
         {
-            var fixture = new ConsulClientAdapterFixture();
+            var fixture = new ConsulServiceSubscriberFixture();
             fixture.ServiceName = Guid.NewGuid().ToString();
 
             fixture.Watch = false;
@@ -341,7 +340,7 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             var expectedWatchIndex = (ulong) 100;
             adapter.WaitIndex = expectedWatchIndex;
 
-            var actual = await adapter.FetchEndpoints();
+            var actual = await adapter.Endpoints();
 
             Assert.AreEqual(expectedWatchIndex, adapter.WaitIndex);
         }

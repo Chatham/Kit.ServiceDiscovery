@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Chatham.ServiceDiscovery.Consul.Client;
+using Chatham.ServiceDiscovery.Abstractions;
 using Consul;
 using NSubstitute;
 
-namespace Chatham.ServiceDiscovery.Consul.Tests.Client
+namespace Chatham.ServiceDiscovery.Consul.Tests
 {
-    public class ConsulClientAdapterFixture
+    public class ConsulServiceSubscriberFixture
     {
         public string ServiceName { get; set; }
         public List<string> Tags { get; set; }
@@ -16,16 +16,16 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
 
         public IConsulClient Client { get; set; }
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
-        public IConsulClientAdapter EndpointRetriever { get; set; }
+        public IServiceSubscriber ServiceSubscriber { get; set; }
         
         public QueryResult<ServiceEntry[]> ClientQueryResult { get; set; }
         public IHealthEndpoint HealthEndpoint { get; set; }
 
-        public ConsulClientAdapterFixture()
+        public ConsulServiceSubscriberFixture()
         {
             Client = Substitute.For<IConsulClient>();
             HealthEndpoint = Substitute.For<IHealthEndpoint>();
-            EndpointRetriever = Substitute.For<IConsulClientAdapter>();
+            ServiceSubscriber = Substitute.For<IServiceSubscriber>();
         }
 
         public void SetHealthEndpoint()
@@ -36,9 +36,9 @@ namespace Chatham.ServiceDiscovery.Consul.Tests.Client
             Client.Health.Returns(HealthEndpoint);
         }
 
-        public ConsulClientAdapter CreateSut()
+        public ConsulServiceSubscriber CreateSut()
         {
-            return new ConsulClientAdapter(Client, ServiceName, Tags, PassingOnly, CancellationTokenSource.Token, Watch);
+            return new ConsulServiceSubscriber(Client, ServiceName, Tags, PassingOnly, CancellationTokenSource.Token, Watch);
         }
     }
 }

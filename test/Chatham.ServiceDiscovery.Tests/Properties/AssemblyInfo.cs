@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Chatham.ServiceDiscovery.Consul")]
+[assembly: AssemblyProduct("Chatham.ServiceDiscovery.Tests")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,5 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e4335296-c45f-4c4b-8a94-9c59ed05cc42")]
-[assembly: InternalsVisibleTo("Chatham.ServiceDiscovery.Consul.Tests")]
+[assembly: Guid("c23fdcef-cdab-4125-be13-94ea28727cd4")]

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
 using Chatham.ServiceDiscovery.Abstractions;
-using Chatham.ServiceDiscovery.Consul.Client;
-using Chatham.ServiceDiscovery.Consul.Utilities;
 using Consul;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Chatham.ServiceDiscovery.Utilities;
 
 namespace Chatham.ServiceDiscovery.Consul
 {
@@ -40,9 +39,9 @@ namespace Chatham.ServiceDiscovery.Consul
         public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
         {
             var cts = new CancellationTokenSource();
-            var endpointRetriever = new ConsulClientAdapter(_client, serviceName, options.Tags, options.PassingOnly,
+            var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly,
                 cts.Token, true);
-            return new ConsulServiceSubscriber(_log, _cache, cts, ct, serviceName, endpointRetriever, new Throttle(5, TimeSpan.FromSeconds(10)));
+            return new CachingServiceSubscriber(_log, _cache, cts, ct, consulSubscriber, new Throttle(5, TimeSpan.FromSeconds(10)));
         }
     }
 }

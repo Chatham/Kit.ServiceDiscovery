@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Chatham.ServiceDiscovery.Consul.Utilities
+namespace Chatham.ServiceDiscovery.Utilities
 {
     public class Throttle : IThrottle
     {
