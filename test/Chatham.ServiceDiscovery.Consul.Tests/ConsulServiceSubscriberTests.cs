@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Consul;
@@ -9,6 +10,7 @@ using NSubstitute;
 namespace Chatham.ServiceDiscovery.Consul.Tests
 {
     [TestClass]
+    [ExcludeFromCodeCoverage]
     public class ConsulServiceSubscriberTests
     {
         [TestMethod]

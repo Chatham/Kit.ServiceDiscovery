@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,6 +10,7 @@ using Chatham.ServiceDiscovery.Utilities;
 namespace Chatham.ServiceDiscovery.Tests.Utilities
 {
     [TestClass]
+    [ExcludeFromCodeCoverage]
     public class ThrottleTests
     {
         [TestMethod]

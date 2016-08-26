@@ -26,9 +26,7 @@ namespace Chatham.ServiceDiscovery
 
         public string ServiceName => _serviceSubscriber.ServiceName;
 
-        public CachingServiceSubscriber(ILogger log, IMemoryCache cache, CancellationTokenSource cancellationTokenSource, 
-            CancellationToken callerCancellationToken, IServiceSubscriber serviceSubscriber, 
-            IThrottle throttle)
+        public CachingServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, IMemoryCache cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource, CancellationToken callerCancellationToken)
         {
             _log = log;
             _cache = cache;

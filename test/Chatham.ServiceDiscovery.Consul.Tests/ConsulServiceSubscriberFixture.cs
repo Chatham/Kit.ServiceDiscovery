@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Chatham.ServiceDiscovery.Abstractions;
@@ -7,6 +8,7 @@ using NSubstitute;
 
 namespace Chatham.ServiceDiscovery.Consul.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class ConsulServiceSubscriberFixture
     {
         public string ServiceName { get; set; }

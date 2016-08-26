@@ -41,7 +41,7 @@ namespace Chatham.ServiceDiscovery.Consul
             var cts = new CancellationTokenSource();
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly,
                 cts.Token, true);
-            return new CachingServiceSubscriber(_log, _cache, cts, ct, consulSubscriber, new Throttle(5, TimeSpan.FromSeconds(10)));
+            return new CachingServiceSubscriber(_log, consulSubscriber, _cache, new Throttle(5, TimeSpan.FromSeconds(10)), cts, ct);
         }
     }
 }
