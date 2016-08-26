@@ -27,8 +27,9 @@ namespace Chatham.ServiceDiscovery.Consul
             }
 
             services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(consulConfig), ServiceLifetime.Singleton));
+            services.TryAdd(new ServiceDescriptor(typeof(IMemoryCache), p => new MemoryCache(new MemoryCacheOptions()), ServiceLifetime.Transient));
 
-            services.TryAddTransient<IMemoryCache, MemoryCache>();
+            services.TryAddTransient<ICacheClient, CacheClient>();
             services.TryAddSingleton<IServiceSubscriberFactory, ConsulServiceSubscriberFactory>();
 
             return services;

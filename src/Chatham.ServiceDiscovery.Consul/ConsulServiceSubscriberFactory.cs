@@ -2,7 +2,6 @@
 using System.Threading;
 using Chatham.ServiceDiscovery.Abstractions;
 using Consul;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Chatham.ServiceDiscovery.Utilities;
 
@@ -12,9 +11,9 @@ namespace Chatham.ServiceDiscovery.Consul
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
-        private readonly IMemoryCache _cache;
+        private readonly ICacheClient _cache;
 
-        public ConsulServiceSubscriberFactory(ILoggerFactory log, IConsulClient consulClient, IMemoryCache cache)
+        public ConsulServiceSubscriberFactory(ILoggerFactory log, IConsulClient consulClient, ICacheClient cache)
         {
             _log = log.CreateLogger(typeof(ConsulServiceSubscriberFactory).Namespace);
             _client = consulClient;

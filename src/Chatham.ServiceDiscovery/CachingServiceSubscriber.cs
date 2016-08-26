@@ -12,7 +12,7 @@ namespace Chatham.ServiceDiscovery
     public class CachingServiceSubscriber : IServiceSubscriber, IDisposable
     {
         private readonly ILogger _log;
-        private readonly IMemoryCache _cache;
+        private readonly ICacheClient _cache;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
         private readonly IServiceSubscriber _serviceSubscriber;
@@ -26,7 +26,7 @@ namespace Chatham.ServiceDiscovery
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler OnSubscriberChange;
 
-        public CachingServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, IMemoryCache cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource)
+        public CachingServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource)
         {
             _log = log;
             _cache = cache;
