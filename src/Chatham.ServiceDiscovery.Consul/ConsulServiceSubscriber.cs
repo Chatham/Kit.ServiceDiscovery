@@ -20,6 +20,7 @@ namespace Chatham.ServiceDiscovery.Consul
         private readonly CancellationToken _cancellationToken;
 
         public string ServiceName { get; }
+        public event EventHandler OnSubscriberChange;
 
         public ConsulServiceSubscriber(IConsulClient client, string serviceName, List<string> tags,
             bool passingOnly, CancellationToken cancellationToken, bool watch)

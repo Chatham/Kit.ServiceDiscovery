@@ -1,4 +1,5 @@
-﻿using Chatham.ServiceDiscovery.Abstractions;
+﻿using System.Linq;
+using Chatham.ServiceDiscovery.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +25,18 @@ namespace ConsulServiceDiscoverySample
                  app.UseDeveloperExceptionPage();
             }
 
+            var log = loggerFactory.CreateLogger(typeof(Startup).Namespace);
+
             var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("FooService");
+            serviceSubscriber.OnSubscriberChange += async (sender, eventArgs) =>
+            {
+                // Refresh you connection pool, do something with this info, etc
+
+                var endpoints = await serviceSubscriber.Endpoints();
+                var services = string.Join(",", endpoints);
+                log.LogInformation($"Received updates subscribers [{services}]");
+            };
+
             app.Run(async context =>
             {
                 var endpoints = await serviceSubscriber.Endpoints();

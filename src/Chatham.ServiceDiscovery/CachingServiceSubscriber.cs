@@ -25,6 +25,7 @@ namespace Chatham.ServiceDiscovery
         private readonly IThrottle _throttle;
 
         public string ServiceName => _serviceSubscriber.ServiceName;
+        public event EventHandler OnSubscriberChange;
 
         public CachingServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, IMemoryCache cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource, CancellationToken callerCancellationToken)
         {
@@ -77,8 +78,10 @@ namespace Chatham.ServiceDiscovery
                 try
                 {
                     var serviceUris = await await _throttle.Queue(_serviceSubscriber.Endpoints, _callerCancellationToken);
-                    _cache.Set(_id, serviceUris);
+
                     _log.LogDebug($"Received updated endpoints for {ServiceName}");
+                    _cache.Set(_id, serviceUris);
+                    OnSubscriberChange?.Invoke(this, EventArgs.Empty);
                 }
                 catch (TaskCanceledException)
                 {
