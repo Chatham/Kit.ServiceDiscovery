@@ -2,7 +2,6 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Chatham.ServiceDiscovery": "1.0.0-*",
     "Chatham.ServiceDiscovery.Abstractions": "1.0.0-*",
     "Consul": "0.6.4.7",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Chatham.ServiceDiscovery.Consul
 {
-    public class ConsulServiceSubscriberFactory : ServiceSubscriberFactory
+    public class ConsulServiceSubscriberFactory : IServiceSubscriberFactory
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
@@ -22,7 +22,22 @@ namespace Chatham.ServiceDiscovery.Consul
             _cache = cache;
         }
 
-        public override IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
+        public IServiceSubscriber CreateSubscriber(string serviceName)
+        {
+            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default);
+        }
+
+        public IServiceSubscriber CreateSubscriber(string serviceName, CancellationToken ct)
+        {
+            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default, ct);
+        }
+
+        public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options)
+        {
+            return CreateSubscriber(serviceName, options, CancellationToken.None);
+        }
+
+        public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
         {
             var cts = new CancellationTokenSource();
             var endpointRetriever = new ConsulClientAdapter(_client, serviceName, options.Tags, options.OnlyPassing,
