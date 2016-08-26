@@ -13,7 +13,6 @@ namespace Chatham.ServiceDiscovery
     {
         private readonly ILogger _log;
         private readonly IMemoryCache _cache;
-        private readonly CancellationToken _callerCancellationToken;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
         private readonly IServiceSubscriber _serviceSubscriber;
@@ -27,12 +26,11 @@ namespace Chatham.ServiceDiscovery
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler OnSubscriberChange;
 
-        public CachingServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, IMemoryCache cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource, CancellationToken callerCancellationToken)
+        public CachingServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, IMemoryCache cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource)
         {
             _log = log;
             _cache = cache;
             _cancellationTokenSource = cancellationTokenSource;
-            _callerCancellationToken = callerCancellationToken;
 
             _serviceSubscriber = serviceSubscriber;
             _throttle = throttle;
@@ -49,7 +47,7 @@ namespace Chatham.ServiceDiscovery
         {
             if (_subscriptionTask == null)
             {
-                await _mutex.WaitAsync(_callerCancellationToken);
+                await _mutex.WaitAsync(_cancellationTokenSource.Token);
                 try
                 {
                     if (_subscriptionTask == null)
@@ -67,46 +65,47 @@ namespace Chatham.ServiceDiscovery
                 {
                     _mutex.Release();
                 }
-
             }
         }
 
-        private async Task SubscriptionLoop()
+        private Task SubscriptionLoop()
         {
-            while (!_cancellationTokenSource.IsCancellationRequested)
+            return Task.Run(async () =>
             {
-                try
+                while (!_cancellationTokenSource.IsCancellationRequested)
                 {
-                    var serviceUris =
-                        await await _throttle.Queue(_serviceSubscriber.Endpoints, _callerCancellationToken);
+                    try
+                    {
+                        var serviceUris =
+                            await await _throttle.Queue(_serviceSubscriber.Endpoints, _cancellationTokenSource.Token);
 
-                    _log.LogDebug($"Received updated endpoints for {ServiceName}");
-                    _cache.Set(_id, serviceUris);
-                    OnSubscriberChange?.Invoke(this, EventArgs.Empty);
-                }
-                catch (TaskCanceledException)
-                {
-                    _cache.Remove(_id);
-                }
-                catch (Exception ex)
-                {
-                    _log.LogError($"Error fetching endpoints for {ServiceName}: {ex}");
-                }
-            }
+                        _log.LogDebug($"Received updated endpoints for {ServiceName}");
+                        _cache.Set(_id, serviceUris);
+                        OnSubscriberChange?.Invoke(this, EventArgs.Empty);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        _log.LogInformation($"Fetching endpoints for {ServiceName} was cancelled.");
 
-            if (_callerCancellationToken.IsCancellationRequested)
-            {
-                _cancellationTokenSource.Cancel();
-            }
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.LogError($"Error fetching endpoints for {ServiceName}: {ex}");
+                    }
+                }
+            }, _cancellationTokenSource.Token);
         }
 
         public void Dispose()
         {
+            //TODO:Fix Dispose pattern
+
             if (_cancellationTokenSource.IsCancellationRequested)
             {
                 _cancellationTokenSource.Cancel();
             }
 
+            _cache.Remove(_id);
             _cancellationTokenSource.Dispose();
         }
     }
