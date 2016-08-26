@@ -77,7 +77,8 @@ namespace Chatham.ServiceDiscovery
             {
                 try
                 {
-                    var serviceUris = await await _throttle.Queue(_serviceSubscriber.Endpoints, _callerCancellationToken);
+                    var serviceUris =
+                        await await _throttle.Queue(_serviceSubscriber.Endpoints, _callerCancellationToken);
 
                     _log.LogDebug($"Received updated endpoints for {ServiceName}");
                     _cache.Set(_id, serviceUris);
@@ -105,6 +106,8 @@ namespace Chatham.ServiceDiscovery
             {
                 _cancellationTokenSource.Cancel();
             }
+
+            _cancellationTokenSource.Dispose();
         }
     }
 }
