@@ -6,6 +6,6 @@ namespace Chatham.ServiceDiscovery.Abstractions
 {
     public interface IServiceSubscriber
     {
-        Task<List<Uri>> EndPoints();
+        Task<List<Uri>> Endpoints();
     }
 }

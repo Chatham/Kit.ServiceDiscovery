@@ -27,7 +27,7 @@ namespace ConsulServiceDiscoverySample
             var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("FooService");
             app.Run(async context =>
             {
-                var endpoints = await serviceSubscriber.EndPoints();
+                var endpoints = await serviceSubscriber.Endpoints();
                 await context.Response.WriteAsync(string.Join(",", endpoints));
             });
         }

@@ -39,7 +39,7 @@ namespace Chatham.ServiceDiscovery.Consul
             _throttle = consulRequestThrottle;
         }
 
-        public async Task<List<Uri>> EndPoints()
+        public async Task<List<Uri>> Endpoints()
         {
             await StartSubscription();
 
