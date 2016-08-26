@@ -9,16 +9,10 @@ namespace Chatham.ServiceDiscovery.LoadBalancer
         private readonly Random _random;
         private readonly IServiceSubscriber _subscriber;
 
-        public RandomLoadBalancer(IServiceSubscriber subscriber)
+        public RandomLoadBalancer(IServiceSubscriber subscriber, int? seed = null)
         {
             _subscriber = subscriber;
-            _random = new Random();
-        }
-
-        public RandomLoadBalancer(IServiceSubscriber subscriber, int seed)
-        {
-            _subscriber = subscriber;
-            _random = new Random(seed);
+            _random = seed.HasValue ? new Random(seed.Value) : new Random();
         }
 
          public async Task<Uri> Endpoint()

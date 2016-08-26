@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Chatham.ServiceDiscovery.Abstractions;
+﻿using Chatham.ServiceDiscovery.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
