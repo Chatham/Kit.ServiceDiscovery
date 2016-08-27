@@ -73,6 +73,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             {
                 while (!_cancellationTokenSource.IsCancellationRequested)
                 {
+                    _log.LogTrace($"Iteration of subscription loop for {ServiceName}.");
                     try
                     {
                         var serviceUris =
