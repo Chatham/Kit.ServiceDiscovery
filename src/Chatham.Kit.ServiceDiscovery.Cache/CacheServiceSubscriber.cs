@@ -10,7 +10,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 {
     public class CacheServiceSubscriber : IServiceSubscriber, IDisposable
     {
-        private bool disposed = false;
+        private bool _disposed;
 
         private readonly ILogger _log;
         private readonly ICacheClient _cache;
@@ -39,7 +39,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         public async Task<List<Uri>> Endpoints()
         {
-            if (disposed)
+            if (_disposed)
             {
                 throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
             }
@@ -116,7 +116,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposed)
+            if (_disposed)
             {
                 return;
             }
@@ -132,7 +132,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
             _cache.Remove(_id);
 
-            disposed = true;
+            _disposed = true;
         }
     }
 }
