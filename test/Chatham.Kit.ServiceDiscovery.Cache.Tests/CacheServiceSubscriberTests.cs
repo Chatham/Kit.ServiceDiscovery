@@ -34,7 +34,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             cache.Set(Arg.Any<object>(), Arg.Any<List<Uri>>()).Returns(new List<Uri>());
 
             var cts = new CancellationTokenSource();
-            var target = new CachingServiceSubscriber(logger, serviceSubscriber, cache, throttle, cts);
+            var target = new CacheServiceSubscriber(logger, serviceSubscriber, cache, throttle, cts);
 
             var actual = await target.Endpoints();
 

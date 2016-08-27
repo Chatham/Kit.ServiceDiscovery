@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
-    public class CachingServiceSubscriber : IServiceSubscriber, IDisposable
+    public class CacheServiceSubscriber : IServiceSubscriber, IDisposable
     {
         private readonly ILogger _log;
         private readonly ICacheClient _cache;
@@ -25,7 +25,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler OnSubscriberChange;
 
-        public CachingServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource)
+        public CacheServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource)
         {
             _log = log;
             _cache = cache;
