@@ -1,0 +1,12 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Chatham.Kit.ServiceDiscovery.Abstractions": "1.0.0-*",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0"
+  },
+
+  "frameworks": {
+    "net461": {}
+  }
+}

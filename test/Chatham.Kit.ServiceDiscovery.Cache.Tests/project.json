@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0-*",
+
+  "testRunner": "mstest",
+  "dependencies": {
+    "Chatham.Kit.ServiceDiscovery.Abstractions": "1.0.0-*",
+    "Chatham.Kit.ServiceDiscovery.Cache": "1.0.0-*",
+    "dotnet-test-mstest": "1.1.1-preview",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+    "MSTest.TestFramework": "1.0.1-preview",
+    "NSubstitute": "2.0.0-rc"
+  },
+
+  "frameworks": {
+    "net461": {}
+  }
+}
