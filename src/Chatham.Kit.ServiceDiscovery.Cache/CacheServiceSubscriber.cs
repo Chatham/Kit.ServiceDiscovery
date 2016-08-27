@@ -10,6 +10,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 {
     public class CacheServiceSubscriber : IServiceSubscriber, IDisposable
     {
+        private bool disposed = false;
+
         private readonly ILogger _log;
         private readonly ICacheClient _cache;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -37,6 +39,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         public async Task<List<Uri>> Endpoints()
         {
+            if (disposed)
+            {
+                throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
+            }
+
             await StartSubscription();
 
             return _cache.Get<List<Uri>>(_id);
@@ -96,17 +103,36 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }, _cancellationTokenSource.Token);
         }
 
+        ~CacheServiceSubscriber()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
-            //TODO:Fix Dispose pattern
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            if (_cancellationTokenSource.IsCancellationRequested)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
             {
-                _cancellationTokenSource.Cancel();
+                return;
+            }
+
+            if (disposing)
+            {
+                if (_cancellationTokenSource.IsCancellationRequested)
+                {
+                    _cancellationTokenSource.Cancel();
+                }
+                _cancellationTokenSource.Dispose();
             }
 
             _cache.Remove(_id);
-            _cancellationTokenSource.Dispose();
+
+            disposed = true;
         }
     }
 }
