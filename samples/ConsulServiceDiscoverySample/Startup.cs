@@ -25,11 +25,12 @@ namespace ConsulServiceDiscoverySample
             }
 
             var log = loggerFactory.CreateLogger(typeof(Startup).Namespace);
+   
 
             var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("FooService");
             serviceSubscriber.OnSubscriberChange += async (sender, eventArgs) =>
             {
-                // Refresh you connection pool, do something with this info, etc
+                // Reset connection pool, do something with this info, etc
 
                 var endpoints = await serviceSubscriber.Endpoints();
                 var services = string.Join(",", endpoints);
