@@ -30,7 +30,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Utilities
                     Task.Delay(_maxPeriod, cancel).ContinueWith(tt =>
                     {
                         _throttlePeriods.Release(1);
-                    }, cancel);
+                    }, cancel).ConfigureAwait(false);
 
                     return action();
                 }

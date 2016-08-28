@@ -51,7 +51,9 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             {
                 WaitIndex = WaitIndex
             };
-            var servicesTask = await _client.Health.Service(ServiceName, tag, _passingOnly, queryOptions, _cancellationToken);
+            var servicesTask = await 
+                _client.Health.Service(ServiceName, tag, _passingOnly, queryOptions, _cancellationToken)
+                    .ConfigureAwait(false);
 
             if (_tags.Count > 1)
             {

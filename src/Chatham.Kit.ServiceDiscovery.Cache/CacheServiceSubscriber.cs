@@ -58,7 +58,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 {
                     if (_subscriptionTask == null)
                     {
-                        var serviceUris = await _serviceSubscriber.Endpoints();
+                        var serviceUris = await _serviceSubscriber.Endpoints().ConfigureAwait(false);
                         _cache.Set(_id, serviceUris);
                         _subscriptionTask = SubscriptionLoop();
                     }
@@ -84,7 +84,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     try
                     {
                         var serviceUris =
-                            await await _throttle.Queue(_serviceSubscriber.Endpoints, _cancellationTokenSource.Token);
+                            await await _throttle.Queue(_serviceSubscriber.Endpoints, _cancellationTokenSource.Token)
+                                .ConfigureAwait(false);
 
                         _log.LogDebug($"Received updated endpoints for {ServiceName}");
                         _cache.Set(_id, serviceUris);
