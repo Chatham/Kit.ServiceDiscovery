@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 
-namespace Chatham.ServiceDiscovery.LoadBalancer
+namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
 {
     public class RandomLoadBalancer : IServiceLoadBalancer
     {
