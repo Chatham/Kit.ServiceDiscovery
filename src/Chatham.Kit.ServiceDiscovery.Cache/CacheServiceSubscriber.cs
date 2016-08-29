@@ -14,7 +14,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         private readonly ILogger _log;
         private readonly ICacheClient _cache;
-        private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly CancellationTokenSource _cts;
 
         private readonly IServiceSubscriber _serviceSubscriber;
 
@@ -27,11 +27,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler OnSubscriberChange;
 
-        public CacheServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cancellationTokenSource)
+        public CacheServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
         {
             _log = log;
             _cache = cache;
-            _cancellationTokenSource = cancellationTokenSource;
+            _cts = cts;
 
             _serviceSubscriber = serviceSubscriber;
             _throttle = throttle;
@@ -53,7 +53,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         {
             if (_subscriptionTask == null)
             {
-                await _mutex.WaitAsync(_cancellationTokenSource.Token);
+                await _mutex.WaitAsync(_cts.Token);
                 try
                 {
                     if (_subscriptionTask == null)
@@ -78,13 +78,13 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         {
             return Task.Run(async () =>
             {
-                while (!_cancellationTokenSource.IsCancellationRequested)
+                while (!_cts.IsCancellationRequested)
                 {
                     _log.LogTrace($"Iteration of subscription loop for {ServiceName}.");
                     try
                     {
                         var serviceUris =
-                            await await _throttle.Queue(_serviceSubscriber.Endpoints, _cancellationTokenSource.Token)
+                            await await _throttle.Queue(_serviceSubscriber.Endpoints, _cts.Token)
                                 .ConfigureAwait(false);
 
                         _log.LogDebug($"Received updated endpoints for {ServiceName}");
@@ -101,7 +101,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                         _log.LogError($"Error fetching endpoints for {ServiceName}: {ex}");
                     }
                 }
-            }, _cancellationTokenSource.Token);
+            }, _cts.Token);
         }
 
         ~CacheServiceSubscriber()
@@ -124,11 +124,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
             if (disposing)
             {
-                if (_cancellationTokenSource.IsCancellationRequested)
+                if (_cts.IsCancellationRequested)
                 {
-                    _cancellationTokenSource.Cancel();
+                    _cts.Cancel();
                 }
-                _cancellationTokenSource.Dispose();
+                _cts.Dispose();
             }
 
             _cache.Remove(_id);
