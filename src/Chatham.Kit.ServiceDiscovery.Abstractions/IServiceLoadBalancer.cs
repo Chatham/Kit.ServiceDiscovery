@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Chatham.Kit.ServiceDiscovery.Abstractions
 {
     public interface IServiceLoadBalancer
     {
-        Task<Uri> Endpoint();
+        Task<ServiceEndpoint> Endpoint();
     }
 }

@@ -9,6 +9,6 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions
         string ServiceName { get; }
         event EventHandler OnSubscriberChange;
 
-        Task<List<Uri>> Endpoints();
+        Task<List<ServiceEndpoint>> Endpoints();
     }
 }
