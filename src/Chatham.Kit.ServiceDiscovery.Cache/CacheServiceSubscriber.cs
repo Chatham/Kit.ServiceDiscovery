@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache.Utilities;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
@@ -78,18 +79,23 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         {
             return Task.Run(async () =>
             {
+                var previousEndpoints = new List<Uri>();
                 while (!_cts.IsCancellationRequested)
                 {
                     _log.LogTrace($"Iteration of subscription loop for {ServiceName}.");
                     try
                     {
-                        var serviceUris =
+                        var currentEndpoints =
                             await await _throttle.Queue(_serviceSubscriber.Endpoints, _cts.Token)
                                 .ConfigureAwait(false);
 
-                        _log.LogDebug($"Received updated endpoints for {ServiceName}");
-                        _cache.Set(_id, serviceUris);
-                        OnSubscriberChange?.Invoke(this, EventArgs.Empty);
+                        if (!CompareEndpoints(previousEndpoints, currentEndpoints))
+                        {
+                            _log.LogDebug($"Received updated endpoints for {ServiceName}");
+                            _cache.Set(_id, currentEndpoints);
+                            OnSubscriberChange?.Invoke(this, EventArgs.Empty);
+                            previousEndpoints = currentEndpoints;
+                        }
                     }
                     catch (TaskCanceledException)
                     {
@@ -102,6 +108,14 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     }
                 }
             }, _cts.Token);
+        }
+
+        private static bool CompareEndpoints(IReadOnlyCollection<Uri> endpoints1, IReadOnlyCollection<Uri> endpoints2)
+        {
+            if (endpoints1.Count != endpoints2.Count) return false;
+
+            var filteredSequence = endpoints1.Where(endpoints2.Contains);
+            return filteredSequence.Count() == endpoints1.Count;
         }
 
         ~CacheServiceSubscriber()
