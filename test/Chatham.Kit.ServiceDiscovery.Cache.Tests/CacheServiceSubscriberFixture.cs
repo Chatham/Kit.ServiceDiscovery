@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache.Utilities;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using NSubstitute;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class CacheServiceSubscriberFixture
     {
         public ILogger Logger { get; set; }
