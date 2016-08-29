@@ -18,28 +18,20 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
         [TestMethod]
         public async Task Endpoints_PopulatesCacheImmediately()
         {
-            var logger = Substitute.For<ILogger>();
-            var serviceSubscriber = Substitute.For<IServiceSubscriber>();
-            var cache = Substitute.For<ICacheClient>();
-            var throttle = Substitute.For<IThrottle>();
-
-            serviceSubscriber.Endpoints().Returns(Task.FromResult(new List<Uri>()));
-            throttle.Queue(Arg.Any<Func<Task<List<Uri>>>>(), Arg.Any<CancellationToken>())
+            var fixture = new CacheServiceSubscriberFixture();
+            fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Uri>()));
+            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Uri>>>>(), Arg.Any<CancellationToken>())
                 .Returns(t =>
                 {
                     Task.Delay(5000);
                     return Task.FromResult(new List<Uri>());
                 });
-            //Cache.Get<List<Uri>>(Arg.Any<string>()).Returns(new List<Uri>());
-            cache.Set(Arg.Any<object>(), Arg.Any<List<Uri>>()).Returns(new List<Uri>());
 
-            var cts = new CancellationTokenSource();
-            var target = new CacheServiceSubscriber(logger, serviceSubscriber, cache, throttle, cts);
+            var subscriber = fixture.CreateSut();
+            await subscriber.Endpoints();
 
-            var actual = await target.Endpoints();
-
-            cache.Received(1).Set(Arg.Any<object>(), Arg.Any<List<Uri>>());
-            cache.Received(1).Get<List<Uri>>(Arg.Any<string>());
+            fixture.Cache.Received(1).Set(Arg.Any<object>(), Arg.Any<List<Uri>>());
+            fixture.Cache.Received(1).Get<List<Uri>>(Arg.Any<string>());
         }
 
         public void Endpoints_StartsSubscriptionLoop() { }
