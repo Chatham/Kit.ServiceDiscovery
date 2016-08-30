@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
+    [ExcludeFromCodeCoverage]
     public static class CacheServiceSubscriberExtensions
     {
         public static IServiceCollection AddCacheServiceDiscovery(this IServiceCollection services)

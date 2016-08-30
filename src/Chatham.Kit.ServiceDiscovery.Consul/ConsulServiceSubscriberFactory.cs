@@ -23,17 +23,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 
         public IServiceSubscriber CreateSubscriber(string serviceName)
         {
-            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default);
-        }
-
-        public IServiceSubscriber CreateSubscriber(string serviceName, CancellationToken ct)
-        {
-            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default, ct);
-        }
-
-        public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options)
-        {
-            return CreateSubscriber(serviceName, options, CancellationToken.None);
+            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default, CancellationToken.None);
         }
 
         public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)

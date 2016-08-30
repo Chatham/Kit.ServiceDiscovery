@@ -85,18 +85,13 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                             await await _throttle.Queue(_serviceSubscriber.Endpoints, _cts.Token)
                                 .ConfigureAwait(false);
 
-                        if (!CompareEndpoints(previousEndpoints, currentEndpoints))
+                        if (!EndpointListsMatch(previousEndpoints, currentEndpoints))
                         {
                             _log.LogDebug($"Received updated endpoints for {ServiceName}");
                             _cache.Set(_id, currentEndpoints);
                             OnSubscriberChange?.Invoke(this, EventArgs.Empty);
                             previousEndpoints = currentEndpoints;
                         }
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        _log.LogInformation($"Fetching endpoints for {ServiceName} was cancelled.");
-
                     }
                     catch (Exception ex)
                     {
@@ -106,9 +101,12 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }, _cts.Token);
         }
 
-        private static bool CompareEndpoints(List<Endpoint> endpoints1, List<Endpoint> endpoints2)
+        private static bool EndpointListsMatch(List<Endpoint> endpoints1, List<Endpoint> endpoints2)
         {
-            if (endpoints1.Count != endpoints2.Count) return false;
+            if (endpoints1.Count != endpoints2.Count)
+            {
+                return false;
+            }
 
             var filteredSequence = endpoints1.Where(endpoints2.Contains);
             return filteredSequence.Count() == endpoints1.Count;
@@ -142,7 +140,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
             if (disposing)
             {
-                if (_cts.IsCancellationRequested)
+                if (!_cts.IsCancellationRequested)
                 {
                     _cts.Cancel();
                 }
