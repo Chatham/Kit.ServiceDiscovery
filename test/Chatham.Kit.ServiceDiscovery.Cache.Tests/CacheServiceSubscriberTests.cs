@@ -65,7 +65,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             fixture.ServiceSubscriber.Endpoints()
                 .Returns(Task.FromResult(result1));
             fixture.Throttle.Queue(Arg.Any<Func<Task<List<ServiceEndpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(result1), Task.FromResult(result2));
+                .Returns(Task.FromResult(result1), Task.FromResult(result2))
+                .AndDoes(x => Thread.Sleep(100));
 
             var eventWasCalled = false;
             var subscriber = fixture.CreateSut();
@@ -81,6 +82,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             });
 
             fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<ServiceEndpoint>>());
+            await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<ServiceEndpoint>>>>(), Arg.Any<CancellationToken>());
             Assert.IsTrue(eventWasCalled);
         }
 
