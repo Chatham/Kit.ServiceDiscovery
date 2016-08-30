@@ -25,8 +25,9 @@ namespace ConsulServiceDiscoverySample
                  app.UseDeveloperExceptionPage();
             }
 
-            var log = loggerFactory.CreateLogger(typeof(Startup).Namespace);
+            var log = loggerFactory.CreateLogger(nameof(Startup));
             var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("FooService");
+            serviceSubscriber.StartSubscription();
             serviceSubscriber.OnSubscriberChange += async (sender, eventArgs) =>
             {
                 // Reset connection pool, do something with this info, etc
