@@ -1,4 +1,6 @@
-﻿namespace Chatham.Kit.ServiceDiscovery.Abstractions
+﻿using System;
+
+namespace Chatham.Kit.ServiceDiscovery.Abstractions
 {
     public class Endpoint
     {
@@ -8,6 +10,17 @@
         public override string ToString()
         {
             return $"{Host}:{Port}";
+        }
+
+        public Uri ToUri(string scheme = null)
+        {
+            if (scheme == null)
+            {
+                scheme = Uri.UriSchemeHttp;
+            }
+
+            var builder = new UriBuilder(scheme, Host, Port);
+            return builder.Uri;
         }
     }
 }
