@@ -59,7 +59,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                         Host = Guid.NewGuid().ToString(),
                         Port = 321
                     }
-                };            
+                };
 
             var fixture = new CacheServiceSubscriberFixture();
             fixture.ServiceSubscriber.Endpoints()
@@ -67,9 +67,9 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             fixture.Throttle.Queue(Arg.Any<Func<Task<List<ServiceEndpoint>>>>(), Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(result1), Task.FromResult(result2));
 
-            var wasCalled = false;
+            var eventWasCalled = false;
             var subscriber = fixture.CreateSut();
-            subscriber.OnSubscriberChange += (sender, args) => wasCalled = true;
+            subscriber.OnSubscriberChange += (sender, args) => eventWasCalled = true;
 
             await subscriber.Endpoints();
             Thread.Sleep(250);
@@ -80,7 +80,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 fixture.Cache.Set(Arg.Any<string>(), result2);
             });
 
-            Assert.IsTrue(wasCalled);
+            fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<ServiceEndpoint>>());
+            Assert.IsTrue(eventWasCalled);
         }
 
         public void SubscriptionLoop_ReceivesSameEndpoints_DoesNotUpdateCacheAndFireEvent() { }
