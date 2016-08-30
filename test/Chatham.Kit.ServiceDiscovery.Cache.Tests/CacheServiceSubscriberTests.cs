@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
+using Chatham.Kit.ServiceDiscovery.Cache.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 
@@ -39,6 +40,50 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
         public void Dispose_cancelsAndDisposesTokenSource() { }
 
         public void Endpoints_whenCallerCancellationTokenCancels_doesSomething() { }
-        
+
+        [TestMethod]
+        public async Task SubscriptionLoop_ReceivesChangedEndpoints_UpdatesCacheAndFiresEvent()
+        {
+            var result1 = new List<ServiceEndpoint>
+                {
+                    new ServiceEndpoint
+                    {
+                        Host = Guid.NewGuid().ToString(),
+                        Port = 123
+                    }
+                };
+            var result2 = new List<ServiceEndpoint>
+                {
+                    new ServiceEndpoint
+                    {
+                        Host = Guid.NewGuid().ToString(),
+                        Port = 321
+                    }
+                };            
+
+            var fixture = new CacheServiceSubscriberFixture();
+            fixture.ServiceSubscriber.Endpoints()
+                .Returns(Task.FromResult(result1));
+            fixture.Throttle.Queue(Arg.Any<Func<Task<List<ServiceEndpoint>>>>(), Arg.Any<CancellationToken>())
+                .Returns(Task.FromResult(result1), Task.FromResult(result2));
+
+            var wasCalled = false;
+            var subscriber = fixture.CreateSut();
+            subscriber.OnSubscriberChange += (sender, args) => wasCalled = true;
+
+            await subscriber.Endpoints();
+            Thread.Sleep(250);
+
+            Received.InOrder(() =>
+            {
+                fixture.Cache.Set(Arg.Any<string>(), result1);
+                fixture.Cache.Set(Arg.Any<string>(), result2);
+            });
+
+            Assert.IsTrue(wasCalled);
+        }
+
+        public void SubscriptionLoop_ReceivesSameEndpoints_DoesNotUpdateCacheAndFireEvent() { }
+
     }
 }

@@ -40,10 +40,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         public async Task<List<ServiceEndpoint>> Endpoints()
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
-            }
+            ThrowIfDisposed();
 
             await StartSubscription();
 
@@ -61,7 +58,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     {
                         var serviceUris = await _serviceSubscriber.Endpoints().ConfigureAwait(false);
                         _cache.Set(_id, serviceUris);
-                        _subscriptionTask = SubscriptionLoop();
+                        _subscriptionTask = SubscriptionLoop(serviceUris);
                     }
                 }
                 catch (Exception ex)
@@ -75,11 +72,10 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }
         }
 
-        private Task SubscriptionLoop()
+        private Task SubscriptionLoop(List<ServiceEndpoint> previousEndpoints)
         {
             return Task.Run(async () =>
             {
-                var previousEndpoints = new List<ServiceEndpoint>();
                 while (!_cts.IsCancellationRequested)
                 {
                     _log.LogTrace($"Iteration of subscription loop for {ServiceName}.");
@@ -116,6 +112,14 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
             var filteredSequence = endpoints1.Where(endpoints2.Contains);
             return filteredSequence.Count() == endpoints1.Count;
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
+            }
         }
 
         ~CacheServiceSubscriber()
