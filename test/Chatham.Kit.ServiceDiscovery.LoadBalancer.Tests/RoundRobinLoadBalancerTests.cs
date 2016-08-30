@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,6 +9,7 @@ using NSubstitute;
 namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 {
     [TestClass]
+    [ExcludeFromCodeCoverage]
     public class RoundRobinLoadBalancerTests
     {
         [TestMethod]
