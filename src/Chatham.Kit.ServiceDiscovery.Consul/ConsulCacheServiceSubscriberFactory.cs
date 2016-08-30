@@ -21,17 +21,17 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _cache = cache;
         }
 
-        public IServiceSubscriber CreateSubscriber(string serviceName)
+        public ICacheServiceSubscriber CreateSubscriber(string serviceName)
         {
             return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default, CancellationToken.None);
         }
 
-        public IServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
+        public ICacheServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
         {
             var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly,
                 cts.Token, true);
-            return new CacheServiceSubscriber(_log, consulSubscriber, _cache, new Throttle(5, TimeSpan.FromSeconds(10)), cts);
+            return new CacheCacheServiceSubscriber(_log, consulSubscriber, _cache, new Throttle(5, TimeSpan.FromSeconds(10)), cts);
         }
     }
 }

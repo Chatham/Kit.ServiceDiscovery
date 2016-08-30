@@ -8,7 +8,7 @@ using Consul;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    public class ConsulServiceSubscriber : IStatelessServiceSubscriber
+    public class ConsulServiceSubscriber : IServiceSubscriber
     {
         private readonly IConsulClient _client;
         private readonly List<string> _tags;

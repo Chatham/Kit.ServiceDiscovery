@@ -7,9 +7,9 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
     public class RandomLoadBalancer : ILoadBalancer
     {
         private readonly Random _random;
-        private readonly IServiceSubscriber _subscriber;
+        private readonly ICacheServiceSubscriber _subscriber;
 
-        public RandomLoadBalancer(IServiceSubscriber subscriber, int? seed = null)
+        public RandomLoadBalancer(ICacheServiceSubscriber subscriber, int? seed = null)
         {
             _subscriber = subscriber;
             _random = seed.HasValue ? new Random(seed.Value) : new Random();

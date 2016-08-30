@@ -33,7 +33,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 
             services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(consulConfig), ServiceLifetime.Singleton));
             services.TryAdd(new ServiceDescriptor(typeof(IMemoryCache), p => new MemoryCache(new MemoryCacheOptions()), ServiceLifetime.Transient));
-            services.TryAddSingleton<IServiceSubscriberFactory, ConsulServiceSubscriberFactory>();
+            services.TryAddSingleton<ICacheServiceSubscriberFactory, ConsulCacheServiceSubscriberFactory>();
 
             return services;
         }
