@@ -20,7 +20,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
             fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(new List<Endpoint>()))
-                .AndDoes(x => Thread.Sleep(5000));
+                .AndDoes(async x => await Task.Delay(5000));
 
             var subscriber = fixture.CreateSut();
             await subscriber.Endpoints();
@@ -29,13 +29,46 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             fixture.Cache.Received(1).Get<List<Endpoint>>(Arg.Any<string>());
         }
 
-        public void Endpoints_StartsSubscriptionLoop() { }
+        public async Task Dispose_cancelsAndDisposesTokenSource()
+        {
+            var fixture = new CacheServiceSubscriberFixture();
+            fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
+            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
+                .Returns(Task.FromResult(new List<Endpoint>()))
+                .AndDoes(x => Thread.Sleep(1000));
 
-        public void Endpoints_throttlesCallsInSubscriptionLoop() { }
+            var subscriber = fixture.CreateSut();
+            await subscriber.Endpoints();
 
-        public void Dispose_cancelsAndDisposesTokenSource() { }
+            subscriber.Dispose();
 
-        public void Endpoints_whenCallerCancellationTokenCancels_doesSomething() { }
+        }
+
+        [TestMethod]
+        public async Task SubscriptionLoop_CallerCancelsRequest_CancelsSubscriptionLoop()
+        {
+            var fixture = new CacheServiceSubscriberFixture();
+            fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
+            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
+                .Returns(Task.FromResult(new List<Endpoint>()))
+                .AndDoes(x=> Thread.Sleep(1000));
+
+            var subscriber = fixture.CreateSut();
+            await subscriber.Endpoints();
+
+            await Task.Delay(2500).ContinueWith(async t1 =>
+            {
+                await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
+                fixture.Throttle.ClearReceivedCalls();
+                fixture.CancellationTokenSource.Cancel();
+
+                await Task.Delay(2000).ContinueWith(async t2 =>
+                {
+                    await fixture.Throttle.Received(0)
+                        .Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
+                });
+            });
+        }
 
         [TestMethod]
         public async Task SubscriptionLoop_ReceivesChangedEndpoints_UpdatesCacheAndFiresEvent()
@@ -69,17 +102,18 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             subscriber.OnSubscriberChange += (sender, args) => eventWasCalled = true;
 
             await subscriber.Endpoints();
-            Thread.Sleep(2500);
-
-            Received.InOrder(() =>
+            await Task.Delay(2500).ContinueWith(async t =>
             {
-                fixture.Cache.Set(Arg.Any<string>(), result1);
-                fixture.Cache.Set(Arg.Any<string>(), result2);
-            });
+                Received.InOrder(() =>
+                {
+                    fixture.Cache.Set(Arg.Any<string>(), result1);
+                    fixture.Cache.Set(Arg.Any<string>(), result2);
+                });
 
-            fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
-            await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
-            Assert.IsTrue(eventWasCalled);
+                fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
+                await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
+                Assert.IsTrue(eventWasCalled);
+            });
         }
 
         [TestMethod]

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Chatham.Kit.ServiceDiscovery.Abstractions
 {
-    public interface IServiceSubscriber
+    public interface IServiceSubscriber : IStatelessServiceSubscriber, IDisposable
     {
-        string ServiceName { get; }
         event EventHandler OnSubscriberChange;
-
-        Task<List<Endpoint>> Endpoints();
     }
 }

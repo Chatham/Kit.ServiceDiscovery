@@ -8,7 +8,7 @@ using Consul;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    public class ConsulServiceSubscriber : IServiceSubscriber
+    public class ConsulServiceSubscriber : IStatelessServiceSubscriber
     {
         private readonly IConsulClient _client;
         private readonly List<string> _tags;
@@ -19,7 +19,6 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
         private readonly CancellationToken _cancellationToken;
 
         public string ServiceName { get; }
-        public event EventHandler OnSubscriberChange;
 
         public ConsulServiceSubscriber(IConsulClient client, string serviceName, List<string> tags,
             bool passingOnly, CancellationToken cancellationToken, bool watch)

@@ -3,7 +3,6 @@ using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
     public static class CacheServiceSubscriberExtensions

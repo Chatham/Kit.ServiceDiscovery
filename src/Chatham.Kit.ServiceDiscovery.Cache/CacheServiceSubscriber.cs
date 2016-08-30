@@ -9,7 +9,7 @@ using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
-    public class CacheServiceSubscriber : IServiceSubscriber, IDisposable
+    public class CacheServiceSubscriber : IServiceSubscriber
     {
         private bool _disposed;
 
@@ -17,7 +17,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         private readonly ICacheClient _cache;
         private readonly CancellationTokenSource _cts;
 
-        private readonly IServiceSubscriber _serviceSubscriber;
+        private readonly IStatelessServiceSubscriber _serviceSubscriber;
 
         private readonly string _id = Guid.NewGuid().ToString();
 
@@ -28,7 +28,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler OnSubscriberChange;
 
-        public CacheServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
+        public CacheServiceSubscriber(ILogger log, IStatelessServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
         {
             _log = log;
             _cache = cache;
