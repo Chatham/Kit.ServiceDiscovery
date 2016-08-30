@@ -29,7 +29,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
         public ICacheServiceSubscriber CreateSut()
         {
-            return new CacheCacheServiceSubscriber(Logger, ServiceSubscriber, Cache, Throttle, CancellationTokenSource);
+            return new CacheServiceSubscriber(Logger, ServiceSubscriber, Cache, Throttle, CancellationTokenSource);
         }
     }
 }

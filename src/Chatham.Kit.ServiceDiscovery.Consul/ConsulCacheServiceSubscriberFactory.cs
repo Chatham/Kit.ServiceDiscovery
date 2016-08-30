@@ -8,15 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    public class ConsulServiceSubscriberFactory : IServiceSubscriberFactory
+    public class ConsulCacheServiceSubscriberFactory : ICacheServiceSubscriberFactory
     {
         private readonly ILogger _log;
         private readonly IConsulClient _client;
         private readonly ICacheClient _cache;
 
-        public ConsulServiceSubscriberFactory(ILoggerFactory log, IConsulClient consulClient, ICacheClient cache)
+        public ConsulCacheServiceSubscriberFactory(ILoggerFactory log, IConsulClient consulClient, ICacheClient cache)
         {
-            _log = log.CreateLogger(typeof(ConsulServiceSubscriberFactory).Namespace);
+            _log = log.CreateLogger(typeof(ConsulCacheServiceSubscriberFactory).Namespace);
             _client = consulClient;
             _cache = cache;
         }
@@ -31,7 +31,8 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly,
                 cts.Token, true);
-            return new CacheCacheServiceSubscriber(_log, consulSubscriber, _cache, new Throttle(5, TimeSpan.FromSeconds(10)), cts);
+            var throttle = new Throttle(5, TimeSpan.FromSeconds(10));
+            return new CacheServiceSubscriber(_log, consulSubscriber, _cache, throttle, cts);
         }
     }
 }

@@ -9,7 +9,7 @@ using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
-    public class CacheCacheServiceSubscriber : ICacheServiceSubscriber
+    public class CacheServiceSubscriber : ICacheServiceSubscriber
     {
         private bool _disposed;
 
@@ -28,7 +28,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler OnSubscriberChange;
 
-        public CacheCacheServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
+        public CacheServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
         {
             _log = log;
             _cache = cache;
@@ -117,11 +117,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         {
             if (_disposed)
             {
-                throw new ObjectDisposedException(nameof(CacheCacheServiceSubscriber));
+                throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
             }
         }
 
-        ~CacheCacheServiceSubscriber()
+        ~CacheServiceSubscriber()
         {
             Dispose(false);
         }

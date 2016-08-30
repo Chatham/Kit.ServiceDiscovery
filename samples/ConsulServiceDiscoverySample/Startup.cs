@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Chatham.Kit.ServiceDiscovery.Abstractions;
+﻿using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +15,7 @@ namespace ConsulServiceDiscoverySample
             services.AddConsulServiceDiscovery();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceSubscriberFactory serviceSubscriberFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ICacheServiceSubscriberFactory cacheServiceSubscriberFactory)
         {
             loggerFactory.AddConsole();
 
@@ -26,7 +25,7 @@ namespace ConsulServiceDiscoverySample
             }
 
             var log = loggerFactory.CreateLogger(nameof(Startup));
-            var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("FooService");
+            var serviceSubscriber = cacheServiceSubscriberFactory.CreateSubscriber("FooService");
             serviceSubscriber.StartSubscription();
             serviceSubscriber.OnSubscriberChange += async (sender, eventArgs) =>
             {
