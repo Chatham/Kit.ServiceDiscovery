@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Chatham.Kit.ServiceDiscovery.Cache.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 

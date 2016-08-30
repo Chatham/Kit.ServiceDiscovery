@@ -1,4 +1,4 @@
-﻿namespace Chatham.Kit.ServiceDiscovery.Cache
+﻿namespace Chatham.Kit.ServiceDiscovery.Cache.Internal
 {
     public interface ICacheClient
     {

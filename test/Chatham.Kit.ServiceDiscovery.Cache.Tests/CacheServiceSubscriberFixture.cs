@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Chatham.Kit.ServiceDiscovery.Cache.Utilities;
+using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 

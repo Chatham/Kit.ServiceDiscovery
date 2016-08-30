@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Chatham.Kit.ServiceDiscovery.Cache.Utilities;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {

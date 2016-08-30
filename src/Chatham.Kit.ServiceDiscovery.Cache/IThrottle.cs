@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Chatham.Kit.ServiceDiscovery.Cache.Utilities
+namespace Chatham.Kit.ServiceDiscovery.Cache
 {
     public interface IThrottle
     {

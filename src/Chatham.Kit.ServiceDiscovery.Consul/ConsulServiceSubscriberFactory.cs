@@ -2,7 +2,7 @@
 using System.Threading;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache;
-using Chatham.Kit.ServiceDiscovery.Cache.Utilities;
+using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 using Consul;
 using Microsoft.Extensions.Logging;
 
