@@ -66,14 +66,14 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 .Returns(Task.FromResult(result1));
             fixture.Throttle.Queue(Arg.Any<Func<Task<List<ServiceEndpoint>>>>(), Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(result1), Task.FromResult(result2))
-                .AndDoes(x => Thread.Sleep(100));
+                .AndDoes(x => Thread.Sleep(1000));
 
             var eventWasCalled = false;
             var subscriber = fixture.CreateSut();
             subscriber.OnSubscriberChange += (sender, args) => eventWasCalled = true;
 
             await subscriber.Endpoints();
-            Thread.Sleep(250);
+            Thread.Sleep(2500);
 
             Received.InOrder(() =>
             {
