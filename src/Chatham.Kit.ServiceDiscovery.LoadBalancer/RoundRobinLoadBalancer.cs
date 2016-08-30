@@ -18,7 +18,7 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
         public async Task<Endpoint> Endpoint()
         {
             var endpoints = await _subscriber.Endpoints().ConfigureAwait(false);
-            if (endpoints == null || endpoints.Count == 0)
+            if (endpoints.Count == 0)
             {
                 return null;
             }
