@@ -19,11 +19,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             var fixture = new CacheServiceSubscriberFixture();
             fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
             fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(t =>
-                {
-                    Task.Delay(5000);
-                    return Task.FromResult(new List<Endpoint>());
-                });
+                .Returns(Task.FromResult(new List<Endpoint>()))
+                .AndDoes(x => Thread.Sleep(5000));
 
             var subscriber = fixture.CreateSut();
             await subscriber.Endpoints();
@@ -85,7 +82,36 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             Assert.IsTrue(eventWasCalled);
         }
 
-        public void SubscriptionLoop_ReceivesSameEndpoints_DoesNotUpdateCacheAndFireEvent() { }
+        [TestMethod]
+        public async Task SubscriptionLoop_ReceivesSameEndpoints_DoesNotUpdateCacheOrFireEvent()
+        {
+            var result = new List<Endpoint>
+                {
+                    new Endpoint
+                    {
+                        Host = Guid.NewGuid().ToString(),
+                        Port = 123
+                    }
+                };
+
+            var fixture = new CacheServiceSubscriberFixture();
+            fixture.ServiceSubscriber.Endpoints()
+                .Returns(Task.FromResult(result));
+            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
+                .Returns(Task.FromResult(result), Task.FromResult(result))
+                .AndDoes(x => Thread.Sleep(1000));
+
+            var eventWasCalled = false;
+            var subscriber = fixture.CreateSut();
+            subscriber.OnSubscriberChange += (sender, args) => eventWasCalled = true;
+
+            await subscriber.Endpoints();
+            Thread.Sleep(2500);
+
+            fixture.Cache.Received(1).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
+            await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
+            Assert.IsFalse(eventWasCalled);
+        }
 
     }
 }
