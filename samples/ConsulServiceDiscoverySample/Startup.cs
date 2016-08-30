@@ -25,8 +25,6 @@ namespace ConsulServiceDiscoverySample
             }
 
             var log = loggerFactory.CreateLogger(typeof(Startup).Namespace);
-   
-
             var serviceSubscriber = serviceSubscriberFactory.CreateSubscriber("FooService");
             serviceSubscriber.OnSubscriberChange += async (sender, eventArgs) =>
             {
