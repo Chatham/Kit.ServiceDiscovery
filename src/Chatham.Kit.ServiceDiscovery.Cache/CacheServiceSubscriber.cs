@@ -47,7 +47,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             return _cache.Get<List<Endpoint>>(_id);
         }
 
-        private async Task StartSubscription()
+        public async Task StartSubscription()
         {
             if (_subscriptionTask == null)
             {
@@ -64,6 +64,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 catch (Exception ex)
                 {
                     _log.LogError($"Error fetching endpoints for {ServiceName}: {ex}");
+                    throw;
                 }
                 finally
                 {

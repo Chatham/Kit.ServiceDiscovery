@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 {
@@ -27,6 +28,57 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             fixture.Cache.Received(1).Set(Arg.Any<object>(), Arg.Any<List<Endpoint>>());
             fixture.Cache.Received(1).Get<List<Endpoint>>(Arg.Any<string>());
+        }
+
+        [TestMethod]
+        public async Task StartSubscription_InitialCacheSetThrowsException_ExceptionBubblesUp()
+        {
+            var fixture = new CacheServiceSubscriberFixture();
+            fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
+
+            var expectedException = new Exception();
+
+            fixture.Cache.Set(Arg.Any<object>(), Arg.Any<List<Endpoint>>()).Throws(expectedException);
+
+            var subscriber = fixture.CreateSut();
+
+            Exception actualException = null;
+            try
+            {
+                await subscriber.StartSubscription();
+
+            }
+            catch (Exception ex)
+            {
+                actualException = ex;
+            }
+            
+            Assert.AreSame(expectedException, actualException);
+        }
+
+        [TestMethod]
+        public async Task StartSubscription_InitialServiceCallThrowsException_NothingSetInCacheAndExceptionBubblesUp()
+        {
+            var fixture = new CacheServiceSubscriberFixture();
+            var expectedException = new Exception();
+            fixture.ServiceSubscriber.Endpoints().Throws(expectedException);
+
+            var subscriber = fixture.CreateSut();
+
+            Exception actualException = null;
+            try
+            {
+                await subscriber.StartSubscription();
+
+            }
+            catch (Exception ex)
+            {
+                actualException = ex;
+            }
+
+            Assert.AreSame(expectedException, actualException);
+
+            fixture.Cache.DidNotReceive().Set(Arg.Any<object>(), Arg.Any<List<Endpoint>>());
         }
 
         [TestMethod]
@@ -87,18 +139,18 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
             fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(new List<Endpoint>()))
-                .AndDoes(x=> Thread.Sleep(500));
+                .AndDoes(x=> Thread.Sleep(1000));
 
             var subscriber = fixture.CreateSut();
             await subscriber.Endpoints();
 
-            await Task.Delay(1250);
+            await Task.Delay(2500);
             await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
             fixture.Throttle.ClearReceivedCalls();
 
             fixture.CancellationTokenSource.Cancel();
 
-            await Task.Delay(1000);
+            await Task.Delay(2000);
             await fixture.Throttle.Received(0)
                 .Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
         }
@@ -283,7 +335,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
             });
         }
-
-        //test what happens when the initial cache fill fails, but the subscriber loop still starts
+        
     }
 }
