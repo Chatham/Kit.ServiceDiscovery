@@ -38,13 +38,13 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             _throttle = throttle;
         }
 
-        public async Task<List<ServiceEndpoint>> Endpoints()
+        public async Task<List<Endpoint>> Endpoints()
         {
             ThrowIfDisposed();
 
             await StartSubscription();
 
-            return _cache.Get<List<ServiceEndpoint>>(_id);
+            return _cache.Get<List<Endpoint>>(_id);
         }
 
         private async Task StartSubscription()
@@ -72,7 +72,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }
         }
 
-        private Task SubscriptionLoop(List<ServiceEndpoint> previousEndpoints)
+        private Task SubscriptionLoop(List<Endpoint> previousEndpoints)
         {
             return Task.Run(async () =>
             {
@@ -106,7 +106,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }, _cts.Token);
         }
 
-        private static bool CompareEndpoints(List<ServiceEndpoint> endpoints1, List<ServiceEndpoint> endpoints2)
+        private static bool CompareEndpoints(List<Endpoint> endpoints1, List<Endpoint> endpoints2)
         {
             if (endpoints1.Count != endpoints2.Count) return false;
 

@@ -4,7 +4,7 @@ using Chatham.Kit.ServiceDiscovery.Abstractions;
 
 namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
 {
-    public class RoundRobinLoadBalancer : IServiceLoadBalancer
+    public class RoundRobinLoadBalancer : ILoadBalancer
     {
         private readonly IServiceSubscriber _subscriber;
         private readonly object _lock = new object();
@@ -15,7 +15,7 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
             _subscriber = subscriber;
         }
 
-        public async Task<ServiceEndpoint> Endpoint()
+        public async Task<Endpoint> Endpoint()
         {
             var endpoints = await _subscriber.Endpoints().ConfigureAwait(false);
             if (endpoints == null || endpoints.Count == 0)

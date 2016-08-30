@@ -4,7 +4,7 @@ using Chatham.Kit.ServiceDiscovery.Abstractions;
 
 namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
 {
-    public class RandomLoadBalancer : IServiceLoadBalancer
+    public class RandomLoadBalancer : ILoadBalancer
     {
         private readonly Random _random;
         private readonly IServiceSubscriber _subscriber;
@@ -15,7 +15,7 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
             _random = seed.HasValue ? new Random(seed.Value) : new Random();
         }
 
-         public async Task<ServiceEndpoint> Endpoint()
+         public async Task<Endpoint> Endpoint()
         {
             var endpoints = await _subscriber.Endpoints().ConfigureAwait(false);
             if (endpoints == null || endpoints.Count == 0)

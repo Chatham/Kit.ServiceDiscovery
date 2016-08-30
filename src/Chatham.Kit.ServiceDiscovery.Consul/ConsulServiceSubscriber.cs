@@ -34,7 +34,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _watch = watch;
         }
 
-        public async Task<List<ServiceEndpoint>> Endpoints()
+        public async Task<List<Endpoint>> Endpoints()
         {
             // Consul doesn't support more than one tag in its service query method.
             // https://github.com/hashicorp/consul/issues/294
@@ -68,15 +68,15 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             return CreateEndpointUris(servicesTask.Response);
         }
 
-        private static List<ServiceEndpoint> CreateEndpointUris(IEnumerable<ServiceEntry> services)
+        private static List<Endpoint> CreateEndpointUris(IEnumerable<ServiceEntry> services)
         {
-            var serviceUris = new List<ServiceEndpoint>();
+            var serviceUris = new List<Endpoint>();
             foreach (var service in services)
             {
                 var host = !string.IsNullOrWhiteSpace(service.Service.Address)
                     ? service.Service.Address
                     : service.Node.Address;
-                var endpoint = new ServiceEndpoint { Host = host, Port = service.Service.Port};
+                var endpoint = new Endpoint { Host = host, Port = service.Service.Port};
                 serviceUris.Add(endpoint);
             }
             return serviceUris;

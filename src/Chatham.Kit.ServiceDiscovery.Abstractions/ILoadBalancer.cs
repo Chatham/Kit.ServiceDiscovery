@@ -2,8 +2,8 @@
 
 namespace Chatham.Kit.ServiceDiscovery.Abstractions
 {
-    public interface IServiceLoadBalancer
+    public interface ILoadBalancer
     {
-        Task<ServiceEndpoint> Endpoint();
+        Task<Endpoint> Endpoint();
     }
 }
