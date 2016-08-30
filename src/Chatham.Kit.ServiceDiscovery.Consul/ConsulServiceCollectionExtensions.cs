@@ -1,6 +1,6 @@
 ﻿using System;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Chatham.Kit.ServiceDiscovery.Cache.Internal;
+using Chatham.Kit.ServiceDiscovery.Cache;
 using Consul;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,10 +27,10 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
                 consulConfig.Token = config.Token;
             }
 
+            services.AddCacheServiceDiscovery();
+
             services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(consulConfig), ServiceLifetime.Singleton));
             services.TryAdd(new ServiceDescriptor(typeof(IMemoryCache), p => new MemoryCache(new MemoryCacheOptions()), ServiceLifetime.Transient));
-
-            services.TryAddTransient<ICacheClient, CacheClient>();
             services.TryAddSingleton<IServiceSubscriberFactory, ConsulServiceSubscriberFactory>();
 
             return services;
