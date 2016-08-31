@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    public class ConsulServiceRegistrarFactory
+    public class ConsulServiceRegistrarFactory : IConsulServiceRegistrarFactory
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly IConsulClient _client;
