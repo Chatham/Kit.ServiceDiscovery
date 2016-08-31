@@ -12,7 +12,8 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
     [ExcludeFromCodeCoverage]
     public static class ConsulServiceCollectionExtensions
     {
-        public static IServiceCollection AddConsulServiceDiscovery(this IServiceCollection services, ConsulConfiguration config = null)
+        public static IServiceCollection AddConsulServiceDiscovery(this IServiceCollection services, 
+            ConsulConfiguration config = null)
         {
             if (services == null)
             {

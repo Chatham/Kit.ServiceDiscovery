@@ -28,9 +28,10 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler OnSubscriberChange;
 
-        public CacheServiceSubscriber(ILogger log, IServiceSubscriber serviceSubscriber, ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
+        public CacheServiceSubscriber(ILoggerFactory loggerFactory, IServiceSubscriber serviceSubscriber,
+            ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
         {
-            _log = log;
+            _log = loggerFactory.CreateLogger(nameof(CacheServiceSubscriber));
             _cache = cache;
             _cts = cts;
 
