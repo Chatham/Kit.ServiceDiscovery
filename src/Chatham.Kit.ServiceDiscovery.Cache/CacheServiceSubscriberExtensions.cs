@@ -9,7 +9,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
     [ExcludeFromCodeCoverage]
     public static class CacheServiceSubscriberExtensions
     {
-        public static IServiceCollection AddCacheServiceDiscovery(this IServiceCollection services)
+        public static IServiceCollection AddCacheServiceSubscriber(this IServiceCollection services)
         {
             if (services == null)
             {
