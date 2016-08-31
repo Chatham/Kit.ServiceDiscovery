@@ -50,7 +50,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 
         private static bool IsSuccessfulStatus(HttpStatusCode code)
         {
-            return (int)code >= 200 && (int)code <= 299;
+            return (int)code >= 200 && (int)code < 300;
         }
     }
 }

@@ -13,26 +13,20 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
     public static class ConsulServiceCollectionExtensions
     {
         public static IServiceCollection AddConsulServiceDiscovery(this IServiceCollection services, 
-            ConsulConfiguration config = null)
+            ConsulClientConfiguration config = null)
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
-
-            var consulConfig = new ConsulClientConfiguration();
-            if (config?.Address != null)
+            if (config == null)
             {
-                consulConfig.Address = config.Address;
-            }
-            if (config?.Token != null)
-            {
-                consulConfig.Token = config.Token;
+                config = new ConsulClientConfiguration();
             }
 
             services.AddCacheServiceDiscovery();
 
-            services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(consulConfig), ServiceLifetime.Singleton));
+            services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(config), ServiceLifetime.Singleton));
             services.TryAdd(new ServiceDescriptor(typeof(IMemoryCache), p => new MemoryCache(new MemoryCacheOptions()), ServiceLifetime.Transient));
             services.TryAddSingleton<ICacheServiceSubscriberFactory, ConsulCacheServiceSubscriberFactory>();
 

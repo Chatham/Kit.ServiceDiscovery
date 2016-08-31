@@ -10,7 +10,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
     [ExcludeFromCodeCoverage]
     public class CacheServiceSubscriberFixture
     {
-        public ILogger Logger { get; set; }
+        public ILoggerFactory LoggerFactory { get; set; }
         public IServiceSubscriber ServiceSubscriber { get; set; }
         public ICacheClient Cache { get; set; }
         public IThrottle Throttle { get; set; }
@@ -19,7 +19,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
         public CacheServiceSubscriberFixture()
         {
-            Logger = Substitute.For<ILogger>();
+            LoggerFactory = Substitute.For<ILoggerFactory>();
             ServiceSubscriber = Substitute.For<IServiceSubscriber>();
             Cache = Substitute.For<ICacheClient>();
             Throttle = Substitute.For<IThrottle>();
@@ -29,7 +29,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
         public ICacheServiceSubscriber CreateSut()
         {
-            return new CacheServiceSubscriber(Logger, ServiceSubscriber, Cache, Throttle, CancellationTokenSource);
+            return new CacheServiceSubscriber(LoggerFactory, ServiceSubscriber, Cache, Throttle, CancellationTokenSource);
         }
     }
 }
