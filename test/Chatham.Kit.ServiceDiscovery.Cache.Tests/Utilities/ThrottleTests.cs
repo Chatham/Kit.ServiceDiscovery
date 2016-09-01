@@ -3,16 +3,15 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache.Tests.Utilities
 {
-    [TestClass]
     [ExcludeFromCodeCoverage]
     public class ThrottleTests
     {
-        [TestMethod]
+        [Fact]
         public async Task Queue_WithSingleActionCall_FiresAction()
         {
             var period = new TimeSpan(0, 0, 2);
@@ -23,11 +22,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests.Utilities
 
             var actual = await target.Queue(action, CancellationToken.None);
 
-            Assert.IsNotNull(actual);
+            Assert.NotNull(actual);
             action.Received(1);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Queue_WithTwoActionCallsAndLimitOfOnePerPeriod_FiresBothActionsBeforeTwiceTheDelay()
         {
             var period = new TimeSpan(0, 0, 2);
@@ -40,14 +39,14 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests.Utilities
             var first = await target.Queue(action, CancellationToken.None);
             var second = await target.Queue(action, CancellationToken.None);
 
-            Assert.IsNotNull(first);
+            Assert.NotNull(first);
             action.Received();
-            Assert.IsNotNull(second);
+            Assert.NotNull(second);
             action.Received(2);
             stopwatch.Stop();
             
-            Assert.IsTrue(stopwatch.Elapsed > period);
-            Assert.IsTrue(stopwatch.Elapsed < (period + period));
+            Assert.True(stopwatch.Elapsed > period);
+            Assert.True(stopwatch.Elapsed < (period + period));
         }
     }
 }

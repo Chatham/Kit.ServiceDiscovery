@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 {
-    [TestClass]
     [ExcludeFromCodeCoverage]
     public class RandomLoadBalancerTests
     {
-        [TestMethod]
+        [Fact]
         public async Task Endpoint_ZeroEndpoints_ReturnsNull()
         {
             var subscriber = Substitute.For<IServiceSubscriber>();
@@ -21,11 +20,11 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 
             var actual = await lb.Endpoint();
 
-            Assert.IsNull(actual);
+            Assert.Null(actual);
         }
 
 
-        [TestMethod]
+        [Fact]
         public async Task Endpoint_OneEndpoint_ReturnsEndpoint()
         {
             var endpoint = new Endpoint { Host = Guid.NewGuid().ToString(), Port = 123 };
@@ -42,12 +41,12 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 
             foreach (var endpointActual in actual)
             {
-                Assert.AreEqual(endpoint.Host, endpointActual.Host);
-                Assert.AreEqual(endpoint.Port, endpointActual.Port);
+                Assert.Equal(endpoint.Host, endpointActual.Host);
+                Assert.Equal(endpoint.Port, endpointActual.Port);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Endpoint_MultipleEndpoints_ReturnsEndpointInRandomOrder()
         {
             var expectedList = new List<Endpoint>
@@ -71,8 +70,8 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
             var expectedOrder = new List<int> {2, 2, 2, 1, 0, 1, 2, 1, 2, 0};
             for (var i = 0; i < actual.Count; i++)
             {
-                Assert.AreEqual(expectedList[expectedOrder[i]].Host, actual[i].Host);
-                Assert.AreEqual(expectedList[expectedOrder[i]].Port, actual[i].Port);
+                Assert.Equal(expectedList[expectedOrder[i]].Host, actual[i].Host);
+                Assert.Equal(expectedList[expectedOrder[i]].Port, actual[i].Port);
             }
         }
     }

@@ -4,17 +4,16 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 {
-    [TestClass]
     [ExcludeFromCodeCoverage]
     public class CacheServiceSubscriberTests
     {
-        [TestMethod]
+        [Fact]
         public async Task Endpoints_PopulatesCacheImmediately()
         {
             var fixture = new CacheServiceSubscriberFixture();
@@ -30,7 +29,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             fixture.Cache.Received(1).Get<List<Endpoint>>(Arg.Any<string>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task StartSubscription_InitialCacheSetThrowsException_ExceptionBubblesUp()
         {
             var fixture = new CacheServiceSubscriberFixture();
@@ -53,10 +52,10 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 actualException = ex;
             }
             
-            Assert.AreSame(expectedException, actualException);
+            Assert.Same(expectedException, actualException);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task StartSubscription_InitialServiceCallThrowsException_NothingSetInCacheAndExceptionBubblesUp()
         {
             var fixture = new CacheServiceSubscriberFixture();
@@ -76,12 +75,12 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 actualException = ex;
             }
 
-            Assert.AreSame(expectedException, actualException);
+            Assert.Same(expectedException, actualException);
 
             fixture.Cache.DidNotReceive().Set(Arg.Any<object>(), Arg.Any<List<Endpoint>>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Dispose_CancelsAndDisposesTokenSource()
         {
             var fixture = new CacheServiceSubscriberFixture();
@@ -97,12 +96,12 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             await Task.Delay(250).ContinueWith(t =>
             {
-                Assert.IsTrue(fixture.CancellationTokenSource.IsCancellationRequested);
+                Assert.True(fixture.CancellationTokenSource.IsCancellationRequested);
                 fixture.Cache.Received(1).Remove(Arg.Any<string>());
             });
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Endpoints_CalledWhenDisposed_ThrowsDisposedException()
         {
             var fixture = new CacheServiceSubscriberFixture();
@@ -118,10 +117,10 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             {
                 actualException = ex;
             }
-            Assert.IsInstanceOfType(actualException, typeof(ObjectDisposedException));
+            Assert.IsType<ObjectDisposedException>(actualException);
         }
 
-        [TestMethod]
+        [Fact]
         public void Dispose_DisposedTwice_DoesNotRemoveFromCacheTwice()
         {
             var fixture = new CacheServiceSubscriberFixture();
@@ -132,7 +131,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             fixture.Cache.Received(1).Remove(Arg.Any<string>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task SubscriptionLoop_CancelRequested_CancelsSubscriptionLoop()
         {
             var fixture = new CacheServiceSubscriberFixture();
@@ -155,7 +154,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 .Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task SubscriptionLoop_ReceivesChangedEndpoints_UpdatesCacheAndFiresEvent()
         {
             var result1 = new List<Endpoint>
@@ -197,11 +196,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
                 fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
                 await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
-                Assert.IsTrue(eventWasCalled);
+                Assert.True(eventWasCalled);
             });
         }
 
-        [TestMethod]
+        [Fact]
         public async Task SubscriptionLoop_ReceivesSameEndpoints_DoesNotUpdateCacheOrFireEvent()
         {
             var result = new List<Endpoint>
@@ -231,11 +230,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 await
                     fixture.Throttle.Received(3)
                         .Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
-                Assert.IsFalse(eventWasCalled);
+                Assert.False(eventWasCalled);
             });
         }
         
-        [TestMethod]
+        [Fact]
         public async Task SubscriptionLoop_ReceivesDifferentCountOfEndpoints_UpdatesCacheAndFiresEvent()
         {
             var result1 = new List<Endpoint>
@@ -283,11 +282,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
                 fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
                 await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
-                Assert.IsTrue(eventWasCalled);
+                Assert.True(eventWasCalled);
             });
         }
 
-        [TestMethod]
+        [Fact]
         public async Task SubscriptionLoop_WithoutUpdateEvent_UpdatesCacheWithoutFiringEventAndDying()
         {
             var result1 = new List<Endpoint>

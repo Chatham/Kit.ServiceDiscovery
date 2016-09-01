@@ -4,17 +4,16 @@ using System.Net;
 using System.Threading.Tasks;
 using Consul;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
 {
-    [TestClass]
     [ExcludeFromCodeCoverage]
     public class ChathamServiceRegistrarTests
     {
-        [TestMethod]
+        [Fact]
         public async Task Register_SuccessfulRegistration_CallsConsulAndDoesNotThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -29,7 +28,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
             await consulClient.Agent.Received(1).ServiceRegister(Arg.Any<AgentServiceRegistration>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Register_ConsulClientThrowsException_CallsConsulAndThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -52,11 +51,11 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
                 actualException = ex;
             }
 
-            Assert.AreSame(expectedException, actualException);
+            Assert.Same(expectedException, actualException);
             await consulClient.Agent.Received(1).ServiceRegister(Arg.Any<AgentServiceRegistration>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Register_ConsulReturnsNonSuccessfulHttpStatus_CallsConsulAndThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -78,11 +77,11 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
                 exception = ex;
             }
 
-            Assert.IsNotNull(exception);
+            Assert.NotNull(exception);
             await consulClient.Agent.Received(1).ServiceRegister(Arg.Any<AgentServiceRegistration>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Register_ConsulReturnsNonSuccessfulHttpStatusBelow200_CallsConsulAndThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -104,11 +103,11 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
                 exception = ex;
             }
 
-            Assert.IsNotNull(exception);
+            Assert.NotNull(exception);
             await consulClient.Agent.Received(1).ServiceRegister(Arg.Any<AgentServiceRegistration>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Deregister_SuccessfulRegistration_CallsConsulAndDoesNotThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -123,7 +122,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
             await consulClient.Agent.Received(1).ServiceDeregister(Arg.Any<string>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Deregister_ConsulClientThrowsException_CallsConsulAndThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -146,11 +145,11 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
                 actualException = ex;
             }
 
-            Assert.AreSame(expectedException, actualException);
+            Assert.Same(expectedException, actualException);
             await consulClient.Agent.Received(1).ServiceDeregister(Arg.Any<string>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Deregister_ConsulReturnsNonSuccessfulHttpStatus_CallsConsulAndThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -172,11 +171,11 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
                 exception = ex;
             }
 
-            Assert.IsNotNull(exception);
+            Assert.NotNull(exception);
             await consulClient.Agent.Received(1).ServiceDeregister(Arg.Any<string>());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Deregister_ConsulReturnsNonSuccessfulHttpStatusBelow200_CallsConsulAndThrowException()
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
@@ -198,7 +197,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
                 exception = ex;
             }
 
-            Assert.IsNotNull(exception);
+            Assert.NotNull(exception);
             await consulClient.Agent.Received(1).ServiceDeregister(Arg.Any<string>());
         }
     }

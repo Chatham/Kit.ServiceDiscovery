@@ -1,13 +1,13 @@
 {
   "version": "1.0.0-*",
-  "testRunner": "mstest",
+  "testRunner": "xunit",
   "dependencies": {
     "Chatham.Kit.ServiceDiscovery.Abstractions": "1.0.0-*",
     "Chatham.Kit.ServiceDiscovery.Consul": "1.0.0-*",
     "Consul": "0.6.4.7",
-    "dotnet-test-mstest": "1.1.1-preview",
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "MSTest.TestFramework": "1.0.1-preview",
     "NSubstitute": "2.0.0-rc"
   },
 

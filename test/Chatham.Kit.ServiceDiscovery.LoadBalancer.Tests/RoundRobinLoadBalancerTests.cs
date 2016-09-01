@@ -4,16 +4,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 {
-    [TestClass]
     [ExcludeFromCodeCoverage]
     public class RoundRobinLoadBalancerTests
     {
-        [TestMethod]
+        [Fact]
         public async Task Endpoint_ZeroEndpoints_ReturnsNull()
         {
             var subscriber = Substitute.For<IServiceSubscriber>();
@@ -22,10 +21,10 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 
             var actual = await lb.Endpoint();
 
-            Assert.IsNull(actual);
+            Assert.Null(actual);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Endpoint_OneEndpoint_ReturnsEndpoint()
         {
             var endpoint = new Endpoint {Host = Guid.NewGuid().ToString(), Port = 123};
@@ -36,11 +35,11 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 
             var actual = await lb.Endpoint();
 
-            Assert.AreEqual(endpoint.Host, actual.Host);
-            Assert.AreEqual(endpoint.Port, actual.Port);
+            Assert.Equal(endpoint.Host, actual.Host);
+            Assert.Equal(endpoint.Port, actual.Port);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Endpoint_MultipleEndpoints_ReturnsEndpointInOrder()
         {
             var expectedList  = new List<Endpoint>
@@ -57,16 +56,16 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
             foreach (var expected in expectedList)
             {
                 var actual = await lb.Endpoint();
-                Assert.AreEqual(expected.Host, actual.Host);
-                Assert.AreEqual(expected.Port, actual.Port);
+                Assert.Equal(expected.Host, actual.Host);
+                Assert.Equal(expected.Port, actual.Port);
             }
 
             var actualReset = await lb.Endpoint();
-            Assert.AreEqual(expectedList[0].Host, actualReset.Host);
-            Assert.AreEqual(expectedList[0].Port, actualReset.Port);
+            Assert.Equal(expectedList[0].Host, actualReset.Host);
+            Assert.Equal(expectedList[0].Port, actualReset.Port);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Endpoint_ResetsNumberOfEndpoints_ReturnsEndpointAndResets()
         {
             var expectedList  = new List<Endpoint>
@@ -83,14 +82,14 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
             foreach (var expected in expectedList.Take(2))
             {
                 var actual = await lb.Endpoint();
-                Assert.AreEqual(expected.Host, actual.Host);
-                Assert.AreEqual(expected.Port, actual.Port);
+                Assert.Equal(expected.Host, actual.Host);
+                Assert.Equal(expected.Port, actual.Port);
             }
 
             subscriber.Endpoints().Returns(Task.FromResult(expectedList.Take(2).ToList()));
             var actualReset = await lb.Endpoint();
-            Assert.AreEqual(expectedList[0].Host, actualReset.Host);
-            Assert.AreEqual(expectedList[0].Port, actualReset.Port);
+            Assert.Equal(expectedList[0].Host, actualReset.Host);
+            Assert.Equal(expectedList[0].Port, actualReset.Port);
         }
     }
 }
