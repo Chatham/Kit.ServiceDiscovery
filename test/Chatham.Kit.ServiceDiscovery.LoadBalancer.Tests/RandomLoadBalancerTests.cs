@@ -15,7 +15,7 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
         [TestMethod]
         public async Task Endpoint_ZeroEndpoints_ReturnsNull()
         {
-            var subscriber = Substitute.For<ICacheServiceSubscriber>();
+            var subscriber = Substitute.For<IServiceSubscriber>();
             subscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
             var lb = new RandomLoadBalancer(subscriber);
 
@@ -30,7 +30,7 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
         {
             var endpoint = new Endpoint { Host = Guid.NewGuid().ToString(), Port = 123 };
 
-            var subscriber = Substitute.For<ICacheServiceSubscriber>();
+            var subscriber = Substitute.For<IServiceSubscriber>();
             subscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint> { endpoint }));
             var lb = new RoundRobinLoadBalancer(subscriber);
 
@@ -57,7 +57,7 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
                 new Endpoint {Host = Guid.NewGuid().ToString(), Port = 3}
             };
 
-            var subscriber = Substitute.For<ICacheServiceSubscriber>();
+            var subscriber = Substitute.For<IServiceSubscriber>();
             subscriber.Endpoints().Returns(Task.FromResult(expectedList));
             var lb = new RandomLoadBalancer(subscriber, 0);
 
