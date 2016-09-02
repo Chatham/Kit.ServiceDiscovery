@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Xunit;
 
-namespace Chatham.Kit.ServiceDiscovery.Cache.Tests.Utilities
+namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 {
     [ExcludeFromCodeCoverage]
     public class ThrottleTests
