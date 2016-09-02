@@ -28,7 +28,7 @@ namespace ConsulServiceDiscoverySample
             var log = loggerFactory.CreateLogger(nameof(Startup));
             var serviceSubscriber = cacheServiceSubscriberFactory.CreateSubscriber("FooService");
             serviceSubscriber.StartSubscription();
-            serviceSubscriber.OnSubscriberChange += async (sender, eventArgs) =>
+            serviceSubscriber.SubscriberChanged += async (sender, eventArgs) =>
             {
                 // Reset connection pool, do something with this info, etc
 

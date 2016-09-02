@@ -26,7 +26,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         private readonly IThrottle _throttle;
 
         public string ServiceName => _serviceSubscriber.ServiceName;
-        public event EventHandler OnSubscriberChange;
+        public event EventHandler SubscriberChanged;
 
         public CacheServiceSubscriber(ILoggerFactory loggerFactory, IServiceSubscriber serviceSubscriber,
             ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
@@ -91,7 +91,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                         {
                             _log.LogDebug($"Received updated endpoints for {ServiceName}");
                             _cache.Set(_id, currentEndpoints);
-                            OnSubscriberChange?.Invoke(this, EventArgs.Empty);
+                            SubscriberChanged?.Invoke(this, EventArgs.Empty);
                             previousEndpoints = currentEndpoints;
                         }
                     }
