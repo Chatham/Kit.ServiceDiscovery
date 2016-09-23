@@ -41,7 +41,10 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         public async Task<List<Endpoint>> Endpoints()
         {
-            ThrowIfDisposed();
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
+            }
 
             await StartSubscription();
 
@@ -112,14 +115,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
             var filteredSequence = endpoints1.Where(endpoints2.Contains);
             return filteredSequence.Count() == endpoints1.Count;
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
-            }
         }
 
         ~CacheServiceSubscriber()
