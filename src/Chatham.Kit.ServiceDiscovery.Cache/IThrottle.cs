@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
-    public interface IThrottle
+    public interface IThrottle : IDisposable
     {
         Task<T> Queue<T>(Func<T> action, CancellationToken cancel);
     }

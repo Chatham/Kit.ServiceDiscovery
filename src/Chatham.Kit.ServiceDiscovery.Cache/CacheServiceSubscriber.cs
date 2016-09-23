@@ -147,6 +147,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     _cts.Cancel();
                 }
                 _cts.Dispose();
+                _throttle.Dispose();
             }
 
             _cache.Remove(_id);

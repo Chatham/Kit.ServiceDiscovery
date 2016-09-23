@@ -18,6 +18,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         public Task<T> Queue<T>(Func<T> action, CancellationToken cancel)
         {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(nameof(Queue));
+            }
+
             return _throttleActions.WaitAsync(cancel).ContinueWith(t =>
             {
                 try
@@ -39,6 +44,26 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     _throttleActions.Release(1);
                 }
             }, cancel);
+        }
+
+        private bool _disposed;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _throttleActions.Dispose();
+                    _throttlePeriods.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }
