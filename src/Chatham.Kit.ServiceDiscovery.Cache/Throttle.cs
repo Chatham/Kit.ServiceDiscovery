@@ -6,6 +6,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 {
     public class Throttle : IThrottle
     {
+        private bool _disposed;
+
         private readonly TimeSpan _maxPeriod;
         private readonly SemaphoreSlim _throttleActions, _throttlePeriods;
 
@@ -46,8 +48,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }, cancel);
         }
 
-        private bool _disposed;
-
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
@@ -60,6 +60,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 _throttleActions.Dispose();
                 _throttlePeriods.Dispose();
             }
+
             _disposed = true;
         }
 
