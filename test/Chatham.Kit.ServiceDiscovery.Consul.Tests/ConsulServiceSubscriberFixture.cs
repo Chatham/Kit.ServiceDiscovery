@@ -17,7 +17,6 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
         public bool Watch { get; set; }
 
         public IConsulClient Client { get; set; }
-        public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
         public IServiceSubscriber ServiceSubscriber { get; set; }
         
         public QueryResult<ServiceEntry[]> ClientQueryResult { get; set; }
@@ -40,7 +39,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul.Tests
 
         public ConsulServiceSubscriber CreateSut()
         {
-            return new ConsulServiceSubscriber(Client, ServiceName, Tags, PassingOnly, CancellationTokenSource.Token, Watch);
+            return new ConsulServiceSubscriber(Client, ServiceName, Tags, PassingOnly, Watch);
         }
     }
 }

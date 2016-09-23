@@ -50,15 +50,17 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (_disposed)
             {
-                if (disposing)
-                {
-                    _throttleActions.Dispose();
-                    _throttlePeriods.Dispose();
-                }
-                _disposed = true;
+                return;
             }
+
+            if (disposing)
+            {
+                _throttleActions.Dispose();
+                _throttlePeriods.Dispose();
+            }
+            _disposed = true;
         }
 
         public void Dispose()

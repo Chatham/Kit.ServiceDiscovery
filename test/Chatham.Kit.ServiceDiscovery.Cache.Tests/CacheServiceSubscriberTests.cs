@@ -60,7 +60,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
         {
             var fixture = new CacheServiceSubscriberFixture();
             var expectedException = new Exception();
-            fixture.ServiceSubscriber.Endpoints().Throws(expectedException);
+            fixture.ServiceSubscriber.Endpoints(Arg.Any<CancellationToken>()).Throws(expectedException);
 
             var subscriber = fixture.CreateSut();
 
@@ -78,27 +78,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             Assert.Same(expectedException, actualException);
 
             fixture.Cache.DidNotReceive().Set(Arg.Any<object>(), Arg.Any<List<Endpoint>>());
-        }
-
-        [Fact]
-        public async Task Dispose_CancelsAndDisposesTokenSource()
-        {
-            var fixture = new CacheServiceSubscriberFixture();
-            fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
-            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(new List<Endpoint>()))
-                .AndDoes(x => Thread.Sleep(500));
-
-            var subscriber = fixture.CreateSut();
-            await subscriber.Endpoints();
-
-            subscriber.Dispose();
-
-            await Task.Delay(250).ContinueWith(t =>
-            {
-                Assert.True(fixture.CancellationTokenSource.IsCancellationRequested);
-                fixture.Cache.Received(1).Remove(Arg.Any<string>());
-            });
         }
 
         [Fact]
@@ -129,29 +108,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             subscriber.Dispose();
 
             fixture.Cache.Received(1).Remove(Arg.Any<string>());
-        }
-
-        [Fact]
-        public async Task SubscriptionLoop_CancelRequested_CancelsSubscriptionLoop()
-        {
-            var fixture = new CacheServiceSubscriberFixture();
-            fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
-            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(new List<Endpoint>()))
-                .AndDoes(x=> Thread.Sleep(1000));
-
-            var subscriber = fixture.CreateSut();
-            await subscriber.Endpoints();
-
-            await Task.Delay(2500);
-            await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
-            fixture.Throttle.ClearReceivedCalls();
-
-            fixture.CancellationTokenSource.Cancel();
-
-            await Task.Delay(2000);
-            await fixture.Throttle.Received(0)
-                .Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]

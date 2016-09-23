@@ -15,7 +15,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         private readonly ILogger _log;
         private readonly ICacheClient _cache;
-        private readonly CancellationTokenSource _cts;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         private readonly IServiceSubscriber _serviceSubscriber;
 
@@ -29,17 +29,21 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         public event EventHandler SubscriberChanged;
 
         public CacheServiceSubscriber(ILoggerFactory loggerFactory, IServiceSubscriber serviceSubscriber,
-            ICacheClient cache, IThrottle throttle, CancellationTokenSource cts)
+            ICacheClient cache, IThrottle throttle)
         {
             _log = loggerFactory.CreateLogger(nameof(CacheServiceSubscriber));
             _cache = cache;
-            _cts = cts;
 
             _serviceSubscriber = serviceSubscriber;
             _throttle = throttle;
         }
 
-        public async Task<List<Endpoint>> Endpoints()
+        public Task<List<Endpoint>> Endpoints()
+        {
+            return Endpoints(CancellationToken.None);
+        }
+
+        public async Task<List<Endpoint>> Endpoints(CancellationToken ct)
         {
             if (_disposed)
             {
@@ -60,7 +64,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 {
                     if (_subscriptionTask == null)
                     {
-                        var serviceUris = await _serviceSubscriber.Endpoints().ConfigureAwait(false);
+                        var serviceUris = await _serviceSubscriber.Endpoints(_cts.Token).ConfigureAwait(false);
                         _cache.Set(_id, serviceUris);
                         _subscriptionTask = SubscriptionLoop(serviceUris);
                     }

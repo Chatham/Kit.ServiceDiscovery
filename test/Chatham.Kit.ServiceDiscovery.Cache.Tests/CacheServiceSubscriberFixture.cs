@@ -15,21 +15,17 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
         public ICacheClient Cache { get; set; }
         public IThrottle Throttle { get; set; }
 
-        public CancellationTokenSource CancellationTokenSource { get; set; }
-
         public CacheServiceSubscriberFixture()
         {
             LoggerFactory = Substitute.For<ILoggerFactory>();
             ServiceSubscriber = Substitute.For<IServiceSubscriber>();
             Cache = Substitute.For<ICacheClient>();
             Throttle = Substitute.For<IThrottle>();
-
-            CancellationTokenSource = new CancellationTokenSource();
         }
 
         public ICacheServiceSubscriber CreateSut()
         {
-            return new CacheServiceSubscriber(LoggerFactory, ServiceSubscriber, Cache, Throttle, CancellationTokenSource);
+            return new CacheServiceSubscriber(LoggerFactory, ServiceSubscriber, Cache, Throttle);
         }
     }
 }

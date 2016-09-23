@@ -28,11 +28,10 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 
         public ICacheServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
         {
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly,
-                cts.Token, true);
+                true);
             var throttle = new Throttle(5, TimeSpan.FromSeconds(10));
-            return new CacheServiceSubscriber(_loggerFactory, consulSubscriber, _cache, throttle, cts);
+            return new CacheServiceSubscriber(_loggerFactory, consulSubscriber, _cache, throttle);
         }
     }
 }

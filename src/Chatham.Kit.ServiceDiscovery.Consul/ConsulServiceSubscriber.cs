@@ -16,12 +16,11 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
         private readonly bool _watch;
 
         internal ulong WaitIndex;
-        private readonly CancellationToken _cancellationToken;
 
         public string ServiceName { get; }
 
         public ConsulServiceSubscriber(IConsulClient client, string serviceName, List<string> tags,
-            bool passingOnly, CancellationToken cancellationToken, bool watch)
+            bool passingOnly, bool watch)
         {
             _client = client;
 
@@ -29,11 +28,15 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _tags = tags ?? new List<string>();
             _passingOnly = passingOnly;
 
-            _cancellationToken = cancellationToken;
             _watch = watch;
         }
 
-        public async Task<List<Endpoint>> Endpoints()
+        public Task<List<Endpoint>> Endpoints()
+        {
+            return Endpoints(CancellationToken.None);
+        }
+
+        public async Task<List<Endpoint>> Endpoints(CancellationToken ct)
         {
             // Consul doesn't support more than one tag in its service query method.
             // https://github.com/hashicorp/consul/issues/294
@@ -51,7 +54,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
                 WaitIndex = WaitIndex
             };
             var servicesTask = await 
-                _client.Health.Service(ServiceName, tag, _passingOnly, queryOptions, _cancellationToken)
+                _client.Health.Service(ServiceName, tag, _passingOnly, queryOptions, ct)
                     .ConfigureAwait(false);
 
             if (_tags.Count > 1)

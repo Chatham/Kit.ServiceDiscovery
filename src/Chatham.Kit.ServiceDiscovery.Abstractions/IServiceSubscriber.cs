@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chatham.Kit.ServiceDiscovery.Abstractions
@@ -7,5 +8,6 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions
     {
         string ServiceName { get; }
         Task<List<Endpoint>> Endpoints();
+        Task<List<Endpoint>> Endpoints(CancellationToken ct);
     }
 }
