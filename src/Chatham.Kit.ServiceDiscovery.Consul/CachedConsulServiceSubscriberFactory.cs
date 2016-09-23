@@ -8,13 +8,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    public class ConsulCacheServiceSubscriberFactory : ICacheServiceSubscriberFactory
+    public class CachedConsulServiceSubscriberFactory : ICacheServiceSubscriberFactory
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly IConsulClient _client;
         private readonly ICacheClient _cache;
 
-        public ConsulCacheServiceSubscriberFactory(ILoggerFactory loggerFactory, IConsulClient consulClient, ICacheClient cache)
+        public CachedConsulServiceSubscriberFactory(ILoggerFactory loggerFactory, IConsulClient consulClient, ICacheClient cache)
         {
             _loggerFactory = loggerFactory;
             _client = consulClient;
