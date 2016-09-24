@@ -18,26 +18,26 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             _maxPeriod = maxPeriod;
         }
 
-        public Task<T> Queue<T>(Func<T> action, CancellationToken cancel)
+        public Task<T> Queue<T>(Func<T> action, CancellationToken ct)
         {
             if (_disposed)
             {
                 throw new ObjectDisposedException(nameof(Queue));
             }
 
-            return _throttleActions.WaitAsync(cancel).ContinueWith(t =>
+            return _throttleActions.WaitAsync(ct).ContinueWith(t =>
             {
                 try
                 {
-                    _throttlePeriods.Wait(cancel);
+                    _throttlePeriods.Wait(ct);
 
                     // Release after period
                     // - Allow bursts up to maxActions requests at once
                     // - Do not allow more than maxActions requests per period
-                    Task.Delay(_maxPeriod, cancel).ContinueWith(tt =>
+                    Task.Delay(_maxPeriod, ct).ContinueWith(tt =>
                     {
                         _throttlePeriods.Release(1);
-                    }, cancel).ConfigureAwait(false);
+                    }, ct).ConfigureAwait(false);
 
                     return action();
                 }
@@ -45,7 +45,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 {
                     _throttleActions.Release(1);
                 }
-            }, cancel);
+            }, ct);
         }
 
         protected virtual void Dispose(bool disposing)
