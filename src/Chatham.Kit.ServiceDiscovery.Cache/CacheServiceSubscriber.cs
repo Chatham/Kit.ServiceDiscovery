@@ -50,21 +50,26 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
             }
 
-            await StartSubscription();
+            await StartSubscription(ct);
 
             return _cache.Get<List<Endpoint>>(_id);
         }
 
-        public async Task StartSubscription()
+        public Task StartSubscription()
+        {
+            return StartSubscription(CancellationToken.None);
+        }
+
+        public async Task StartSubscription(CancellationToken ct)
         {
             if (_subscriptionTask == null)
             {
-                await _mutex.WaitAsync(_cts.Token);
+                await _mutex.WaitAsync(ct);
                 try
                 {
                     if (_subscriptionTask == null)
                     {
-                        var serviceUris = await _serviceSubscriber.Endpoints(_cts.Token).ConfigureAwait(false);
+                        var serviceUris = await _serviceSubscriber.Endpoints(ct).ConfigureAwait(false);
                         _cache.Set(_id, serviceUris);
                         _subscriptionTask = SubscriptionLoop(serviceUris);
                     }
