@@ -6,6 +6,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 {
     public interface IThrottle : IDisposable
     {
-        Task<T> Queue<T>(Func<T> action, CancellationToken cancel);
+        Task<T> Queue<T>(Func<T> action, CancellationToken ct);
     }
 }
