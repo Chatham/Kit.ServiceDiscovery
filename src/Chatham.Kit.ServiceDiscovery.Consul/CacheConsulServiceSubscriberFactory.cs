@@ -23,10 +23,10 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 
         public ICacheServiceSubscriber CreateSubscriber(string serviceName)
         {
-            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default, CancellationToken.None);
+            return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default);
         }
 
-        public ICacheServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options, CancellationToken ct)
+        public ICacheServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options)
         {
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly, true);
             var throttle = new Throttle(5, TimeSpan.FromSeconds(10));
