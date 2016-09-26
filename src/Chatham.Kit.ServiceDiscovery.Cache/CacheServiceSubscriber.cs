@@ -151,6 +151,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     _cts.Cancel();
                 }
                 _cts.Dispose();
+                _mutex.Dispose();
                 _throttle.Dispose();
             }
 
