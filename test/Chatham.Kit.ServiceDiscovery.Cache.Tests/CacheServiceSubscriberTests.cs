@@ -139,7 +139,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             var eventWasCalled = false;
             var subscriber = fixture.CreateSut();
-            subscriber.SubscriberChanged += (sender, args) => eventWasCalled = true;
+            subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
 
             await subscriber.Endpoints();
             await Task.Delay(1250).ContinueWith(async t =>
@@ -177,7 +177,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             var eventWasCalled = false;
             var subscriber = fixture.CreateSut();
-            subscriber.SubscriberChanged += (sender, args) => eventWasCalled = true;
+            subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
 
             await subscriber.Endpoints();
             await Task.Delay(1250).ContinueWith(async t =>
@@ -225,7 +225,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             var eventWasCalled = false;
             var subscriber = fixture.CreateSut();
-            subscriber.SubscriberChanged += (sender, args) => eventWasCalled = true;
+            subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
 
             await subscriber.Endpoints();
             await Task.Delay(1250).ContinueWith(async t =>
