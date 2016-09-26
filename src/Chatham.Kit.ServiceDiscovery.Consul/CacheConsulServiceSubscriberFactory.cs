@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache;
 using Chatham.Kit.ServiceDiscovery.Cache.Internal;
