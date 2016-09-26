@@ -9,6 +9,6 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions
         Task StartSubscription();
         Task StartSubscription(CancellationToken ct);
 
-        event EventHandler SubscriberChanged;
+        event EventHandler EndpointsChanged;
     }
 }
