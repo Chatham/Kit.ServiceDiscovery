@@ -12,7 +12,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
     [ExcludeFromCodeCoverage]
     public static class ConsulServiceCollectionExtensions
     {
-        public static IServiceCollection AddConsulServiceDiscovery(this IServiceCollection services, 
+        public static IServiceCollection AddConsulServiceDiscovery(this IServiceCollection services,
             ConsulClientConfiguration config = null)
         {
             if (services == null)
@@ -27,7 +27,6 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             services.AddCacheServiceSubscriber();
 
             services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(config), ServiceLifetime.Singleton));
-            services.TryAdd(new ServiceDescriptor(typeof(IMemoryCache), p => new MemoryCache(new MemoryCacheOptions()), ServiceLifetime.Transient));
             services.TryAddSingleton<ICacheServiceSubscriberFactory, CacheConsulServiceSubscriberFactory>();
             services.TryAddSingleton<IConsulServiceRegistrarFactory, ConsulServiceRegistrarFactory>();
 

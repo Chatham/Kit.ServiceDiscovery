@@ -16,6 +16,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 throw new ArgumentNullException(nameof(services));
             }
 
+            services.TryAdd(new ServiceDescriptor(typeof(IMemoryCache), p => new MemoryCache(new MemoryCacheOptions()), ServiceLifetime.Transient));
             services.TryAddTransient<ICacheClient, CacheClient>();
 
             return services;
