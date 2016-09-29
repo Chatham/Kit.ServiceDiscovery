@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache;
 using Consul;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
