@@ -2,11 +2,11 @@
 
 Kit is a .NET Core toolkit for microservices that is heavily inspired by [go-kit](https://gokit.io/). The goal of Kit is to provide a common set of abstractions for platform components of a microservice framework.
 
-The Service Discovery packages provide a set of absractions for pluggable service discovery into the toolkit.
+The Service Discovery packages provide a set of abstractions for pluggable service discovery into the toolkit.
 
 ## Packages
 
-* [Absractions](src/Chatham.Kit.ServiceDiscovery.Absractions) - Common absractions for service discovery
+* [Abstractions](src/Chatham.Kit.ServiceDiscovery.Abstractions) - Common abstractions for service discovery
 * [Cache](src/Chatham.Kit.ServiceDiscovery.Cache) - A caching/throttling discovery provider that can be chained with other discovery providers
 * [Consul](src/Chatham.Kit.ServiceDiscovery.Consul) - A [consul](https://www.consul.io/) service discovery provider
 * [LoadBalancer](src/Chatham.Kit.ServiceDiscovery.LoadBalancer) - Add load balancing algorithms to service discovery providers
