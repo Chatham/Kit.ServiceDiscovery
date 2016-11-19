@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Chatham.Kit.ServiceDiscovery.Abstractions
 {
-    [ExcludeFromCodeCoverage]
     public class ServiceSubscriberOptions
     {
         public static readonly ServiceSubscriberOptions Default = new ServiceSubscriberOptions();

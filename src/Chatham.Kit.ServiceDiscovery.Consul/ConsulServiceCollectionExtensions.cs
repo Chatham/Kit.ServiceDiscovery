@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache;
 using Consul;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    [ExcludeFromCodeCoverage]
     public static class ConsulServiceCollectionExtensions
     {
         public static IServiceCollection AddConsulServiceDiscovery(this IServiceCollection services,

@@ -16,7 +16,7 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions
         {
             if (scheme == null)
             {
-                scheme = Uri.UriSchemeHttp;
+                scheme = "http";
             }
 
             var builder = new UriBuilder(scheme, Host, Port);

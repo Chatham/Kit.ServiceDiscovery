@@ -4,13 +4,19 @@
   "dependencies": {
     "Chatham.Kit.ServiceDiscovery.Abstractions": "1.0.0-*",
     "Chatham.Kit.ServiceDiscovery.Cache": "1.0.0-*",
-    "Consul": "0.6.4.7",
+    "Consul": "0.7.0",
     "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0"
   },
 
   "frameworks": {
-    "net461": {}
+    "net461": {},
+    "netstandard1.3": {
+      "imports": "dnxcore50",
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      }
+    }
   }
 }

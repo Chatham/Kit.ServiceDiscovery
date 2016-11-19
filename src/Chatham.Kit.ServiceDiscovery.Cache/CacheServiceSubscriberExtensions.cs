@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
-    [ExcludeFromCodeCoverage]
     public static class CacheServiceSubscriberExtensions
     {
         public static IServiceCollection AddCacheServiceSubscriber(this IServiceCollection services)

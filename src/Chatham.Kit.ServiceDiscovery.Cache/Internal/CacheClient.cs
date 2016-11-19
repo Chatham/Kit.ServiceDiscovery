@@ -1,10 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache.Internal
 {
     //pass-through class
-    [ExcludeFromCodeCoverage]
     public class CacheClient : ICacheClient
     {
         private readonly IMemoryCache _cache;
