@@ -1,4 +1,4 @@
-# Kit - Service Discovery
+# Kit - Service Discovery [![Build status](https://ci.appveyor.com/api/projects/status/76paor2p95qipdtr/branch/master?svg=true)](https://ci.appveyor.com/project/chatham/kit-servicediscovery/branch/master)
 
 Kit is a .NET Core toolkit for microservices that is heavily inspired by [go-kit](https://gokit.io/). The goal of Kit is to provide a common set of abstractions for platform components of a microservice framework.
 
