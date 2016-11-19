@@ -4,6 +4,10 @@ Kit is a .NET Core toolkit for microservices that is heavily inspired by [go-kit
 
 The Service Discovery packages provide a set of abstractions for pluggable service discovery into the toolkit.
 
+## Status
+
+This project is still in development and subject to change.  Please create an issue with any feedback.
+
 ## Packages
 
 * [Abstractions](src/Chatham.Kit.ServiceDiscovery.Abstractions) - Common abstractions for service discovery
