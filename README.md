@@ -15,6 +15,10 @@ This project is still in development and subject to change.  Please create an is
 * [Consul](src/Chatham.Kit.ServiceDiscovery.Consul) - A [consul](https://www.consul.io/) service discovery provider
 * [LoadBalancer](src/Chatham.Kit.ServiceDiscovery.LoadBalancer) - Add load balancing algorithms to service discovery providers
 
+## Diagram
+
+![Kit Service Discovery Diagram](docs/kit-service-discovery-diagram.png)
+
 ## Example
 
 A full working example can be found in the [samples](samples/) directory.  
