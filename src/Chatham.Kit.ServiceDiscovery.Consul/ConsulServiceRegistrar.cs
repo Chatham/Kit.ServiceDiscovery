@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Consul;
@@ -20,9 +21,9 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _serviceRegistration = serviceRegistration;
         }
 
-        public async Task Register()
+        public async Task Register(CancellationToken ct)
         {
-            var registrationResult = await _client.Agent.ServiceRegister(_serviceRegistration);
+            var registrationResult = await _client.Agent.ServiceRegister(_serviceRegistration, ct);
             if (IsSuccessfulStatus(registrationResult.StatusCode))
             {
                 _log.LogInformation(
@@ -34,9 +35,9 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             }
         }
 
-        public async Task Deregister()
+        public async Task Deregister(CancellationToken ct)
         {
-            var deregistrationResult = await _client.Agent.ServiceDeregister(_serviceRegistration.ID);
+            var deregistrationResult = await _client.Agent.ServiceDeregister(_serviceRegistration.ID, ct);
             if (IsSuccessfulStatus(deregistrationResult.StatusCode))
             {
                 _log.LogInformation(
