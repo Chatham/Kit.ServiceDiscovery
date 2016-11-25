@@ -34,7 +34,7 @@ namespace Chatham.Kit.ServiceDiscovery.Throttle
             await _throttleActions.WaitAsync(ct).ConfigureAwait(false);
             try
             {
-                _throttlePeriods.Wait(ct);
+                await _throttlePeriods.WaitAsync(ct).ConfigureAwait(false);
 
                 // Release after period
                 // - Allow bursts up to maxActions requests at once

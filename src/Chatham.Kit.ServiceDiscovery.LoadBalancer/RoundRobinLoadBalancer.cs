@@ -23,24 +23,22 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
                 return null;
             }
 
-            return await _lock.WaitAsync(ct).ContinueWith(t =>
+            await _lock.WaitAsync(ct).ConfigureAwait(false);
+            try
             {
-                try
+                if (_index >= endpoints.Count)
                 {
-                    if (_index >= endpoints.Count)
-                    {
-                        _index = 0;
-                    }
-                    var uri = endpoints[_index];
-                    _index++;
+                    _index = 0;
+                }
+                var uri = endpoints[_index];
+                _index++;
 
-                    return uri;
-                }
-                finally
-                {
-                    _lock.Release();
-                }
-            }, ct).ConfigureAwait(false);
+                return uri;
+            }
+            finally
+            {
+                _lock.Release();
+            }
         }
     }
 }
