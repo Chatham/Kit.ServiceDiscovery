@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{62BBED2D-A6A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{270DD200-059B-4BA3-9C8D-983B38EF3BF3}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-		Build.ps1 = Build.ps1
 		global.json = global.json
 		nuget.config = nuget.config
 	EndProjectSection
@@ -34,6 +32,10 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Cache.Tests", "test\Chatham.Kit.ServiceDiscovery.Cache.Tests\Chatham.Kit.ServiceDiscovery.Cache.Tests.xproj", "{C23FDCEF-CDAB-4125-BE13-94EA28727CD4}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Abstractions.Tests", "test\Chatham.Kit.ServiceDiscovery.Abstractions.Tests\Chatham.Kit.ServiceDiscovery.Abstractions.Tests.xproj", "{7A9BDD98-8141-448E-921E-F34049BF91F0}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Throttle", "src\Chatham.Kit.ServiceDiscovery.Throttle\Chatham.Kit.ServiceDiscovery.Throttle.xproj", "{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Throttle.Tests", "test\Chatham.Kit.ServiceDiscovery.Throttle.Tests\Chatham.Kit.ServiceDiscovery.Throttle.Tests.xproj", "{7A449379-D25E-4DEC-B675-01A1C5942A58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,14 @@ Global
 		{7A9BDD98-8141-448E-921E-F34049BF91F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A9BDD98-8141-448E-921E-F34049BF91F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A9BDD98-8141-448E-921E-F34049BF91F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A449379-D25E-4DEC-B675-01A1C5942A58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A449379-D25E-4DEC-B675-01A1C5942A58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A449379-D25E-4DEC-B675-01A1C5942A58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A449379-D25E-4DEC-B675-01A1C5942A58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,5 +101,7 @@ Global
 		{4F117031-49A8-4A4D-B4EF-1E82E37AD0D3} = {62BBED2D-A6A4-4B38-8B9D-CBA6D959AC06}
 		{C23FDCEF-CDAB-4125-BE13-94EA28727CD4} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
 		{7A9BDD98-8141-448E-921E-F34049BF91F0} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
+		{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031} = {62BBED2D-A6A4-4B38-8B9D-CBA6D959AC06}
+		{7A449379-D25E-4DEC-B675-01A1C5942A58} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
 	EndGlobalSection
 EndGlobal

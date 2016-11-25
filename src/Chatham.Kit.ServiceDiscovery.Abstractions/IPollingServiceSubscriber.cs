@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 
 namespace Chatham.Kit.ServiceDiscovery.Abstractions
 {
-    public interface ICacheServiceSubscriber : IServiceSubscriber, IDisposable
+    public interface IPollingServiceSubscriber : IServiceSubscriber
     {
-        Task StartSubscription();
-        Task StartSubscription(CancellationToken ct);
+        Task StartSubscription(CancellationToken ct = default(CancellationToken));
 
         event EventHandler EndpointsChanged;
     }

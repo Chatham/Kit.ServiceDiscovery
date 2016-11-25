@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 
@@ -15,9 +16,9 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer
             _random = seed.HasValue ? new Random(seed.Value) : new Random();
         }
 
-         public async Task<Endpoint> Endpoint()
+         public async Task<Endpoint> Endpoint(CancellationToken ct = default(CancellationToken))
         {
-            var endpoints = await _subscriber.Endpoints().ConfigureAwait(false);
+            var endpoints = await _subscriber.Endpoints(ct).ConfigureAwait(false);
             return endpoints.Count == 0 ? null : endpoints[_random.Next(endpoints.Count)];
         }
     }

@@ -30,12 +30,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _watch = watch;
         }
 
-        public Task<List<Endpoint>> Endpoints()
-        {
-            return Endpoints(CancellationToken.None);
-        }
-
-        public async Task<List<Endpoint>> Endpoints(CancellationToken ct)
+        public async Task<List<Endpoint>> Endpoints(CancellationToken ct = default(CancellationToken))
         {
             // Consul doesn't support more than one tag in its service query method.
             // https://github.com/hashicorp/consul/issues/294
@@ -89,5 +84,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
                 .Where(x => tags.All(x.Service.Tags.Contains))
                 .ToArray();
         }
+
+        public void Dispose() {}
     }
 }

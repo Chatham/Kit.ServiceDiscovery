@@ -21,7 +21,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _serviceRegistration = serviceRegistration;
         }
 
-        public async Task Register(CancellationToken ct)
+        public async Task Register(CancellationToken ct = default(CancellationToken))
         {
             var registrationResult = await _client.Agent.ServiceRegister(_serviceRegistration, ct);
             if (IsSuccessfulStatus(registrationResult.StatusCode))
@@ -35,7 +35,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             }
         }
 
-        public async Task Deregister(CancellationToken ct)
+        public async Task Deregister(CancellationToken ct = default(CancellationToken))
         {
             var deregistrationResult = await _client.Agent.ServiceDeregister(_serviceRegistration.ID, ct);
             if (IsSuccessfulStatus(deregistrationResult.StatusCode))

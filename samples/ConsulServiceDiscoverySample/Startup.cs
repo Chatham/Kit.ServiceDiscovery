@@ -16,7 +16,7 @@ namespace ConsulServiceDiscoverySample
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, 
-            ICacheServiceSubscriberFactory cacheServiceSubscriberFactory)
+            IPollingServiceSubscriberFactory cacheServiceSubscriberFactory)
         {
             loggerFactory.AddConsole();
 

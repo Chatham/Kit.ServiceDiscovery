@@ -11,11 +11,12 @@ This project is still in development and subject to change.  Please create an is
 ## Packages
 
 * [Abstractions](src/Chatham.Kit.ServiceDiscovery.Abstractions) - Common abstractions for service discovery
-* [Cache](src/Chatham.Kit.ServiceDiscovery.Cache) - A caching/throttling discovery provider that can be chained with other discovery providers
+* [Cache](src/Chatham.Kit.ServiceDiscovery.Cache) - A caching discovery provider that can be chained with other discovery providers
 * [Consul](src/Chatham.Kit.ServiceDiscovery.Consul) - A [consul](https://www.consul.io/) service discovery provider
 * [LoadBalancer](src/Chatham.Kit.ServiceDiscovery.LoadBalancer) - Add load balancing algorithms to service discovery providers
+* [Throttle](src/Chatham.Kit.ServiceDiscovery.Throttle) - A throttling discovery provider that can be chained with other discovery providers
 
-## Diagram
+### Diagram
 
 ![Kit Service Discovery Diagram](docs/kit-service-discovery-diagram.png)
 
@@ -23,35 +24,45 @@ This project is still in development and subject to change.  Please create an is
 
 A full working example can be found in the [samples](samples/) directory.  
 
+### Simple
+All requests for endpoints will request directly against the Consul api.
+
 ```csharp
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Chatham.Kit.ServiceDiscovery.Consul;
+var consulClient = new ConsulClient();
+var subscriber = new ConsulServiceSubscriber(client, "FooService", new List<string>(), true, false);
 
-namespace ConsulServiceDiscoverySample
-{
-    public class Startup
-    {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddConsulServiceDiscovery();
-        }
+var endpoints = subscriber.Endpoints();
+```
 
-        public void Configure(IApplicationBuilder app, ICacheServiceSubscriberFactory cacheServiceSubscriberFactory)
-        {
-            var serviceSubscriber = cacheServiceSubscriberFactory.CreateSubscriber("FooService");
+### Caching
+Since the Consul api supports long polling, we can cache the results and provide a background process to poll for changes.
 
-            app.Run(async context =>
-            {
-                var endpoints = await serviceSubscriber.Endpoints();
-                await context.Response.WriteAsync(string.Join(",", endpoints));
-            });
-        }
-    }
-}
+```csharp
+var consulClient = new ConsulClient();
+var subscriber = new ConsulServiceSubscriber(client, "FooService", new List<string>(), true, true);
+
+var cache = new MemoryCache(new MemoryCacheOptions());
+var loggerFactory = new LoggerFactory();
+var pollingSubscriber = new CacheServiceSubscriber(loggerFactory, subscriber, cache);
+
+var endpoints = subscriber.Endpoints();
+```
+
+### Caching and Throttling
+The caching implementation in combination with the throttle implementation can be used for any service discovery platform that does not support long polling.  The throttler is useful also to prevent overloading your service discovery platform with requests.
+
+```csharp
+var consulClient = new ConsulClient();
+var subscriber = new ConsulServiceSubscriber(client, "FooService", new List<string>(), true, true);
+
+// Limit to 5 requests per 10 seconds
+var throttleSubscriber = new ThrottleServiceSubscriber(subscriber, 5, TimeSpan.FromSeconds(10))
+
+var loggerFactory = new LoggerFactory();
+var cache = new MemoryCache(new MemoryCacheOptions());
+var pollingSubscriber = new CacheServiceSubscriber(loggerFactory, throttleSubscriber, cache);
+
+var endpoints = subscriber.Endpoints();
 ```
 
 ## Contributing

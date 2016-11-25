@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
@@ -10,7 +9,6 @@ using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 {
-    [ExcludeFromCodeCoverage]
     public class CacheServiceSubscriberTests
     {
         [Fact]
@@ -18,9 +16,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
         {
             var fixture = new CacheServiceSubscriberFixture();
             fixture.ServiceSubscriber.Endpoints().Returns(Task.FromResult(new List<Endpoint>()));
-            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(new List<Endpoint>()))
-                .AndDoes(async x => await Task.Delay(1000));
 
             var subscriber = fixture.CreateSut();
             await subscriber.Endpoints();
@@ -132,18 +127,15 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             var fixture = new CacheServiceSubscriberFixture();
             fixture.ServiceSubscriber.Endpoints()
-                .Returns(Task.FromResult(result1));
-            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(result1), Task.FromResult(result2))
-                .AndDoes(x => Thread.Sleep(500));
+                .Returns(Task.FromResult(result1), Task.FromResult(result2));
 
             var eventWasCalled = false;
-            var subscriber = fixture.CreateSut();
-            subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
-
-            await subscriber.Endpoints();
-            await Task.Delay(1250).ContinueWith(async t =>
+            using (var subscriber = fixture.CreateSut())
             {
+                subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
+
+                await subscriber.Endpoints();
+                Thread.Sleep(1000);
                 Received.InOrder(() =>
                 {
                     fixture.Cache.Set(Arg.Any<string>(), result1);
@@ -151,9 +143,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 });
 
                 fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
-                await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
                 Assert.True(eventWasCalled);
-            });
+            }
         }
 
         [Fact]
@@ -171,23 +162,17 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
             var fixture = new CacheServiceSubscriberFixture();
             fixture.ServiceSubscriber.Endpoints()
                 .Returns(Task.FromResult(result));
-            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(result), Task.FromResult(result))
-                .AndDoes(x => Thread.Sleep(500));
 
             var eventWasCalled = false;
-            var subscriber = fixture.CreateSut();
-            subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
-
-            await subscriber.Endpoints();
-            await Task.Delay(1250).ContinueWith(async t =>
+            using (var subscriber = fixture.CreateSut())
             {
+                subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
+
+                await subscriber.Endpoints();
+                Thread.Sleep(1000);
                 fixture.Cache.Received(1).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
-                await
-                    fixture.Throttle.Received(3)
-                        .Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
                 Assert.False(eventWasCalled);
-            });
+            }
         }
         
         [Fact]
@@ -218,18 +203,16 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             var fixture = new CacheServiceSubscriberFixture();
             fixture.ServiceSubscriber.Endpoints()
-                .Returns(Task.FromResult(result1));
-            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(result1), Task.FromResult(result2))
-                .AndDoes(x => Thread.Sleep(500));
+                .Returns(Task.FromResult(result1), Task.FromResult(result2));
 
             var eventWasCalled = false;
-            var subscriber = fixture.CreateSut();
-            subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
-
-            await subscriber.Endpoints();
-            await Task.Delay(1250).ContinueWith(async t =>
+            using (var subscriber = fixture.CreateSut())
             {
+                subscriber.EndpointsChanged += (sender, args) => eventWasCalled = true;
+
+                await subscriber.StartSubscription();
+                await subscriber.Endpoints();
+                Thread.Sleep(1000);
                 Received.InOrder(() =>
                 {
                     fixture.Cache.Set(Arg.Any<string>(), result1);
@@ -237,9 +220,8 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 });
 
                 fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
-                await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
                 Assert.True(eventWasCalled);
-            });
+            }
         }
 
         [Fact]
@@ -270,16 +252,12 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
             var fixture = new CacheServiceSubscriberFixture();
             fixture.ServiceSubscriber.Endpoints()
-                .Returns(Task.FromResult(result1));
-            fixture.Throttle.Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>())
-                .Returns(Task.FromResult(result1), Task.FromResult(result2))
-                .AndDoes(x => Thread.Sleep(500));
-            
-            var subscriber = fixture.CreateSut();
+                .Returns(Task.FromResult(result1), Task.FromResult(result2));
 
-            await subscriber.Endpoints();
-            await Task.Delay(1250).ContinueWith(async t =>
+            using (var subscriber = fixture.CreateSut())
             {
+                Thread.Sleep(1000);
+                await subscriber.Endpoints();
                 Received.InOrder(() =>
                 {
                     fixture.Cache.Set(Arg.Any<string>(), result1);
@@ -287,9 +265,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 });
 
                 fixture.Cache.Received(2).Set(Arg.Any<string>(), Arg.Any<List<Endpoint>>());
-                await fixture.Throttle.Received(3).Queue(Arg.Any<Func<Task<List<Endpoint>>>>(), Arg.Any<CancellationToken>());
-            });
+            }
         }
-        
     }
 }

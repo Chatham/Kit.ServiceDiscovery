@@ -1,13 +1,13 @@
-﻿using System;
-using Chatham.Kit.ServiceDiscovery.Abstractions;
+﻿using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache;
 using Chatham.Kit.ServiceDiscovery.Cache.Internal;
+using Chatham.Kit.ServiceDiscovery.Throttle;
 using Consul;
 using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    public class CacheConsulServiceSubscriberFactory : ICacheServiceSubscriberFactory
+    public class CacheConsulServiceSubscriberFactory : IPollingServiceSubscriberFactory
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly IConsulClient _client;
@@ -20,16 +20,16 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _cache = cache;
         }
 
-        public ICacheServiceSubscriber CreateSubscriber(string serviceName)
+        public IPollingServiceSubscriber CreateSubscriber(string serviceName)
         {
             return CreateSubscriber(serviceName, ServiceSubscriberOptions.Default);
         }
 
-        public ICacheServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options)
+        public IPollingServiceSubscriber CreateSubscriber(string serviceName, ServiceSubscriberOptions options)
         {
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly, true);
-            var throttle = new Throttle(5, TimeSpan.FromSeconds(10));
-            return new CacheServiceSubscriber(_loggerFactory, consulSubscriber, _cache, throttle);
+            var throttleSubscriber = new ThrottleServiceSubscriber(consulSubscriber, options.MaxUpdatesPerPeriod, options.MaxUpdatesPeriod);
+            return new CacheServiceSubscriber(_loggerFactory, throttleSubscriber, _cache);
         }
     }
 }

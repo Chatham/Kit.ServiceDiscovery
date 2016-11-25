@@ -23,7 +23,6 @@ namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
             Assert.Null(actual);
         }
 
-
         [Fact]
         public async Task Endpoint_OneEndpoint_ReturnsEndpoint()
         {

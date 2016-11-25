@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Microsoft.Extensions.Logging;
-using System.Linq;
 using Chatham.Kit.ServiceDiscovery.Cache.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
-    public class CacheServiceSubscriber : ICacheServiceSubscriber
+    public class CacheServiceSubscriber : IPollingServiceSubscriber
     {
         private bool _disposed;
 
@@ -23,27 +23,21 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
 
         private Task _subscriptionTask;
         private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
-        private readonly IThrottle _throttle;
+
 
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler EndpointsChanged;
 
         public CacheServiceSubscriber(ILoggerFactory loggerFactory, IServiceSubscriber serviceSubscriber,
-            ICacheClient cache, IThrottle throttle)
+            ICacheClient cache)
         {
             _log = loggerFactory.CreateLogger(nameof(CacheServiceSubscriber));
             _cache = cache;
 
             _serviceSubscriber = serviceSubscriber;
-            _throttle = throttle;
         }
 
-        public Task<List<Endpoint>> Endpoints()
-        {
-            return Endpoints(CancellationToken.None);
-        }
-
-        public async Task<List<Endpoint>> Endpoints(CancellationToken ct)
+        public async Task<List<Endpoint>> Endpoints(CancellationToken ct = default(CancellationToken))
         {
             if (_disposed)
             {
@@ -64,7 +58,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         {
             if (_subscriptionTask == null)
             {
-                await _mutex.WaitAsync(ct);
+                await _mutex.WaitAsync(ct).ConfigureAwait(false);
                 try
                 {
                     if (_subscriptionTask == null)
@@ -95,9 +89,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     _log.LogTrace($"Iteration of subscription loop for {ServiceName}.");
                     try
                     {
-                        var currentEndpoints =
-                            await await _throttle.Queue(_serviceSubscriber.Endpoints, _cts.Token)
-                                .ConfigureAwait(false);
+                        var currentEndpoints = await _serviceSubscriber.Endpoints();
 
                         if (!EndpointListsMatch(previousEndpoints, currentEndpoints))
                         {
@@ -152,7 +144,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 }
                 _cts.Dispose();
                 _mutex.Dispose();
-                _throttle.Dispose();
+                _serviceSubscriber.Dispose();
             }
 
             _cache.Remove(_id);
