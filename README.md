@@ -22,7 +22,6 @@ This project is still in development and subject to change.  Please create an is
 
 ### Diagram
 
-Example chained subscribers:
 ![Kit Service Discovery Diagram](docs/kit-service-discovery-diagram.png)
 
 ## Example
