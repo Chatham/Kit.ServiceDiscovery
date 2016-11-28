@@ -1,9 +1,9 @@
-<#  
+<#
 .SYNOPSIS
     You can add this to you build script to ensure that psbuild is available before calling
     Invoke-MSBuild. If psbuild is not available locally it will be downloaded automatically.
 #>
-function EnsurePsbuildInstalled{  
+function EnsurePsbuildInstalled{
     [cmdletbinding()]
     param(
         [string]$psbuildInstallUri = 'https://raw.githubusercontent.com/ligershark/psbuild/master/src/GetPSBuild.ps1'
@@ -26,7 +26,7 @@ function EnsurePsbuildInstalled{
 
 # Taken from psake https://github.com/psake/psake
 
-<#  
+<#
 .SYNOPSIS
   This is a helper function that runs a scriptblock and checks the PS variable $lastexitcode
   to see if an error occcured. If an error is detected then an exception is thrown.
@@ -35,7 +35,7 @@ function EnsurePsbuildInstalled{
 .EXAMPLE
   exec { svn info $repository_trunk } "Error executing SVN. Please verify SVN command-line client is installed"
 #>
-function Exec  
+function Exec
 {
     [CmdletBinding()]
     param(
@@ -63,9 +63,10 @@ exec { & dotnet test .\test\Chatham.Kit.ServiceDiscovery.Abstractions.Tests -c R
 exec { & dotnet test .\test\Chatham.Kit.ServiceDiscovery.Cache.Tests -c Release }
 exec { & dotnet test .\test\Chatham.Kit.ServiceDiscovery.Consul.Tests -c Release }
 exec { & dotnet test .\test\Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests -c Release }
+exec { & dotnet test .\test\Chatham.Kit.ServiceDiscovery.Throttle.Tests -c Release }
 
-exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Abstractions -c Release -o .\artifacts --version-suffix=ci$revision }  
-exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Cache -c Release -o .\artifacts --version-suffix=ci$revision }  
-exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Consul -c Release -o .\artifacts --version-suffix=ci$revision }  
-exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.LoadBalancer -c Release -o .\artifacts --version-suffix=ci$revision }  
- 
+exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Abstractions -c Release -o .\artifacts --version-suffix=ci$revision }
+exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Cache -c Release -o .\artifacts --version-suffix=ci$revision }
+exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Consul -c Release -o .\artifacts --version-suffix=ci$revision }
+exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.LoadBalancer -c Release -o .\artifacts --version-suffix=ci$revision }
+exec { & dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Throttle -c Release -o .\artifacts --version-suffix=ci$revision }  
