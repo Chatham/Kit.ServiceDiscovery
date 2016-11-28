@@ -11,8 +11,12 @@ This project is still in development and subject to change.  Please create an is
 ## Packages
 
 * [Abstractions](src/Chatham.Kit.ServiceDiscovery.Abstractions) - Common abstractions for service discovery
-* [Cache](src/Chatham.Kit.ServiceDiscovery.Cache) - A caching discovery provider that can be chained with other discovery providers
+
+### Supported Providers
 * [Consul](src/Chatham.Kit.ServiceDiscovery.Consul) - A [consul](https://www.consul.io/) service discovery provider
+
+### Helpers
+* [Cache](src/Chatham.Kit.ServiceDiscovery.Cache) - A caching discovery provider that can be chained with other discovery providers
 * [LoadBalancer](src/Chatham.Kit.ServiceDiscovery.LoadBalancer) - Add load balancing algorithms to service discovery providers
 * [Throttle](src/Chatham.Kit.ServiceDiscovery.Throttle) - A throttling discovery provider that can be chained with other discovery providers
 
