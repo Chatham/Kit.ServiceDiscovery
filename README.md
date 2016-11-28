@@ -63,7 +63,7 @@ var loggerFactory = new LoggerFactory();
 var cache = new MemoryCache(new MemoryCacheOptions());
 var pollingSubscriber = new CacheServiceSubscriber(loggerFactory, throttleSubscriber, cache);
 
-var pollingSubscriber = subscriber.Endpoints();
+var endpoints = pollingSubscriber.Endpoints();
 ```
 
 ## Contributing
