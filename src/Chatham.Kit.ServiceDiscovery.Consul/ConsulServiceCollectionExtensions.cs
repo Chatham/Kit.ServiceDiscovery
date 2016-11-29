@@ -24,10 +24,32 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             services.AddCacheServiceSubscriber();
 
             services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(config), ServiceLifetime.Singleton));
-            services.TryAddSingleton<IPollingServiceSubscriberFactory, CacheConsulServiceSubscriberFactory>();
+            services.TryAddSingleton<IPollingServiceSubscriberFactory, ConsulCacheServiceSubscriberFactory>();
             services.TryAddSingleton<IConsulServiceRegistrarFactory, ConsulServiceRegistrarFactory>();
 
             return services;
         }
+
+        public static IServiceCollection AddConsulPreparedQueryServiceDiscovery(this IServiceCollection services,
+            ConsulClientConfiguration config = null)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+            if (config == null)
+            {
+                config = new ConsulClientConfiguration();
+            }
+
+            services.AddCacheServiceSubscriber();
+
+            services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(config), ServiceLifetime.Singleton));
+            services.TryAddSingleton<IPollingServiceSubscriberFactory, ConsulCachePreparedQueryServiceSubscriberFactory>();
+            services.TryAddSingleton<IConsulServiceRegistrarFactory, ConsulServiceRegistrarFactory>();
+
+            return services;
+        }
+
     }
 }

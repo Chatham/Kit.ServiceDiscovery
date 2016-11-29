@@ -61,21 +61,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
                 WaitIndex = servicesTask.LastIndex;
             }
 
-            return CreateEndpointUris(servicesTask.Response);
-        }
-
-        private static List<Endpoint> CreateEndpointUris(IEnumerable<ServiceEntry> services)
-        {
-            var serviceUris = new List<Endpoint>();
-            foreach (var service in services)
-            {
-                var host = !string.IsNullOrWhiteSpace(service.Service.Address)
-                    ? service.Service.Address
-                    : service.Node.Address;
-                var endpoint = new Endpoint { Host = host, Port = service.Service.Port};
-                serviceUris.Add(endpoint);
-            }
-            return serviceUris;
+            return servicesTask.Response.Select(service => service.ToEndpoint()).ToList();
         }
 
         private static ServiceEntry[] FilterByTag(IEnumerable<ServiceEntry> entries, IReadOnlyCollection<string> tags)
