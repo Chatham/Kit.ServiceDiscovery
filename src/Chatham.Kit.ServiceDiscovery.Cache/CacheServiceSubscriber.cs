@@ -28,7 +28,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler EndpointsChanged;
 
-        public CacheServiceSubscriber(ILoggerFactory loggerFactory, IServiceSubscriber serviceSubscriber,
+        public CacheServiceSubscriber(IServiceSubscriber serviceSubscriber, ILoggerFactory loggerFactory,
             ICacheClient cache)
         {
             _log = loggerFactory.CreateLogger(nameof(CacheServiceSubscriber));

@@ -20,7 +20,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
         public IPollingServiceSubscriber CreateSut()
         {
-            return new CacheServiceSubscriber(LoggerFactory, ServiceSubscriber, Cache);
+            return new CacheServiceSubscriber(ServiceSubscriber, LoggerFactory, Cache);
         }
     }
 }
