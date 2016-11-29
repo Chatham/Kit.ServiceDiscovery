@@ -7,13 +7,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
-    public class CacheConsulServiceSubscriberFactory : IPollingServiceSubscriberFactory
+    public class ConsulCacheServiceSubscriberFactory : IPollingServiceSubscriberFactory
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly IConsulClient _client;
         private readonly ICacheClient _cache;
 
-        public CacheConsulServiceSubscriberFactory(ILoggerFactory loggerFactory, IConsulClient consulClient, ICacheClient cache)
+        public ConsulCacheServiceSubscriberFactory(ILoggerFactory loggerFactory, IConsulClient consulClient, ICacheClient cache)
         {
             _loggerFactory = loggerFactory;
             _client = consulClient;
@@ -29,7 +29,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
         {
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, options.Tags, options.PassingOnly, true);
             var throttleSubscriber = new ThrottleServiceSubscriber(consulSubscriber, options.MaxUpdatesPerPeriod, options.MaxUpdatesPeriod);
-            return new CacheServiceSubscriber(_loggerFactory, throttleSubscriber, _cache);
+            return new CacheServiceSubscriber(throttleSubscriber, _loggerFactory, _cache);
         }
     }
 }
