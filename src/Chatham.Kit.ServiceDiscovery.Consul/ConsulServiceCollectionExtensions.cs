@@ -24,7 +24,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             services.AddCacheServiceSubscriber();
 
             services.TryAdd(new ServiceDescriptor(typeof(IConsulClient), p => new ConsulClient(config), ServiceLifetime.Singleton));
-            services.TryAddSingleton<IPollingServiceSubscriberFactory, CacheConsulServiceSubscriberFactory>();
+            services.TryAddSingleton<IPollingServiceSubscriberFactory, ConsulCacheServiceSubscriberFactory>();
             services.TryAddSingleton<IConsulServiceRegistrarFactory, ConsulServiceRegistrarFactory>();
 
             return services;
