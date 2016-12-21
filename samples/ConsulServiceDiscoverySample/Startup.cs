@@ -1,10 +1,10 @@
-﻿using Chatham.Kit.ServiceDiscovery.Abstractions;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Chatham.Kit.ServiceDiscovery.Consul;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ConsulServiceDiscoverySample
 {
@@ -13,10 +13,11 @@ namespace ConsulServiceDiscoverySample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddConsulServiceDiscovery();
+            services.TryAddSingleton<IServiceSubscriberFactory, ServiceSubscriberFactory>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, 
-            IPollingServiceSubscriberFactory cacheServiceSubscriberFactory)
+            IServiceSubscriberFactory subscriberFactory)
         {
             loggerFactory.AddConsole();
 
@@ -26,7 +27,7 @@ namespace ConsulServiceDiscoverySample
             }
 
             var log = loggerFactory.CreateLogger(nameof(Startup));
-            var serviceSubscriber = cacheServiceSubscriberFactory.CreateSubscriber("FooService");
+            var serviceSubscriber = subscriberFactory.CreateSubscriber("FooService");
             serviceSubscriber.StartSubscription();
             serviceSubscriber.EndpointsChanged += async (sender, eventArgs) =>
             {
