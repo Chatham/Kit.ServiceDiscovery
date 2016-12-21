@@ -20,10 +20,6 @@ This project is still in development and subject to change.  Please create an is
 * [LoadBalancer](src/Chatham.Kit.ServiceDiscovery.LoadBalancer) - Add load balancing algorithms to service discovery providers
 * [Throttle](src/Chatham.Kit.ServiceDiscovery.Throttle) - A throttling discovery provider that can be chained with other discovery providers
 
-### Diagram
-
-![Kit Service Discovery Diagram](docs/kit-service-discovery-diagram.png)
-
 ## Example
 
 A full working example can be found in the [samples](samples/) directory.  
@@ -69,6 +65,6 @@ var pollingSubscriber = new CacheServiceSubscriber(loggerFactory, throttleSubscr
 var endpoints = pollingSubscriber.Endpoints();
 ```
 
-## Contributing
+#### Diagram
 
-Please see [CONTRIBUTING.md](/CONTRIBUTING.md).
+![Kit Service Discovery Diagram](docs/kit-service-discovery-diagram.png)
