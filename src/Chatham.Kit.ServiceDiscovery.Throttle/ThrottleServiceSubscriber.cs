@@ -16,6 +16,9 @@ namespace Chatham.Kit.ServiceDiscovery.Throttle
 
         public string ServiceName => _serviceSubscriber.ServiceName;
 
+        public ThrottleServiceSubscriber(IServiceSubscriber serviceSubscriber, ThrottleSubscriberOptions throttleOptions)
+            : this(serviceSubscriber, throttleOptions.MaxUpdatesPerPeriod, throttleOptions.MaxUpdatesPeriod) { }
+
         public ThrottleServiceSubscriber(IServiceSubscriber serviceSubscriber, int maxActions, TimeSpan maxPeriod)
         {
             _serviceSubscriber = serviceSubscriber;
