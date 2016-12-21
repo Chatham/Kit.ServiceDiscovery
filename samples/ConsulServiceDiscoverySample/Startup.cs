@@ -13,7 +13,7 @@ namespace ConsulServiceDiscoverySample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddConsulServiceDiscovery();
-            services.TryAddSingleton<IServiceSubscriberFactory, ServiceSubscriberFactory>();
+            services.TryAddTransient<IServiceSubscriberFactory, ServiceSubscriberFactory>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, 
