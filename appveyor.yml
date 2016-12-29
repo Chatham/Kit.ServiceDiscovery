@@ -1,38 +1,3 @@
-version: '{build}'
-pull_requests:
-  do_not_increment_build_number: true
-branches:
-  only:
-  - master
-nuget:
-  disable_publish_on_pr: true
-build_script:
-- ps: .\scripts\Build.ps1
-test: off
-artifacts:
-- path: .\artifacts\**\*.nupkg
-  name: NuGet
-deploy:
-- provider: NuGet
-  server: https://www.myget.org/F/chatham/api/v2/package
-  api_key:
-    secure: Zj8bjUB0ykUgS7wA0QDyQcxxKE4nd3lXtEkh3MRTELjGByXUb4P4x9+h2iGTNui1
-  skip_symbols: true
-  on:
-    branch: master
-- provider: NuGet
-  name: production
-  api_key:
-    secure: nzEW6y+XMlS9DGKV5JLUEJqC5CglLPJS65paev8Ps9kXITS+kUS+q3tLGBp2o+96
-  on:
-    branch: master
-    appveyor_repo_tag: true
-notifications:
-  - provider: Email
-    to:
-      - choffman@chathamfinancial.com
-    on_build_status_changed: true
-
 version: 0.1.0.{build}-{branch}
 configuration: Release
 pull_requests:
