@@ -1,8 +1,7 @@
 {
-  "version": "1.0.0-*",
+  "version": "0.1.0-*",
 
   "frameworks": {
-    "net461": {},
     "netstandard1.3": {
       "imports": "dnxcore50",
       "dependencies": {

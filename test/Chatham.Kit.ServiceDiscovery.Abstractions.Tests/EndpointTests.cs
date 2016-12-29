@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.Abstractions.Tests
 {
-    [ExcludeFromCodeCoverage]
     public class EndpointTests
     {
         [Fact]
@@ -18,7 +16,7 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions.Tests
 
             var actual = endpoint.ToUri();
 
-            Assert.Equal(Uri.UriSchemeHttp, actual.Scheme);
+            Assert.Equal("http", actual.Scheme);
         }
 
         [Fact]
@@ -28,12 +26,12 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions.Tests
             {
                 Host = Guid.NewGuid().ToString(),
                 Port = 123,
-                Scheme = Uri.UriSchemeHttps
+                Scheme = "https"
             };
 
             var actual = endpoint.ToUri();
 
-            Assert.Equal(Uri.UriSchemeHttps, actual.Scheme);
+            Assert.Equal("https", actual.Scheme);
         }
 
         [Fact]

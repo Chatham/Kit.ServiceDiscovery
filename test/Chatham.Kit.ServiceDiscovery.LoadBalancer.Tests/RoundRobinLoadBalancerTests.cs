@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
@@ -9,7 +8,6 @@ using Xunit;
 
 namespace Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests
 {
-    [ExcludeFromCodeCoverage]
     public class RoundRobinLoadBalancerTests
     {
         [Fact]

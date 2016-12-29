@@ -2,8 +2,8 @@
   "version": "1.0.0-*",
   "testRunner": "xunit",
   "dependencies": {
-    "Chatham.Kit.ServiceDiscovery.Abstractions": "1.0.0-*",
-    "Chatham.Kit.ServiceDiscovery.Consul": "1.0.0-*",
+    "Chatham.Kit.ServiceDiscovery.Abstractions": "0.1.0-*",
+    "Chatham.Kit.ServiceDiscovery.Consul": "0.1.0-*",
     "Consul": "0.7.0.4",
     "xunit": "2.2.0-beta2-build3300",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
@@ -12,6 +12,16 @@
   },
 
   "frameworks": {
-    "net461": {}
+    "netcoreapp1.1": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.0"
+        }
+      },
+      "imports": [
+        "dnxcore50"
+      ]
+    }
   }
 }
