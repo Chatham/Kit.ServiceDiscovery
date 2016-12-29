@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using Consul;
 using Microsoft.Extensions.Logging;

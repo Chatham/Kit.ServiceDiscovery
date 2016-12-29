@@ -18,6 +18,9 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 
         public string ServiceName { get; }
 
+        public ConsulServiceSubscriber(IConsulClient client, string serviceName, ConsulSubscriberOptions consulOptions,
+            bool watch) : this(client, serviceName, consulOptions.Tags, consulOptions.PassingOnly, watch) { }
+
         public ConsulServiceSubscriber(IConsulClient client, string serviceName, List<string> tags,
             bool passingOnly, bool watch)
         {

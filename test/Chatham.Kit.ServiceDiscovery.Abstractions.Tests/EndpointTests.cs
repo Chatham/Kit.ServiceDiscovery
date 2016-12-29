@@ -27,10 +27,11 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions.Tests
             var endpoint = new Endpoint
             {
                 Host = Guid.NewGuid().ToString(),
-                Port = 123
+                Port = 123,
+                Scheme = Uri.UriSchemeHttps
             };
 
-            var actual = endpoint.ToUri(Uri.UriSchemeHttps);
+            var actual = endpoint.ToUri();
 
             Assert.Equal(Uri.UriSchemeHttps, actual.Scheme);
         }
