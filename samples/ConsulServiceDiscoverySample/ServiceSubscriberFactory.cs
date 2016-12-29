@@ -39,6 +39,5 @@ namespace ConsulServiceDiscoverySample
             var throttleSubscriber = new ThrottleServiceSubscriber(consulSubscriber, throttleOptions.MaxUpdatesPerPeriod, throttleOptions.MaxUpdatesPeriod);
             return new CacheServiceSubscriber(throttleSubscriber, _loggerFactory, _cache);
         }
-
     }
 }
