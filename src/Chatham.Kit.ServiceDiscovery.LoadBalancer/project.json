@@ -1,5 +1,11 @@
 ﻿{
+  "name": "Chatham.Kit.ServiceDiscovery.LoadBalancer",
+  "description": "Service discovery kit for .NET microservices - Load Balancer",
   "version": "0.1.0-*",
+  "authors": [
+    "Chatham Financial Corp."
+  ],
+  "copyright": "Copyright 2016 Chatham Financial Corp.",
 
   "dependencies": {
     "Chatham.Kit.ServiceDiscovery.Abstractions": "0.1.0-*",
@@ -13,5 +19,19 @@
         "NETStandard.Library": "1.6.0"
       }
     }
+  },
+
+  "packOptions": {
+    "owners": [
+      "chathamfin"
+    ],
+    "iconUrl": "https://avatars0.githubusercontent.com/u/1318667?v=3&s=140",
+    "projectUrl": "https://github.com/Chatham/Kit.ServiceDiscovery/",
+    "licenseUrl": "https://github.com/Chatham/Kit.ServiceDiscovery/blob/master/LICENSE",
+    "tags": [
+      "kit",
+      "microservices",
+      "chatham"
+    ]
   }
 }
