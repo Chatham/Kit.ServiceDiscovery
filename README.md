@@ -60,7 +60,7 @@ var throttleSubscriber = new ThrottleServiceSubscriber(subscriber, 5, TimeSpan.F
 
 var loggerFactory = new LoggerFactory();
 var cache = new MemoryCache(new MemoryCacheOptions());
-var pollingSubscriber = new CacheServiceSubscriber(loggerFactory, throttleSubscriber, cache);
+var pollingSubscriber = new CacheServiceSubscriber(throttleSubscriber, loggerFactory, cache);
 
 var endpoints = pollingSubscriber.Endpoints();
 ```
