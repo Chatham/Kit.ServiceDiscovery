@@ -1,7 +1,7 @@
 {
   "name": "Chatham.Kit.ServiceDiscovery.Cache",
   "description": "Service discovery kit for .NET microservices - Cache",
-  "version": "0.1.0",
+  "version": "0.1.1-*",
   "authors": [
     "Chatham Financial Corp."
   ],
