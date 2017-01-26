@@ -12,7 +12,7 @@
     "Microsoft.Extensions.Caching.Memory": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "Chatham.Kit.ServiceDiscovery.Abstractions": "0.1.0-*"
+    "Chatham.Kit.ServiceDiscovery.Abstractions": "0.1.1-*"
   },
 
   "frameworks": {
