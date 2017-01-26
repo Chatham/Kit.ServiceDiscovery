@@ -14,7 +14,6 @@ namespace ConsulServiceDiscoverySample
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IConsulClient, ConsulClient>();
             services.AddCacheServiceSubscriber();
             services.AddConsulServiceDiscovery();
             services.TryAddTransient<IServiceSubscriberFactory, ServiceSubscriberFactory>();

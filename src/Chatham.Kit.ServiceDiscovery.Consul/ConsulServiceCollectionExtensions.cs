@@ -1,5 +1,7 @@
 ﻿using System;
+using Consul;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Chatham.Kit.ServiceDiscovery.Consul
 {
@@ -12,6 +14,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
                 throw new ArgumentNullException(nameof(services));
             }
 
+            services.TryAddSingleton<IConsulClient, ConsulClient>();
             services.AddSingleton<IConsulServiceSubscriberFactory, ConsulServiceSubscriberFactory>();
             services.AddSingleton<IConsulServiceRegistrarFactory, ConsulServiceRegistrarFactory>();
 
