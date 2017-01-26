@@ -1,6 +1,5 @@
 ﻿using System;
 using Chatham.Kit.ServiceDiscovery.Cache.Internal;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -15,8 +14,9 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 throw new ArgumentNullException(nameof(services));
             }
 
-            services.TryAdd(new ServiceDescriptor(typeof(IMemoryCache), p => new MemoryCache(new MemoryCacheOptions()), ServiceLifetime.Transient));
-            services.TryAddTransient<ICacheClient, CacheClient>();
+            services.AddMemoryCache();
+            services.TryAddSingleton<ICacheClient, CacheClient>();
+            services.TryAddSingleton<ICacheServiceSubscriberFactory, CacheServiceSubscriberFactory>();
 
             return services;
         }

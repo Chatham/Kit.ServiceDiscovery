@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Chatham.Kit.ServiceDiscovery.Cache;
 using Chatham.Kit.ServiceDiscovery.Consul;
+using Consul;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ConsulServiceDiscoverySample
@@ -12,6 +14,8 @@ namespace ConsulServiceDiscoverySample
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IConsulClient, ConsulClient>();
+            services.AddCacheServiceSubscriber();
             services.AddConsulServiceDiscovery();
             services.TryAddTransient<IServiceSubscriberFactory, ServiceSubscriberFactory>();
         }

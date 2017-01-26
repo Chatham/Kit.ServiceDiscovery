@@ -1,10 +1,7 @@
 ﻿using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache;
-using Chatham.Kit.ServiceDiscovery.Cache.Internal;
 using Chatham.Kit.ServiceDiscovery.Consul;
 using Chatham.Kit.ServiceDiscovery.Throttle;
-using Consul;
-using Microsoft.Extensions.Logging;
 
 namespace ConsulServiceDiscoverySample
 {
@@ -17,13 +14,13 @@ namespace ConsulServiceDiscoverySample
 
     public class ServiceSubscriberFactory : IServiceSubscriberFactory
     {
-        private readonly IConsulClient _client;
-        private readonly ICacheClient _cache;
-
-        public ServiceSubscriberFactory(IConsulClient consulClient, ICacheClient cache)
+        private readonly IConsulServiceSubscriberFactory _consulServiceSubscriberFactory;
+        private readonly ICacheServiceSubscriberFactory _cacheServiceSubscriberFactory;
+   
+        public ServiceSubscriberFactory(IConsulServiceSubscriberFactory consulServiceSubscriberFactory, ICacheServiceSubscriberFactory cacheServiceSubscriberFactory)
         {
-            _client = consulClient;
-            _cache = cache;
+            _consulServiceSubscriberFactory = consulServiceSubscriberFactory;
+            _cacheServiceSubscriberFactory = cacheServiceSubscriberFactory;
         }
 
         public IPollingServiceSubscriber CreateSubscriber(string servicName)
@@ -33,9 +30,9 @@ namespace ConsulServiceDiscoverySample
 
         public IPollingServiceSubscriber CreateSubscriber(string serviceName, ConsulSubscriberOptions consulOptions, ThrottleSubscriberOptions throttleOptions)
         {
-            var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, consulOptions.Tags, consulOptions.PassingOnly, true);
+            var consulSubscriber = _consulServiceSubscriberFactory.CreateConsulSubscriber(serviceName, consulOptions, true);
             var throttleSubscriber = new ThrottleServiceSubscriber(consulSubscriber, throttleOptions.MaxUpdatesPerPeriod, throttleOptions.MaxUpdatesPeriod);
-            return new CacheServiceSubscriber(throttleSubscriber, _cache);
+            return _cacheServiceSubscriberFactory.CreateSubscriber(throttleSubscriber);
         }
     }
 }
