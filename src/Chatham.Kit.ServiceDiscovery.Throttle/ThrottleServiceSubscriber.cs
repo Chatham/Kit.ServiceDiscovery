@@ -14,8 +14,6 @@ namespace Chatham.Kit.ServiceDiscovery.Throttle
         private readonly TimeSpan _maxPeriod;
         private readonly SemaphoreSlim _throttleActions, _throttlePeriods;
 
-        public string ServiceName => _serviceSubscriber.ServiceName;
-
         public ThrottleServiceSubscriber(IServiceSubscriber serviceSubscriber, ThrottleSubscriberOptions throttleOptions)
             : this(serviceSubscriber, throttleOptions.MaxUpdatesPerPeriod, throttleOptions.MaxUpdatesPeriod) { }
 

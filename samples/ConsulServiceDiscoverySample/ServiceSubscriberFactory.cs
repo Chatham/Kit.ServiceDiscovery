@@ -17,13 +17,11 @@ namespace ConsulServiceDiscoverySample
 
     public class ServiceSubscriberFactory : IServiceSubscriberFactory
     {
-        private readonly ILoggerFactory _loggerFactory;
         private readonly IConsulClient _client;
         private readonly ICacheClient _cache;
 
-        public ServiceSubscriberFactory(ILoggerFactory loggerFactory, IConsulClient consulClient, ICacheClient cache)
+        public ServiceSubscriberFactory(IConsulClient consulClient, ICacheClient cache)
         {
-            _loggerFactory = loggerFactory;
             _client = consulClient;
             _cache = cache;
         }
@@ -37,7 +35,7 @@ namespace ConsulServiceDiscoverySample
         {
             var consulSubscriber = new ConsulServiceSubscriber(_client, serviceName, consulOptions.Tags, consulOptions.PassingOnly, true);
             var throttleSubscriber = new ThrottleServiceSubscriber(consulSubscriber, throttleOptions.MaxUpdatesPerPeriod, throttleOptions.MaxUpdatesPeriod);
-            return new CacheServiceSubscriber(throttleSubscriber, _loggerFactory, _cache);
+            return new CacheServiceSubscriber(throttleSubscriber, _cache);
         }
     }
 }

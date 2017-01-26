@@ -11,12 +11,11 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
     {
         private readonly IConsulClient _client;
         private readonly List<string> _tags;
+        private readonly string _serviceName;
         private readonly bool _passingOnly;
         private readonly bool _watch;
 
         internal ulong WaitIndex;
-
-        public string ServiceName { get; }
 
         public ConsulServiceSubscriber(IConsulClient client, string serviceName, ConsulSubscriberOptions consulOptions,
             bool watch) : this(client, serviceName, consulOptions.Tags, consulOptions.PassingOnly, watch) { }
@@ -26,7 +25,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
         {
             _client = client;
 
-            ServiceName = serviceName;
+            _serviceName = serviceName;
             _tags = tags ?? new List<string>();
             _passingOnly = passingOnly;
 
@@ -51,7 +50,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
                 WaitIndex = WaitIndex
             };
             var servicesTask = await 
-                _client.Health.Service(ServiceName, tag, _passingOnly, queryOptions, ct)
+                _client.Health.Service(_serviceName, tag, _passingOnly, queryOptions, ct)
                     .ConfigureAwait(false);
 
             if (_tags.Count > 1)

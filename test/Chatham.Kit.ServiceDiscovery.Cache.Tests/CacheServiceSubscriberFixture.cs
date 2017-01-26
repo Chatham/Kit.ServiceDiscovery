@@ -13,14 +13,13 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 
         public CacheServiceSubscriberFixture()
         {
-            LoggerFactory = Substitute.For<ILoggerFactory>();
             ServiceSubscriber = Substitute.For<IServiceSubscriber>();
             Cache = Substitute.For<ICacheClient>();
         }
 
         public IPollingServiceSubscriber CreateSut()
         {
-            return new CacheServiceSubscriber(ServiceSubscriber, LoggerFactory, Cache);
+            return new CacheServiceSubscriber(ServiceSubscriber, Cache);
         }
     }
 }

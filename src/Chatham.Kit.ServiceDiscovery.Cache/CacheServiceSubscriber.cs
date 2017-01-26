@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Chatham.Kit.ServiceDiscovery.Abstractions;
 using Chatham.Kit.ServiceDiscovery.Cache.Internal;
-using Microsoft.Extensions.Logging;
 
 namespace Chatham.Kit.ServiceDiscovery.Cache
 {
@@ -13,7 +12,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
     {
         private bool _disposed;
 
-        private readonly ILogger _log;
         private readonly ICacheClient _cache;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -25,13 +23,10 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
 
 
-        public string ServiceName => _serviceSubscriber.ServiceName;
         public event EventHandler EndpointsChanged;
 
-        public CacheServiceSubscriber(IServiceSubscriber serviceSubscriber, ILoggerFactory loggerFactory,
-            ICacheClient cache)
+        public CacheServiceSubscriber(IServiceSubscriber serviceSubscriber, ICacheClient cache)
         {
-            _log = loggerFactory.CreateLogger(nameof(CacheServiceSubscriber));
             _cache = cache;
 
             _serviceSubscriber = serviceSubscriber;
@@ -68,11 +63,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                         _subscriptionTask = SubscriptionLoop(serviceUris);
                     }
                 }
-                catch (Exception ex)
-                {
-                    _log.LogError($"Error fetching endpoints for {ServiceName}: {ex}");
-                    throw;
-                }
                 finally
                 {
                     _mutex.Release();
@@ -86,22 +76,20 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             {
                 while (!_cts.IsCancellationRequested)
                 {
-                    _log.LogTrace($"Iteration of subscription loop for {ServiceName}.");
                     try
                     {
                         var currentEndpoints = await _serviceSubscriber.Endpoints();
 
                         if (!EndpointListsMatch(previousEndpoints, currentEndpoints))
                         {
-                            _log.LogDebug($"Received updated endpoints for {ServiceName}");
                             _cache.Set(_id, currentEndpoints);
                             EndpointsChanged?.Invoke(this, EventArgs.Empty);
                             previousEndpoints = currentEndpoints;
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        _log.LogError($"Error fetching endpoints for {ServiceName}: {ex}");
+                        // ignore
                     }
                 }
             }, _cts.Token);
