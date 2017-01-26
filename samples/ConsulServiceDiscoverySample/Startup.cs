@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Chatham.Kit.ServiceDiscovery.Cache;
 using Chatham.Kit.ServiceDiscovery.Consul;
-using Consul;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ConsulServiceDiscoverySample
