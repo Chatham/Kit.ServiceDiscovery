@@ -11,9 +11,9 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions
             return $"{Host}:{Port}";
         }
 
-        public Uri ToUri(string scheme = "http", string basePath = "/")
+        public Uri ToUri(string scheme = "http", string path = "/")
         {
-            var builder = new UriBuilder(scheme, Host, Port, basePath);
+            var builder = new UriBuilder(scheme, Host, Port, path);
             return builder.Uri;
         }
     }
