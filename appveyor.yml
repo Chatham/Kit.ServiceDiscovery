@@ -16,12 +16,14 @@ build_script:
 - dotnet build .\src\Chatham.Kit.ServiceDiscovery.Abstractions -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 - dotnet build .\src\Chatham.Kit.ServiceDiscovery.Cache -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 - dotnet build .\src\Chatham.Kit.ServiceDiscovery.Consul -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+- dotnet build .\src\Chatham.Kit.ServiceDiscovery.Fixed -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 - dotnet build .\src\Chatham.Kit.ServiceDiscovery.LoadBalancer -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 - dotnet build .\src\Chatham.Kit.ServiceDiscovery.Throttle -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 after_build:
 - dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Abstractions -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
 - dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Cache -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
 - dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Consul -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
+- dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Fixed -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
 - dotnet pack .\src\Chatham.Kit.ServiceDiscovery.LoadBalancer -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
 - dotnet pack .\src\Chatham.Kit.ServiceDiscovery.Throttle -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
 
