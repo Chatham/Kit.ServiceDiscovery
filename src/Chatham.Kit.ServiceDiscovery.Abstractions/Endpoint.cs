@@ -6,16 +6,14 @@ namespace Chatham.Kit.ServiceDiscovery.Abstractions
     {
         public string Host { get; set; }
         public int Port { get; set; }
-        public string Scheme { get; set; } = "http";
-
         public override string ToString()
         {
             return $"{Host}:{Port}";
         }
 
-        public Uri ToUri()
+        public Uri ToUri(string scheme = "http", string basePath = "/")
         {
-            var builder = new UriBuilder(Scheme, Host, Port);
+            var builder = new UriBuilder(scheme, Host, Port, basePath);
             return builder.Uri;
         }
     }
