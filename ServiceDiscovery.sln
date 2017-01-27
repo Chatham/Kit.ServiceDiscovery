@@ -41,6 +41,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscover
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Fixed.Tests", "test\Chatham.Kit.ServiceDiscovery.Fixed.Tests\Chatham.Kit.ServiceDiscovery.Fixed.Tests.xproj", "{4D429886-C592-4DCF-8FCA-6F5F53785CE7}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Multi", "src\Chatham.Kit.ServiceDiscovery.Multi\Chatham.Kit.ServiceDiscovery.Multi.xproj", "{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Multi.Tests", "test\Chatham.Kit.ServiceDiscovery.Multi.Tests\Chatham.Kit.ServiceDiscovery.Multi.Tests.xproj", "{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +103,14 @@ Global
 		{4D429886-C592-4DCF-8FCA-6F5F53785CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D429886-C592-4DCF-8FCA-6F5F53785CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D429886-C592-4DCF-8FCA-6F5F53785CE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,5 +129,7 @@ Global
 		{7A449379-D25E-4DEC-B675-01A1C5942A58} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
 		{08C9BA97-BA31-434F-A378-CEA39E1C16E3} = {62BBED2D-A6A4-4B38-8B9D-CBA6D959AC06}
 		{4D429886-C592-4DCF-8FCA-6F5F53785CE7} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
+		{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1} = {62BBED2D-A6A4-4B38-8B9D-CBA6D959AC06}
+		{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,14 @@
+﻿{
+  "version": "0.1.1-*",
+
+  "dependencies": {
+    "Chatham.Kit.ServiceDiscovery.Abstractions": "0.1.1-*",
+    "NETStandard.Library": "1.6.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}
