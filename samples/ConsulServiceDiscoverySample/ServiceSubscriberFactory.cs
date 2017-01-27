@@ -30,7 +30,7 @@ namespace ConsulServiceDiscoverySample
 
         public IPollingServiceSubscriber CreateSubscriber(string serviceName, ConsulSubscriberOptions consulOptions, ThrottleSubscriberOptions throttleOptions)
         {
-            var consulSubscriber = _consulServiceSubscriberFactory.CreateConsulSubscriber(serviceName, consulOptions, true);
+            var consulSubscriber = _consulServiceSubscriberFactory.CreateSubscriber(serviceName, consulOptions, true);
             var throttleSubscriber = new ThrottleServiceSubscriber(consulSubscriber, throttleOptions.MaxUpdatesPerPeriod, throttleOptions.MaxUpdatesPeriod);
             return _cacheServiceSubscriberFactory.CreateSubscriber(throttleSubscriber);
         }
