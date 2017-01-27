@@ -4,6 +4,6 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 {
     public interface IConsulServiceSubscriberFactory
     {
-        IServiceSubscriber CreateConsulSubscriber(string serviceName, ConsulSubscriberOptions consulOptions, bool watch);
+        IServiceSubscriber CreateSubscriber(string serviceName, ConsulSubscriberOptions consulOptions, bool watch);
     }
 }

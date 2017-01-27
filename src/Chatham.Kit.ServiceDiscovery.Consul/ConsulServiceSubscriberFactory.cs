@@ -12,7 +12,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
             _consulClient = consulClient;
         }
 
-        public IServiceSubscriber CreateConsulSubscriber(string serviceName, ConsulSubscriberOptions consulOptions, bool watch = false)
+        public IServiceSubscriber CreateSubscriber(string serviceName, ConsulSubscriberOptions consulOptions, bool watch = false)
         {
             return new ConsulServiceSubscriber(_consulClient, serviceName, consulOptions, watch);
         }

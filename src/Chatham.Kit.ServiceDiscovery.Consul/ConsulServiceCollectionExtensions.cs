@@ -16,6 +16,7 @@ namespace Chatham.Kit.ServiceDiscovery.Consul
 
             services.TryAddSingleton<IConsulClient, ConsulClient>();
             services.AddSingleton<IConsulServiceSubscriberFactory, ConsulServiceSubscriberFactory>();
+            services.AddSingleton<IConsulPreparedQueryServiceSubscriberFactory, ConsulPreparedQueryServiceSubscriberFactory>();
             services.AddSingleton<IConsulServiceRegistrarFactory, ConsulServiceRegistrarFactory>();
 
             return services;
