@@ -31,6 +31,7 @@ test_script:
 - dotnet test .\test\Chatham.Kit.ServiceDiscovery.Abstractions.Tests -c %CONFIGURATION%
 - dotnet test .\test\Chatham.Kit.ServiceDiscovery.Cache.Tests -c %CONFIGURATION%
 - dotnet test .\test\Chatham.Kit.ServiceDiscovery.Consul.Tests -c %CONFIGURATION%
+- dotnet test .\test\Chatham.Kit.ServiceDiscovery.Fixed.Tests -c %CONFIGURATION%
 - dotnet test .\test\Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests -c %CONFIGURATION%
 - dotnet test .\test\Chatham.Kit.ServiceDiscovery.Throttle.Tests -c %CONFIGURATION%
 

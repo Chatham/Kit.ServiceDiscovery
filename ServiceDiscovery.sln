@@ -39,6 +39,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscover
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Fixed", "src\Chatham.Kit.ServiceDiscovery.Fixed\Chatham.Kit.ServiceDiscovery.Fixed.xproj", "{08C9BA97-BA31-434F-A378-CEA39E1C16E3}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Fixed.Tests", "test\Chatham.Kit.ServiceDiscovery.Fixed.Tests\Chatham.Kit.ServiceDiscovery.Fixed.Tests.xproj", "{4D429886-C592-4DCF-8FCA-6F5F53785CE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{08C9BA97-BA31-434F-A378-CEA39E1C16E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08C9BA97-BA31-434F-A378-CEA39E1C16E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08C9BA97-BA31-434F-A378-CEA39E1C16E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D429886-C592-4DCF-8FCA-6F5F53785CE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D429886-C592-4DCF-8FCA-6F5F53785CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D429886-C592-4DCF-8FCA-6F5F53785CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D429886-C592-4DCF-8FCA-6F5F53785CE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,5 +116,6 @@ Global
 		{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031} = {62BBED2D-A6A4-4B38-8B9D-CBA6D959AC06}
 		{7A449379-D25E-4DEC-B675-01A1C5942A58} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
 		{08C9BA97-BA31-434F-A378-CEA39E1C16E3} = {62BBED2D-A6A4-4B38-8B9D-CBA6D959AC06}
+		{4D429886-C592-4DCF-8FCA-6F5F53785CE7} = {5F3BDCC2-F439-420F-9769-8354CEA3E354}
 	EndGlobalSection
 EndGlobal
