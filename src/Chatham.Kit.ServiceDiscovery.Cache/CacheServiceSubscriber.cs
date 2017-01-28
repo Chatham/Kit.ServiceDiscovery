@@ -22,13 +22,11 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
         private Task _subscriptionTask;
         private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
 
-
         public event EventHandler EndpointsChanged;
 
         public CacheServiceSubscriber(IServiceSubscriber serviceSubscriber, ICacheClient cache)
         {
             _cache = cache;
-
             _serviceSubscriber = serviceSubscriber;
         }
 
@@ -44,12 +42,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             return _cache.Get<List<Endpoint>>(_id);
         }
 
-        public Task StartSubscription()
-        {
-            return StartSubscription(CancellationToken.None);
-        }
-
-        public async Task StartSubscription(CancellationToken ct)
+        public async Task StartSubscription(CancellationToken ct = default(CancellationToken))
         {
             if (_subscriptionTask == null)
             {
@@ -60,7 +53,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                     {
                         var serviceUris = await _serviceSubscriber.Endpoints(ct).ConfigureAwait(false);
                         _cache.Set(_id, serviceUris);
-                        _subscriptionTask = SubscriptionLoop(serviceUris);
+                        _subscriptionTask = StartSubscriptionLoop(serviceUris);
                     }
                 }
                 finally
@@ -70,7 +63,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }
         }
 
-        private Task SubscriptionLoop(List<Endpoint> previousEndpoints)
+        private Task StartSubscriptionLoop(List<Endpoint> previousEndpoints)
         {
             return Task.Run(async () =>
             {
@@ -78,14 +71,14 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 {
                     try
                     {
-                        var currentEndpoints = await _serviceSubscriber.Endpoints();
-
-                        if (!EndpointListsMatch(previousEndpoints, currentEndpoints))
+                        var currentEndpoints = await _serviceSubscriber.Endpoints(_cts.Token).ConfigureAwait(false);
+                        if (EndpointListsMatch(previousEndpoints, currentEndpoints))
                         {
-                            _cache.Set(_id, currentEndpoints);
-                            EndpointsChanged?.Invoke(this, EventArgs.Empty);
-                            previousEndpoints = currentEndpoints;
+                            continue;
                         }
+                        _cache.Set(_id, currentEndpoints);
+                        EndpointsChanged?.Invoke(this, EventArgs.Empty);
+                        previousEndpoints = currentEndpoints;
                     }
                     catch
                     {
