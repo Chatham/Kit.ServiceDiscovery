@@ -14,10 +14,12 @@ This project is still in development and subject to change.  Please create an is
 
 ### Supported Providers
 * [Consul](src/Chatham.Kit.ServiceDiscovery.Consul) - A [consul](https://www.consul.io/) service discovery provider
+* [Fixed](src/Chatham.Kit.ServiceDiscovery.Fixed) - A fixed list of endpoints provider
 
 ### Helpers
 * [Cache](src/Chatham.Kit.ServiceDiscovery.Cache) - A caching discovery provider that can be chained with other discovery providers
 * [LoadBalancer](src/Chatham.Kit.ServiceDiscovery.LoadBalancer) - Add load balancing algorithms to service discovery providers
+* [Multi](src/Chatham.Kit.ServiceDiscovery.Multi) - Add multiple providers and returns the first provider with endpoints
 * [Throttle](src/Chatham.Kit.ServiceDiscovery.Throttle) - A throttling discovery provider that can be chained with other discovery providers
 
 ## Example
