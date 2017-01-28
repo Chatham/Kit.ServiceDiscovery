@@ -71,14 +71,13 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 {
                     try
                     {
-                        var currentEndpoints = await _serviceSubscriber.Endpoints(_cts.Token).ConfigureAwait(false);
-                        if (EndpointListsMatch(previousEndpoints, currentEndpoints))
+                        var currentEndpoints = await _serviceSubscriber.Endpoints().ConfigureAwait(false);
+                        if (!EndpointListsMatch(previousEndpoints, currentEndpoints))
                         {
-                            continue;
+                            _cache.Set(_id, currentEndpoints);
+                            EndpointsChanged?.Invoke(this, EventArgs.Empty);
+                            previousEndpoints = currentEndpoints;
                         }
-                        _cache.Set(_id, currentEndpoints);
-                        EndpointsChanged?.Invoke(this, EventArgs.Empty);
-                        previousEndpoints = currentEndpoints;
                     }
                     catch
                     {
