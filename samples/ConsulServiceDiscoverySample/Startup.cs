@@ -30,7 +30,7 @@ namespace ConsulServiceDiscoverySample
 
             var log = loggerFactory.CreateLogger(nameof(Startup));
             var serviceSubscriber = subscriberFactory.CreateSubscriber("FooService");
-            serviceSubscriber.StartSubscription();
+            serviceSubscriber.StartSubscription().ConfigureAwait(false).GetAwaiter().GetResult();
             serviceSubscriber.EndpointsChanged += async (sender, eventArgs) =>
             {
                 // Reset connection pool, do something with this info, etc
