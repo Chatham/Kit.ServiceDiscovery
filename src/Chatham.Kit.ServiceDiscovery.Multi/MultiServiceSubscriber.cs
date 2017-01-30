@@ -14,7 +14,7 @@ namespace Chatham.Kit.ServiceDiscovery.Multi
             _serviceSubscribers = serviceSubscribers;
         }
 
-        public async Task<List<Endpoint>> Endpoints(CancellationToken ct = new CancellationToken())
+        public async Task<List<Endpoint>> Endpoints(CancellationToken ct = default(CancellationToken))
         {
             foreach (var subscriber in _serviceSubscribers)
             {
