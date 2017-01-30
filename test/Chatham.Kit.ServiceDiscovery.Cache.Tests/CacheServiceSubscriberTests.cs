@@ -126,7 +126,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 };
 
             var fixture = new CacheServiceSubscriberFixture();
-            fixture.ServiceSubscriber.Endpoints()
+            fixture.ServiceSubscriber.Endpoints(Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(result1), Task.FromResult(result2));
 
             var eventWasCalled = false;
@@ -202,7 +202,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 };
 
             var fixture = new CacheServiceSubscriberFixture();
-            fixture.ServiceSubscriber.Endpoints()
+            fixture.ServiceSubscriber.Endpoints(Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(result1), Task.FromResult(result2));
 
             var eventWasCalled = false;
@@ -251,7 +251,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
                 };
 
             var fixture = new CacheServiceSubscriberFixture();
-            fixture.ServiceSubscriber.Endpoints()
+            fixture.ServiceSubscriber.Endpoints(Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(result1), Task.FromResult(result2));
 
             using (var subscriber = fixture.CreateSut())

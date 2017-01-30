@@ -37,7 +37,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 throw new ObjectDisposedException(nameof(CacheServiceSubscriber));
             }
 
-            await StartSubscription(ct);
+            await StartSubscription(ct).ConfigureAwait(false);
 
             return _cache.Get<List<Endpoint>>(_id);
         }
@@ -71,7 +71,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
                 {
                     try
                     {
-                        var currentEndpoints = await _serviceSubscriber.Endpoints().ConfigureAwait(false);
+                        var currentEndpoints = await _serviceSubscriber.Endpoints(_cts.Token).ConfigureAwait(false);
                         if (!EndpointListsMatch(previousEndpoints, currentEndpoints))
                         {
                             _cache.Set(_id, currentEndpoints);
@@ -87,7 +87,7 @@ namespace Chatham.Kit.ServiceDiscovery.Cache
             }, _cts.Token);
         }
 
-        private static bool EndpointListsMatch(List<Endpoint> endpoints1, List<Endpoint> endpoints2)
+        private static bool EndpointListsMatch(ICollection<Endpoint> endpoints1, ICollection<Endpoint> endpoints2)
         {
             if (endpoints1.Count != endpoints2.Count)
             {
