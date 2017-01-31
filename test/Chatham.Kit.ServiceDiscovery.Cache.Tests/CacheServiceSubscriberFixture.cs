@@ -7,7 +7,6 @@ namespace Chatham.Kit.ServiceDiscovery.Cache.Tests
 {
     public class CacheServiceSubscriberFixture
     {
-        public ILoggerFactory LoggerFactory { get; set; }
         public IServiceSubscriber ServiceSubscriber { get; set; }
         public ICacheClient Cache { get; set; }
 
