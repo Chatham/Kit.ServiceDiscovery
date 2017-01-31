@@ -1,7 +1,7 @@
 {
   "name": "Chatham.Kit.ServiceDiscovery.Abstractions",
   "description": "Service discovery kit for .NET microservices - Abstractions",
-  "version": "0.2.0",
+  "version": "0.2.1-*",
   "authors": [
     "Chatham Financial Corp."
   ],
