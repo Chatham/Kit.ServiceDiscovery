@@ -1,7 +1,7 @@
 ﻿{
   "name": "Chatham.Kit.ServiceDiscovery.Throttle",
   "description": "Service discovery kit for .NET microservices - Throttle",
-  "version": "0.1.1-*",
+  "version": "0.2.0",
   "authors": [
     "Chatham Financial Corp."
   ],

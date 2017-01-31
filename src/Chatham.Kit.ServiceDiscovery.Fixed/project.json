@@ -1,7 +1,7 @@
 ﻿{
   "name": "Chatham.Kit.ServiceDiscovery.Fixed",
   "description": "Service discovery kit for .NET microservices - Fixed",
-  "version": "0.1.1-*",
+  "version": "0.2.0",
   "authors": [
     "Chatham Financial Corp."
   ],
@@ -33,5 +33,4 @@
       "chatham"
     ]
   }
-
 }
