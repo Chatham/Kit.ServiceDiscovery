@@ -8,19 +8,19 @@
   "copyright": "Copyright 2016 Chatham Financial Corp.",
 
   "dependencies": {
+    "Chatham.Kit.ServiceDiscovery.Abstractions": {
+      "target": "project"
+    },
     "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
     "Microsoft.Extensions.Caching.Memory": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "Chatham.Kit.ServiceDiscovery.Abstractions": "0.1.1-*"
+    "NETStandard.Library": "1.6.0"
   },
 
   "frameworks": {
     "netstandard1.3": {
-      "imports": "dnxcore50",
-      "dependencies": {
-        "NETStandard.Library": "1.6.0"
-      }
+      "imports": "dnxcore50"
     }
   },
 
