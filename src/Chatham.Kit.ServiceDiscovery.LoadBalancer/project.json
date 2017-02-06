@@ -1,7 +1,7 @@
 ﻿{
   "name": "Chatham.Kit.ServiceDiscovery.LoadBalancer",
   "description": "Service discovery kit for .NET microservices - Load Balancer",
-  "version": "0.2.1",
+  "version": "0.2.2-*",
   "authors": [
     "Chatham Financial Corp."
   ],
