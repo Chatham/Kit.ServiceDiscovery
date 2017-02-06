@@ -1,7 +1,7 @@
 ﻿{
   "name": "Chatham.Kit.ServiceDiscovery.Multi",
   "description": "Service discovery kit for .NET microservices - Multi",
-  "version": "0.2.1-*",
+  "version": "0.2.1",
   "authors": [
     "Chatham Financial Corp."
   ],
