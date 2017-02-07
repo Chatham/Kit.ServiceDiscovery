@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>Chatham.Kit.ServiceDiscovery.Multi.Tests</AssemblyName>
+    <PackageId>Chatham.Kit.ServiceDiscovery.Multi.Tests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RuntimeFrameworkVersion>1.1.0</RuntimeFrameworkVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Chatham.Kit.ServiceDiscovery.Abstractions/Chatham.Kit.ServiceDiscovery.Abstractions.csproj" />
+    <ProjectReference Include="../../src/Chatham.Kit.ServiceDiscovery.Fixed/Chatham.Kit.ServiceDiscovery.Fixed.csproj" />
+    <ProjectReference Include="../../src/Chatham.Kit.ServiceDiscovery.Multi/Chatham.Kit.ServiceDiscovery.Multi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="1.0.1" />
+    <PackageReference Include="NSubstitute" Version="2.0.0-rc" />
+    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+  </ItemGroup>
+
+</Project>

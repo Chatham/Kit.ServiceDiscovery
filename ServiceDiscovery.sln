@@ -1,7 +1,7 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26114.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{62BBED2D-A6A4-4B38-8B9D-CBA6D959AC06}"
 EndProject
@@ -9,45 +9,44 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
 		CHANGELOG.md = CHANGELOG.md
-		global.json = global.json
 		LICENSE = LICENSE
 		nuget.config = nuget.config
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Abstractions", "src\Chatham.Kit.ServiceDiscovery.Abstractions\Chatham.Kit.ServiceDiscovery.Abstractions.xproj", "{BF69376D-09D0-4AF6-B899-05C711B0AD46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Abstractions", "src\Chatham.Kit.ServiceDiscovery.Abstractions\Chatham.Kit.ServiceDiscovery.Abstractions.csproj", "{BF69376D-09D0-4AF6-B899-05C711B0AD46}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Consul", "src\Chatham.Kit.ServiceDiscovery.Consul\Chatham.Kit.ServiceDiscovery.Consul.xproj", "{E4335296-C45F-4C4B-8A94-9C59ED05CC42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Consul", "src\Chatham.Kit.ServiceDiscovery.Consul\Chatham.Kit.ServiceDiscovery.Consul.csproj", "{E4335296-C45F-4C4B-8A94-9C59ED05CC42}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5F3BDCC2-F439-420F-9769-8354CEA3E354}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{346B8680-58FB-4632-97EB-5BAED8F9B351}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ConsulServiceDiscoverySample", "samples\ConsulServiceDiscoverySample\ConsulServiceDiscoverySample.xproj", "{62992A15-A292-4FFD-A5F3-CE07597CBE2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsulServiceDiscoverySample", "samples\ConsulServiceDiscoverySample\ConsulServiceDiscoverySample.csproj", "{62992A15-A292-4FFD-A5F3-CE07597CBE2C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Consul.Tests", "test\Chatham.Kit.ServiceDiscovery.Consul.Tests\Chatham.Kit.ServiceDiscovery.Consul.Tests.xproj", "{02242E6E-7E42-47C2-A0BC-BB70A374C037}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Consul.Tests", "test\Chatham.Kit.ServiceDiscovery.Consul.Tests\Chatham.Kit.ServiceDiscovery.Consul.Tests.csproj", "{02242E6E-7E42-47C2-A0BC-BB70A374C037}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.LoadBalancer", "src\Chatham.Kit.ServiceDiscovery.LoadBalancer\Chatham.Kit.ServiceDiscovery.LoadBalancer.xproj", "{860B4EFD-2C7A-4958-8892-A457487DD4A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.LoadBalancer", "src\Chatham.Kit.ServiceDiscovery.LoadBalancer\Chatham.Kit.ServiceDiscovery.LoadBalancer.csproj", "{860B4EFD-2C7A-4958-8892-A457487DD4A8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests", "test\Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests\Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests.xproj", "{F7AEF9E5-E45C-4E87-B826-940627295218}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests", "test\Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests\Chatham.Kit.ServiceDiscovery.LoadBalancer.Tests.csproj", "{F7AEF9E5-E45C-4E87-B826-940627295218}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Cache", "src\Chatham.Kit.ServiceDiscovery.Cache\Chatham.Kit.ServiceDiscovery.Cache.xproj", "{4F117031-49A8-4A4D-B4EF-1E82E37AD0D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Cache", "src\Chatham.Kit.ServiceDiscovery.Cache\Chatham.Kit.ServiceDiscovery.Cache.csproj", "{4F117031-49A8-4A4D-B4EF-1E82E37AD0D3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Cache.Tests", "test\Chatham.Kit.ServiceDiscovery.Cache.Tests\Chatham.Kit.ServiceDiscovery.Cache.Tests.xproj", "{C23FDCEF-CDAB-4125-BE13-94EA28727CD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Cache.Tests", "test\Chatham.Kit.ServiceDiscovery.Cache.Tests\Chatham.Kit.ServiceDiscovery.Cache.Tests.csproj", "{C23FDCEF-CDAB-4125-BE13-94EA28727CD4}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Abstractions.Tests", "test\Chatham.Kit.ServiceDiscovery.Abstractions.Tests\Chatham.Kit.ServiceDiscovery.Abstractions.Tests.xproj", "{7A9BDD98-8141-448E-921E-F34049BF91F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Abstractions.Tests", "test\Chatham.Kit.ServiceDiscovery.Abstractions.Tests\Chatham.Kit.ServiceDiscovery.Abstractions.Tests.csproj", "{7A9BDD98-8141-448E-921E-F34049BF91F0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Throttle", "src\Chatham.Kit.ServiceDiscovery.Throttle\Chatham.Kit.ServiceDiscovery.Throttle.xproj", "{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Throttle", "src\Chatham.Kit.ServiceDiscovery.Throttle\Chatham.Kit.ServiceDiscovery.Throttle.csproj", "{4D530F7D-66CE-4EC6-9F9F-0511BFCD5031}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Throttle.Tests", "test\Chatham.Kit.ServiceDiscovery.Throttle.Tests\Chatham.Kit.ServiceDiscovery.Throttle.Tests.xproj", "{7A449379-D25E-4DEC-B675-01A1C5942A58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Throttle.Tests", "test\Chatham.Kit.ServiceDiscovery.Throttle.Tests\Chatham.Kit.ServiceDiscovery.Throttle.Tests.csproj", "{7A449379-D25E-4DEC-B675-01A1C5942A58}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Fixed", "src\Chatham.Kit.ServiceDiscovery.Fixed\Chatham.Kit.ServiceDiscovery.Fixed.xproj", "{08C9BA97-BA31-434F-A378-CEA39E1C16E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Fixed", "src\Chatham.Kit.ServiceDiscovery.Fixed\Chatham.Kit.ServiceDiscovery.Fixed.csproj", "{08C9BA97-BA31-434F-A378-CEA39E1C16E3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Fixed.Tests", "test\Chatham.Kit.ServiceDiscovery.Fixed.Tests\Chatham.Kit.ServiceDiscovery.Fixed.Tests.xproj", "{4D429886-C592-4DCF-8FCA-6F5F53785CE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Fixed.Tests", "test\Chatham.Kit.ServiceDiscovery.Fixed.Tests\Chatham.Kit.ServiceDiscovery.Fixed.Tests.csproj", "{4D429886-C592-4DCF-8FCA-6F5F53785CE7}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Multi", "src\Chatham.Kit.ServiceDiscovery.Multi\Chatham.Kit.ServiceDiscovery.Multi.xproj", "{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Multi", "src\Chatham.Kit.ServiceDiscovery.Multi\Chatham.Kit.ServiceDiscovery.Multi.csproj", "{4090F51E-C0D0-41A4-AFEC-1EA61E99CDF1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Chatham.Kit.ServiceDiscovery.Multi.Tests", "test\Chatham.Kit.ServiceDiscovery.Multi.Tests\Chatham.Kit.ServiceDiscovery.Multi.Tests.xproj", "{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatham.Kit.ServiceDiscovery.Multi.Tests", "test\Chatham.Kit.ServiceDiscovery.Multi.Tests\Chatham.Kit.ServiceDiscovery.Multi.Tests.csproj", "{1897FA6C-D00C-4CDE-8B1A-C738FE6BBEF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

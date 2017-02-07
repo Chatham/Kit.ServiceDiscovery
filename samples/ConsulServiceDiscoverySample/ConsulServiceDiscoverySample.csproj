@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <AssemblyName>ConsulServiceDiscoverySample</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>ConsulServiceDiscoverySample</PackageId>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RuntimeFrameworkVersion>1.1.0</RuntimeFrameworkVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Chatham.Kit.ServiceDiscovery.Abstractions/Chatham.Kit.ServiceDiscovery.Abstractions.csproj" />
+    <ProjectReference Include="../../src/Chatham.Kit.ServiceDiscovery.Cache/Chatham.Kit.ServiceDiscovery.Cache.csproj" />
+    <ProjectReference Include="../../src/Chatham.Kit.ServiceDiscovery.Consul/Chatham.Kit.ServiceDiscovery.Consul.csproj" />
+    <ProjectReference Include="../../src/Chatham.Kit.ServiceDiscovery.Throttle/Chatham.Kit.ServiceDiscovery.Throttle.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.0.1" />
+  </ItemGroup>
+
+</Project>
